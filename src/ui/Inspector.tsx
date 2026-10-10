@@ -3,6 +3,7 @@ import { motion } from 'motion/react'
 import { AlertTriangle, Check, CircleAlert, Library, Minus, Plus, Ruler, Trash2, X } from 'lucide-react'
 import { useStudio } from '../store'
 import { el } from '../chem/elements'
+import { LIBRARY } from '../chem/library'
 import {
   angleDeg, atomById, bondById, bondLengthSource, conventionalFormula, dihedralDeg, dist, formula, missingHydrogens, molarMass,
   type Molecule, type BondOrder,
@@ -33,12 +34,12 @@ function useMoleculeTitle(name: string): string {
   useEffect(() => {
     if (lang !== 'en' || englishNames || englishNamesLoading) return
     englishNamesLoading = true
-    void import('../chem/library')
-      .then((lib) => {
-        englishNames = new Map(lib.LIBRARY.map((e) => [e.name, e.nameEn]))
-        setMap(englishNames)
-      })
-      .catch(() => { englishNamesLoading = false })
+    try {
+      englishNames = new Map(LIBRARY.map((e) => [e.name, e.nameEn]))
+      setMap(englishNames)
+    } catch {
+      englishNamesLoading = false
+    }
   }, [lang])
   if (name === translate('tr', 'mol.untitled')) return t('mol.untitled')
   return lang === 'en' ? map?.get(name) ?? name : name

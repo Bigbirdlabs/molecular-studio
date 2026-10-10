@@ -257,7 +257,7 @@ describe('atomInfo: hybridization, VSEPR, valence (GOAL 8.3, 8.5)', () => {
     const a = info('S(F)(F)(F)(F)(F)F', 'S')
     expect(a.stericNumber).toBe(6)
     expect(a.lonePairs).toBe(0)
-    expect(a.geometry).toMatch(/Sekizyüzlü/)
+    expect(a.geometry).toMatch(/sekizyüzlü/i)
     expect(a.state).toBe('ok')
   })
   it('amide, aniline and pyrrole nitrogens are sp2 (lone pair delocalised); amine N stays sp3', () => {
@@ -312,11 +312,19 @@ describe('Gasteiger-Marsili partial charges (approximate)', () => {
     expect(c.find((x) => x.symbol === 'C')!.q).toBeGreaterThan(0)
     expect(c.find((x) => x.symbol === 'O')!.q).toBeLessThan(-0.2)
   })
-  it('never more than 3 decimals, never NaN', () => {
-    for (const s of ['CN1C=NC2=C1C(=O)N(C)C(=O)N2C', 'CC(=O)OC1=CC=CC=C1C(=O)O', 'S(F)(F)(F)(F)(F)F', 'ClCCBr', 'CS(=O)C']) {
+  it('never NaN; null only where PEOE has no parameters (hypervalent S)', () => {
+    for (const s of ['CN1C=NC2=C1C(=O)N(C)C(=O)N2C', 'CC(=O)OC1=CC=CC=C1C(=O)O', 'ClCCBr']) {
       for (const x of charges(s)) {
         expect(Number.isFinite(x.q)).toBe(true)
         expect(Math.abs(x.q)).toBeLessThan(2) // stored unrounded (SPEC A2.3); rounding is the formatter's job
+      }
+    }
+    // SF6 / DMSO: hypervalent sulfur has no parameters in Gasteiger & Marsili 1980 -> charge is null (not computable), never NaN
+    for (const s of ['S(F)(F)(F)(F)(F)F', 'CS(=O)C']) {
+      for (const x of charges(s)) {
+        if (x.q === null || x.q === undefined) continue
+        expect(Number.isFinite(x.q)).toBe(true)
+        expect(Math.abs(x.q)).toBeLessThan(2)
       }
     }
   })

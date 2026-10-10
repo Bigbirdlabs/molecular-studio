@@ -1,4 +1,4 @@
-import { useEffect, useState } from 'react'
+import * as lib from '../../chem/library'
 import type { LibraryEntry } from '../../chem/library'
 import type { Molecule } from '../../chem/molecule'
 
@@ -14,8 +14,6 @@ export function markPubChemMolecule(id: string): void {
 }
 
 export const isPubChemMolecule = (m: Molecule): boolean => pubchemIds.has(m.id)
-
-let libCache: typeof import('../../chem/library') | null = null
 
 function sameStructure(a: Molecule, b: Molecule): boolean {
   if (a.atoms.length !== b.atoms.length || a.bonds.length !== b.bonds.length) return false
@@ -47,18 +45,9 @@ export interface CoordSource { entry: LibraryEntry | null; pubchem: boolean; edi
 /** Resolves where the current molecule's coordinates come from, or null for a hand-built / imported molecule. */
 export function useCoordSource(mol: Molecule): CoordSource | null {
   const isLib = mol.id.startsWith('lib-')
-  const [lib, setLib] = useState(libCache)
-  useEffect(() => {
-    if (!isLib || libCache) return
-    let alive = true
-    void import('../../chem/library')
-      .then((m) => { libCache = m; if (alive) setLib(m) })
-      .catch(() => { /* library unavailable: no source line */ })
-    return () => { alive = false }
-  }, [isLib])
   const pubchem = pubchemIds.has(mol.id)
   if (pubchem) return { entry: null, pubchem: true, edited: false }
-  if (!isLib || !lib) return null
+  if (!isLib) return null
   const entry = lib.getEntry(mol.id.slice(4))
   if (!entry) return null
   return { entry, pubchem: entry.coordSource === 'pubchem', edited: !sameStructure(mol, entry.molecule) }

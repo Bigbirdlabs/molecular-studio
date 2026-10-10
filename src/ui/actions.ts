@@ -1,5 +1,6 @@
 import { useStudio, DEFAULT_PROJECT_NAME } from '../store'
 import { methane, type Molecule } from '../chem/molecule'
+import * as lib from '../chem/library'
 import { BG_CENTER } from '../scene/theme'
 import { t, type Params, type TrKey } from './i18n'
 
@@ -190,7 +191,6 @@ export async function loadFromUrl(): Promise<void> {
   const id = new URLSearchParams(window.location.search).get('m')
   if (!id) return
   try {
-    const lib = await import('../chem/library')
     const entry = lib.getEntry(id.trim().toLowerCase()) ?? lib.getEntry(id.trim())
     if (entry) useStudio.getState().replaceMolecule(entry.molecule)
     else if (id.trim().toLowerCase() === 'metan') useStudio.getState().replaceMolecule(methane())
