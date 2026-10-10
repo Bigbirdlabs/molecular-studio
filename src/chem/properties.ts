@@ -11,10 +11,13 @@
  *    `lipinski.rulesEvaluated` says so (3, never 4).
  *  - Hydrogen counts for donors / functional groups use the explicit hydrogens of the molecule.
  *
- * Results of the graph analysis (rings, aromaticity, hybridization) are cached per molecule
- * object and invalidated by a structural signature, so the same molecule is analysed once.
+ * Results of the graph analysis (rings, aromaticity, hybridization) and the topology-only part of
+ * `molProperties` are cached by a structural signature (atoms, charges, bonds, orders), so a cloned
+ * molecule with the same topology (drag / relax frames) is analysed once. Coordinate-dependent values
+ * (size, overlap scan, lengths, positions) are always computed from the molecule that is passed in.
+ * Stored values are never rounded (SPEC A2.3): rounding is the formatter's job.
  */
-import { BOND_NAMES, BOND_NAMES_EN, el } from './elements'
+import { BOND_NAMES, BOND_NAMES_EN, VALENCE_ELECTRONS, el } from './elements'
 import { bondTargetLength } from './geometry'
 import {
   type Atom,
@@ -23,15 +26,12 @@ import {
   type Vec3,
   allowedValences,
   cloneMolecule,
-  connectedComponents,
   dist,
   formula,
   formulaCounts,
   hillOrder,
-  inRing,
   missingHydrogens,
   molarMass,
-  ringCount,
   targetValence,
   valenceState,
   valenceUsed,
@@ -47,7 +47,15 @@ export interface AtomInfo {
   symbol: string
   name: string
   z: number
+  /**
+   * Hybridisation as it may be SHOWN (SPEC A4.2): sp / sp2 / sp3 only for complete C, N, O and B atoms;
+   * '—' for everything else (halogens, S, P, Si, metals, H, incomplete atoms). 's' is never returned.
+   */
   hybridization: 'sp' | 'sp2' | 'sp3' | 's' | '—'
+  /** true when the hybridisation row may be rendered (hybridization is sp / sp2 / sp3) */
+  showHybridization: boolean
+  /** true when steric number / lone pairs / geometry rows are meaningful (central atom, >= 2 neighbours, complete, not a metal / ion) */
+  showVsepr: boolean
   /** Turkish VSEPR geometry name */
   geometry: string
   /** English VSEPR geometry name (additive, for the English UI) */
@@ -83,6 +91,7 @@ export interface BondInfo {
   aromatic: boolean
   inRing: boolean
   sigma: number
+  /** pi bond order: 0 / 1 / 2 for Kekule bonds, 0.5 for every aromatic bond (order 1.5 = sigma 1 + pi 0.5) */
   pi: number
 }
 
@@ -110,8 +119,17 @@ export interface MolProperties {
   functionalGroups: string[]
   /** Stable language-neutral ids, same order as `functionalGroups` (additive) */
   functionalGroupIds: string[]
-  /** Lipinski rule-of-five verdict. logP is not computed: only 3 rules are evaluated (see file header). */
-  lipinski: { passes: boolean; violations: number; rulesEvaluated: number }
+  /**
+   * Lipinski rule-of-five counts. logP is not computed: only 3 of 4 rules are evaluated (see file header),
+   * so NO overall pass / fail verdict is returned. `qualifier` is the text that must accompany the counts.
+   */
+  lipinski: { violations: number; rulesEvaluated: number; rulesTotal: number; qualifier: string; qualifierEn: string }
+  /** Sum of implicit hydrogens still missing (SPEC A2.2); formula, mass and composition count drawn atoms only. */
+  missingHydrogenCount: number
+  /** Turkish incomplete-structure note ("Yapı eksik: 6 H eksik — değerler çizilen atomlar içindir"), null when complete. */
+  incompleteNote: string | null
+  /** English incomplete-structure note, null when complete. */
+  incompleteNoteEn: string | null
   /** Turkish human-readable valence / geometry problems */
   issues: string[]
   /** Structured form of `issues`, same order (additive; lets the UI translate) */
@@ -141,24 +159,8 @@ export interface RingInfo {
 // Constants
 // ---------------------------------------------------------------------------------------------
 
-/** Valence (outer-shell) electrons per neutral atom. */
-const VALENCE_ELECTRONS: Record<string, number> = {
-  H: 1, B: 3, C: 4, N: 5, O: 6, F: 7, Na: 1, Mg: 2, Si: 4, P: 5, S: 6, Cl: 7, Br: 7, I: 7,
-}
-
-/** Monoisotopic masses (u) of the most abundant isotope (IUPAC / NIST). */
-const MONO_MASS: Record<string, number> = {
-  H: 1.00782503207, B: 11.0093054, C: 12, N: 14.0030740048, O: 15.99491461956, F: 18.99840322,
-  Na: 22.9897692809, Mg: 23.985041700, Si: 27.9769265325, P: 30.97376163, S: 31.972071,
-  Cl: 34.96885268, Br: 78.9183371, I: 126.904473,
-}
-const ELECTRON_MASS = 0.00054857990946
-
-const round = (x: number, d: number): number => {
-  const f = 10 ** d
-  const r = Math.round(x * f) / f
-  return r === 0 ? 0 : r // no "-0"
-}
+/** CODATA 2018 electron mass in u (SPEC A2.5). */
+const ELECTRON_MASS = 0.000548579909065
 
 // ---------------------------------------------------------------------------------------------
 // Analysis cache
@@ -167,7 +169,12 @@ const round = (x: number, d: number): number => {
 type Hyb = AtomInfo['hybridization']
 interface Nb { id: number; bond: Bond }
 interface GeoInfo {
+  /** internal hybridisation (also drives the PEOE parameter choice); NOT what the UI shows */
   hyb: Hyb
+  /** shown hybridisation: sp / sp2 / sp3 for complete C, N, O, B only, else '—' (SPEC A4.2) */
+  hybShown: Hyb
+  /** VSEPR rows (steric number, lone pairs, geometry) are meaningful */
+  vsepr: boolean
   sn: number
   lp: number
   geometry: string
@@ -175,7 +182,10 @@ interface GeoInfo {
   incomplete: boolean
 }
 interface Analysis {
-  sig: number
+  sig: string
+  nAtoms: number
+  nBonds: number
+  /** atoms of the molecule this analysis was built from: use ONLY for symbol / charge (positions may be stale) */
   byId: Map<number, Atom>
   adj: Map<number, Nb[]>
   /** valid bonds only (both endpoints exist, no self loops, no duplicates) */
@@ -188,15 +198,30 @@ interface Analysis {
   heteroAromaticAtoms: Set<number>
   geo: Map<number, GeoInfo>
   charges: Map<number, number> | null
+  /** ids of bonds that lie on a ring (union of the SSSR bonds) */
+  ringBonds: Set<number>
+  /** number of connected components (over all atoms) */
+  components: number
 }
 
 const cache = new WeakMap<Molecule, Analysis>()
+/** Small LRU by topology signature: a cloned molecule with identical topology re-uses the analysis. */
+const bySig = new Map<string, Analysis>()
+const SIG_CACHE_MAX = 8
 
-function signature(m: Molecule): number {
-  let h = 2166136261
+/**
+ * Structural signature of a molecule: atom ids, symbols, charges, bond ids / endpoints / orders. Two
+ * independent 32-bit FNV-style hashes + counts make an accidental collision practically impossible.
+ * Coordinates are NOT part of it. Exported so callers can memoise on topology instead of object identity.
+ */
+export function topologyKey(m: Molecule): string {
+  let h1 = 2166136261
+  let h2 = 5381
   const mix = (n: number) => {
-    h ^= n | 0
-    h = Math.imul(h, 16777619)
+    const v = n | 0
+    h1 ^= v
+    h1 = Math.imul(h1, 16777619)
+    h2 = (Math.imul(h2, 33) + v + 0x9e3779b9) | 0
   }
   for (const a of m.atoms) {
     mix(a.id)
@@ -210,15 +235,20 @@ function signature(m: Molecule): number {
     mix(b.b)
     mix(b.order)
   }
-  mix(m.atoms.length)
-  mix(m.bonds.length)
-  return h >>> 0
+  return `${(h1 >>> 0).toString(36)}.${(h2 >>> 0).toString(36)}.${m.atoms.length}.${m.bonds.length}`
 }
 
 function analyze(m: Molecule): Analysis {
-  const sig = signature(m)
+  const sig = topologyKey(m)
   const hit = cache.get(m)
   if (hit && hit.sig === sig) return hit
+  const shared = bySig.get(sig)
+  if (shared && shared.nAtoms === m.atoms.length && shared.nBonds === m.bonds.length) {
+    bySig.delete(sig)
+    bySig.set(sig, shared) // refresh LRU position
+    cache.set(m, shared)
+    return shared
+  }
 
   const byId = new Map<number, Atom>()
   for (const a of m.atoms) byId.set(a.id, a)
@@ -237,13 +267,31 @@ function analyze(m: Molecule): Analysis {
   }
 
   const an: Analysis = {
-    sig, byId, adj, bonds, rings: [], ringAtoms: new Set(), aromaticAtoms: new Set(),
-    aromaticBonds: new Set(), heteroAromaticAtoms: new Set(), geo: new Map(), charges: null,
+    sig, nAtoms: m.atoms.length, nBonds: m.bonds.length, byId, adj, bonds, rings: [], ringAtoms: new Set(),
+    aromaticAtoms: new Set(), aromaticBonds: new Set(), heteroAromaticAtoms: new Set(), geo: new Map(), charges: null,
+    ringBonds: new Set(), components: 0,
   }
   an.rings = findRings(m, an).map((r) => ({ ...r, aromatic: false }))
-  for (const r of an.rings) for (const id of r.atoms) an.ringAtoms.add(id)
+  for (const r of an.rings) {
+    for (const id of r.atoms) an.ringAtoms.add(id)
+    for (const b of r.bonds) if (b >= 0) an.ringBonds.add(b)
+  }
   perceiveAromatic(an)
+  // connected components over adjacency (molecule.ts connectedComponents is O(n^3) on big molecules)
+  const seen = new Set<number>()
+  for (const a of m.atoms) {
+    if (seen.has(a.id)) continue
+    an.components++
+    const st = [a.id]
+    seen.add(a.id)
+    while (st.length) {
+      const u = st.pop()!
+      for (const nb of adj.get(u)!) if (!seen.has(nb.id)) { seen.add(nb.id); st.push(nb.id) }
+    }
+  }
   cache.set(m, an)
+  bySig.set(sig, an)
+  if (bySig.size > SIG_CACHE_MAX) bySig.delete(bySig.keys().next().value as string)
   return an
 }
 
@@ -495,7 +543,7 @@ export function perceiveAromaticity(m: Molecule): Molecule {
 const GEOMETRY: Record<string, [string, string]> = {
   // key "<steric number>:<lone pairs>"
   '2:0': ['Doğrusal', 'Linear'],
-  '3:0': ['Üçgen düzlem', 'Trigonal planar'],
+  '3:0': ['Düzlem üçgen', 'Trigonal planar'],
   '3:1': ['Kırık doğru (açısal)', 'Bent'],
   '4:0': ['Düzgün dörtyüzlü', 'Tetrahedral'],
   '4:1': ['Üçgen piramit', 'Trigonal pyramidal'],
@@ -534,13 +582,13 @@ function geoOf(an: Analysis, id: number): GeoInfo {
   const hypervalent = (a.symbol === 'S' && used > 2 + Math.abs(a.charge)) || (a.symbol === 'P' && used > 3 + Math.abs(a.charge))
 
   if (metal) {
-    g = { hyb: '—', sn, lp, geometry: 'Metal (iyonik)', geometryEn: 'Metal (ionic)', incomplete }
+    g = { hyb: '—', hybShown: '—', vsepr: false, sn, lp, geometry: 'Metal (iyonik)', geometryEn: 'Metal (ionic)', incomplete }
   } else if (deg === 0) {
-    g = { hyb: a.symbol === 'H' ? 's' : '—', sn, lp, geometry: 'Tek atom', geometryEn: 'Single atom', incomplete }
+    g = { hyb: a.symbol === 'H' ? 's' : '—', hybShown: '—', vsepr: false, sn, lp, geometry: 'Tek atom', geometryEn: 'Single atom', incomplete }
   } else if (a.symbol === 'H') {
-    g = { hyb: 's', sn, lp, geometry: 'Uç atom (tek komşu)', geometryEn: 'Terminal atom (one neighbour)', incomplete }
+    g = { hyb: 's', hybShown: '—', vsepr: false, sn, lp, geometry: 'Uç atom (tek komşu)', geometryEn: 'Terminal atom (one neighbour)', incomplete }
   } else if (incomplete) {
-    g = { hyb: '—', sn: deg, lp: 0, geometry: 'hesaplanamadı (yapı eksik)', geometryEn: 'not computable (incomplete structure)', incomplete }
+    g = { hyb: '—', hybShown: '—', vsepr: false, sn: deg, lp: 0, geometry: 'hesaplanamadı (yapı eksik)', geometryEn: 'not computable (incomplete structure)', incomplete }
   } else {
     let hyb: Hyb = sn === 2 ? 'sp' : sn === 3 ? 'sp2' : sn === 4 ? 'sp3' : '—'
     let tr: string, en: string
@@ -565,12 +613,14 @@ function geoOf(an: Analysis, id: number): GeoInfo {
         hyb = 'sp2'
         // one lone pair sits in the p orbital (delocalised): it is not a steric domain of the planar sigma frame
         sn = sn - 1
-        if (deg === 3) { tr = 'Üçgen düzlem (konjuge)'; en = 'Trigonal planar (conjugated)' }
-        else { tr = 'Kırık doğru (konjuge)'; en = 'Bent (conjugated)' }
+        if (deg === 3) { tr = 'Düzlem üçgen (konjugasyon, tahmini)'; en = 'Trigonal planar (conjugation, estimated)' }
+        else { tr = 'Kırık doğru (konjugasyon, tahmini)'; en = 'Bent (conjugation, estimated)' }
       }
     }
     if (hypervalent) hyb = '—'
-    g = { hyb, sn, lp, geometry: tr, geometryEn: en, incomplete }
+    // Hybridisation is only reported for C, N, O and B (SPEC A4.2); sp3 for Cl / F / S / P would be wrong or meaningless.
+    const hybShown: Hyb = (a.symbol === 'C' || a.symbol === 'N' || a.symbol === 'O' || a.symbol === 'B') && (hyb === 'sp' || hyb === 'sp2' || hyb === 'sp3') ? hyb : '—'
+    g = { hyb, hybShown, vsepr: deg >= 2, sn, lp, geometry: tr, geometryEn: en, incomplete }
   }
   an.geo.set(id, g)
   return g
@@ -657,12 +707,16 @@ export function atomInfo(m: Molecule, id: number): AtomInfo | null {
   const used = valenceUsed(m, id)
   // target valence: lowest allowed valence that accommodates the current bonding
   const valence = targetValence(m, a)
+  // the cached analysis may come from a clone with other coordinates: take the position from THIS molecule
+  const here = m.atoms.find((x) => x.id === id) ?? a
   return {
     id,
     symbol: a.symbol,
     name: e.name,
     z: e.z,
-    hybridization: g.hyb,
+    hybridization: g.hybShown,
+    showHybridization: g.hybShown !== '—',
+    showVsepr: g.vsepr,
     geometry: g.geometry,
     geometryEn: g.geometryEn,
     stericNumber: g.sn,
@@ -674,10 +728,10 @@ export function atomInfo(m: Molecule, id: number): AtomInfo | null {
     mass: e.mass,
     en: e.en,
     covalentRadius: e.covalent,
-    position: [...a.pos] as Vec3,
+    position: [...here.pos] as Vec3,
     state: valenceState(m, a),
     incomplete: g.incomplete,
-    partialCharge: chargeBlocked(an, id) ? null : round(gasteiger(an).get(id) ?? a.charge, 3),
+    partialCharge: chargeBlocked(an, id) ? null : gasteiger(an).get(id) ?? a.charge,
   }
 }
 
@@ -686,13 +740,17 @@ export function bondInfo(m: Molecule, id: number): BondInfo | null {
   const b = an.bonds.find((x) => x.id === id)
   if (!b) return null
   const A = an.byId.get(b.a)!, B = an.byId.get(b.b)!
+  // positions must come from THIS molecule (the cached analysis may belong to a clone)
+  const posA = m.atoms.find((x) => x.id === b.a)?.pos ?? A.pos
+  const posB = m.atoms.find((x) => x.id === b.b)?.pos ?? B.pos
   const aromatic = an.aromaticBonds.has(b.id)
   const order = aromatic ? 1.5 : b.order
   const sym = aromatic ? ':' : b.order === 1 ? '-' : b.order === 2 ? '=' : '≡'
   const [first, second] =
     labelRank(A.symbol) < labelRank(B.symbol) || (labelRank(A.symbol) === labelRank(B.symbol) && A.symbol <= B.symbol) ? [A, B] : [B, A]
   const ea = el(A.symbol), eb = el(B.symbol)
-  const deltaEN = round(Math.abs(ea.en - eb.en), 2)
+  const deltaEN = Math.abs(ea.en - eb.en) // stored unrounded (SPEC A2.3)
+  const dEnCmp = Math.round(deltaEN * 1e9) / 1e9 // float-noise guard for the class thresholds only
   const idealLength = bondTargetLength(A.symbol, B.symbol, b.order, aromatic)
   return {
     id,
@@ -700,15 +758,15 @@ export function bondInfo(m: Molecule, id: number): BondInfo | null {
     order,
     orderName: aromatic ? 'Aromatik bağ (σ + delokalize π)' : BOND_NAMES[b.order] ?? '',
     orderNameEn: aromatic ? 'Aromatic bond (σ + delocalised π)' : BOND_NAMES_EN[b.order] ?? '',
-    length: dist(A.pos, B.pos),
+    length: dist(posA, posB),
     idealLength,
     deltaEN,
-    polarity: deltaEN < 0.4 ? 'apolar' : deltaEN <= 1.7 ? 'polar' : 'ionic',
+    polarity: dEnCmp < 0.4 ? 'apolar' : dEnCmp <= 1.7 ? 'polar' : 'ionic',
     aromatic,
-    inRing: inRing(m, b),
+    inRing: an.ringBonds.has(b.id),
     sigma: 1,
-    // Kekule pi count (order 2 -> 1, order 1 -> 0); aromaticity is reported separately via `aromatic`
-    pi: b.order - 1,
+    // Aromatic bonds are equivalent: order 1.5 = sigma 1 + delocalised pi 0.5 (never the alternating Kekule 1 / 0).
+    pi: aromatic ? 0.5 : b.order - 1,
   }
 }
 
@@ -823,12 +881,12 @@ function functionalGroupIds(m: Molecule, an: Analysis): Set<string> {
 
 /** Rotatable bonds: single, acyclic, non-aromatic bonds between two atoms that each have >= 2 heavy neighbours,
  *  excluding amide C-N, bonds next to triple bonds and rotors with 3 identical terminal substituents (CF3, tBu). */
-function countRotatable(m: Molecule, an: Analysis): number {
+function countRotatable(an: Analysis): number {
   const atom = (id: number) => an.byId.get(id)!
   const heavy = (id: number) => an.adj.get(id)!.filter((nb) => atom(nb.id).symbol !== 'H')
   let n = 0
   for (const b of an.bonds) {
-    if (b.order !== 1 || an.aromaticBonds.has(b.id) || inRing(m, b)) continue
+    if (b.order !== 1 || an.aromaticBonds.has(b.id) || an.ringBonds.has(b.id)) continue
     const A = atom(b.a), B = atom(b.b)
     if (A.symbol === 'H' || B.symbol === 'H') continue
     const ha = heavy(A.id), hb = heavy(B.id)
@@ -848,15 +906,71 @@ function countRotatable(m: Molecule, an: Analysis): number {
   return n
 }
 
+/** Largest interatomic distance (A). Exact up to 1500 atoms; above that, exact among the extreme points of 26 directions. */
 function sizeOf(m: Molecule): number {
-  let best = 0
-  for (let i = 0; i < m.atoms.length; i++) {
-    for (let j = i + 1; j < m.atoms.length; j++) {
-      const d = dist(m.atoms[i].pos, m.atoms[j].pos)
-      if (d > best) best = d
+  const n = m.atoms.length
+  let pts: Vec3[] = m.atoms.map((a) => a.pos)
+  if (n > 1500) {
+    const dirs: Vec3[] = []
+    for (let x = -1; x <= 1; x++) for (let y = -1; y <= 1; y++) for (let z = -1; z <= 1; z++) if (x || y || z) dirs.push([x, y, z])
+    const pick = new Set<number>()
+    for (const d of dirs) {
+      let hi = -Infinity, lo = Infinity, ih = 0, il = 0
+      for (let i = 0; i < n; i++) {
+        const p = pts[i]
+        const v = p[0] * d[0] + p[1] * d[1] + p[2] * d[2]
+        if (v > hi) { hi = v; ih = i }
+        if (v < lo) { lo = v; il = i }
+      }
+      pick.add(ih)
+      pick.add(il)
+    }
+    pts = [...pick].map((i) => m.atoms[i].pos)
+  }
+  let best2 = 0
+  for (let i = 0; i < pts.length; i++) {
+    const p = pts[i]
+    for (let j = i + 1; j < pts.length; j++) {
+      const q = pts[j]
+      const dx = p[0] - q[0], dy = p[1] - q[1], dz = p[2] - q[2]
+      const d2 = dx * dx + dy * dy + dz * dz
+      if (d2 > best2) best2 = d2
     }
   }
-  return best
+  return Math.sqrt(best2)
+}
+
+/** Atom pairs closer than 0.5 A (index pairs i < j, sorted), found with a 0.5 A spatial hash: O(n). */
+function overlappingPairs(m: Molecule): [number, number][] {
+  const cell = 0.5
+  const atoms = m.atoms
+  const grid = new Map<string, number[]>()
+  const finite = (p: Vec3) => Number.isFinite(p[0]) && Number.isFinite(p[1]) && Number.isFinite(p[2])
+  const keyOf = (x: number, y: number, z: number) => `${Math.floor(x / cell)},${Math.floor(y / cell)},${Math.floor(z / cell)}`
+  for (let i = 0; i < atoms.length; i++) {
+    const p = atoms[i].pos
+    if (!finite(p)) continue
+    const k = keyOf(p[0], p[1], p[2])
+    const l = grid.get(k)
+    if (l) l.push(i)
+    else grid.set(k, [i])
+  }
+  const out: [number, number][] = []
+  for (let i = 0; i < atoms.length; i++) {
+    const p = atoms[i].pos
+    if (!finite(p)) continue
+    const cx = Math.floor(p[0] / cell), cy = Math.floor(p[1] / cell), cz = Math.floor(p[2] / cell)
+    for (let dx = -1; dx <= 1; dx++) for (let dy = -1; dy <= 1; dy++) for (let dz = -1; dz <= 1; dz++) {
+      const l = grid.get(`${cx + dx},${cy + dy},${cz + dz}`)
+      if (!l) continue
+      for (const j of l) {
+        if (j <= i) continue
+        if (dist(p, atoms[j].pos) < 0.5) out.push([i, j])
+      }
+    }
+  }
+  out.sort((p, q) => p[0] - q[0] || p[1] - q[1])
+  return out
 }
 
 const STD_VALENCE: Record<string, number> = { C: 4, H: 1, N: 3, O: 2, F: 1, Cl: 1, Br: 1, I: 1 }
@@ -872,14 +986,18 @@ function safeUnsaturation(m: Molecule): number | null {
   return unsaturationOf(m)
 }
 
-export function molProperties(m: Molecule): MolProperties {
-  const an = analyze(m)
+/** Everything that depends only on the topology (atoms, charges, bonds, orders) - cached by `topologyKey`. */
+type TopoProps = Omit<MolProperties, 'sizeAng'>
+
+const topoCache = new Map<string, TopoProps>()
+const TOPO_CACHE_MAX = 8
+
+function computeTopo(m: Molecule, an: Analysis): TopoProps {
   const counts = formulaCounts(m)
-  const mass = molarMass(m)
   const netCharge = m.atoms.reduce((s, a) => s + a.charge, 0)
 
   let exact = 0
-  for (const a of m.atoms) exact += MONO_MASS[a.symbol] ?? el(a.symbol).mass
+  for (const a of m.atoms) exact += el(a.symbol).mono // AME2020 monoisotopic masses (elements.ts, SPEC A1.5)
   exact -= netCharge * ELECTRON_MASS
 
   const bondCounts = { single: 0, double: 0, triple: 0, aromatic: 0 }
@@ -895,11 +1013,17 @@ export function molProperties(m: Molecule): MolProperties {
   const hDonors = m.atoms.filter((a) => (a.symbol === 'N' || a.symbol === 'O') && hasH(a)).length
   const hAcceptors = m.atoms.filter((a) => a.symbol === 'N' || a.symbol === 'O').length
 
-  const composition = hillOrder(counts).map((symbol) => ({
+  // Mass composition (SPEC A2.6): count * mass / M, UNROUNDED; M is the sum of the very same terms, so the
+  // percentages add up to 100 within floating-point noise.
+  const symbols = hillOrder(counts)
+  let total = 0
+  for (const symbol of symbols) total += counts[symbol] * el(symbol).mass
+  const composition = symbols.map((symbol) => ({
     symbol,
     count: counts[symbol],
-    percent: mass > 0 ? round(((counts[symbol] * el(symbol).mass) / mass) * 100, 2) : 0,
+    percent: total > 0 ? ((counts[symbol] * el(symbol).mass) / total) * 100 : 0,
   }))
+  const mass = molarMass(m)
 
   const fg = functionalGroupIds(m, an)
   const groups = FG_ORDER.filter(([id]) => fg.has(id))
@@ -909,7 +1033,9 @@ export function molProperties(m: Molecule): MolProperties {
 
   const issueDetails: IssueDetail[] = []
   const issues: string[] = []
+  let missingH = 0
   for (const a of m.atoms) {
+    missingH += missingHydrogens(m, a)
     const state = valenceState(m, a)
     if (state === 'ok') continue
     const used = valenceUsed(m, a.id)
@@ -917,7 +1043,7 @@ export function molProperties(m: Molecule): MolProperties {
     const max = Math.max(0, ...allowed)
     if (state === 'over') {
       issueDetails.push({ code: 'valenceOver', atomId: a.id, symbol: a.symbol, used, allowed })
-      issues.push(`Değerlik aşıldı: ${a.symbol} en fazla ${max} bağ yapabilir (atom ${a.id}, şu an ${used})`)
+      issues.push(`Geçersiz değerlik: ${a.symbol} (${used}/${max}) — atom ${a.id}`)
     } else if (allowed.some((v) => v > used) && !allowed.some((v) => v < used)) {
       issueDetails.push({ code: 'valenceUnder', atomId: a.id, symbol: a.symbol, used, allowed })
       issues.push(`Eksik değerlik: ${a.symbol} ${used} bağ yapıyor, ${allowed.join(' veya ')} olmalı (atom ${a.id})`)
@@ -926,15 +1052,8 @@ export function molProperties(m: Molecule): MolProperties {
       issues.push(`Geçersiz değerlik: ${a.symbol} ${used} bağ yapıyor; geçerli değerlikler ${allowed.join(' veya ')} (atom ${a.id})`)
     }
   }
-  for (let i = 0; i < m.atoms.length; i++) {
-    for (let j = i + 1; j < m.atoms.length; j++) {
-      const d = dist(m.atoms[i].pos, m.atoms[j].pos)
-      if (d < 0.5) {
-        issueDetails.push({ code: 'overlap', atomId: m.atoms[i].id, symbol: m.atoms[i].symbol, otherAtomId: m.atoms[j].id, distance: round(d, 3) })
-        issues.push(`Çakışan atomlar: ${m.atoms[i].symbol}${m.atoms[i].id} ve ${m.atoms[j].symbol}${m.atoms[j].id} arası ${round(d, 3)} Å`)
-      }
-    }
-  }
+
+  const incomplete = missingH > 0
 
   return {
     formula: formula(m, true),
@@ -945,19 +1064,63 @@ export function molProperties(m: Molecule): MolProperties {
     heavyAtomCount: m.atoms.filter((a) => a.symbol !== 'H').length,
     bondCount: m.bonds.length,
     bondCounts,
-    rings: ringCount(m),
+    rings: an.bonds.length - m.atoms.length + an.components,
     aromaticRings: an.rings.filter((r) => r.aromatic).length,
     unsaturation: safeUnsaturation(m),
     hDonors,
     hAcceptors,
-    rotatableBonds: countRotatable(m, an),
+    rotatableBonds: countRotatable(an),
     composition,
     netCharge,
-    components: connectedComponents(m).length,
-    sizeAng: sizeOf(m),
+    components: an.components,
     functionalGroups: groups.map(([, tr]) => tr),
     functionalGroupIds: groups.map(([id]) => id),
-    lipinski: { passes: violations === 0, violations, rulesEvaluated: 3 },
+    lipinski: {
+      violations,
+      rulesEvaluated: 3,
+      rulesTotal: 4,
+      qualifier: '3 / 4 kural değerlendirildi (logP hesaplanmıyor)',
+      qualifierEn: '3 / 4 rules evaluated (logP is not computed)',
+    },
+    missingHydrogenCount: missingH,
+    incompleteNote: incomplete ? `Yapı eksik: ${missingH} H eksik — değerler çizilen atomlar içindir` : null,
+    incompleteNoteEn: incomplete ? `Incomplete structure: ${missingH} H missing — values are for the drawn atoms only` : null,
+    issues,
+    issueDetails,
+  }
+}
+
+export function molProperties(m: Molecule): MolProperties {
+  const an = analyze(m)
+  let topo = topoCache.get(an.sig)
+  if (topo) {
+    topoCache.delete(an.sig)
+    topoCache.set(an.sig, topo)
+  } else {
+    topo = computeTopo(m, an)
+    topoCache.set(an.sig, topo)
+    if (topoCache.size > TOPO_CACHE_MAX) topoCache.delete(topoCache.keys().next().value as string)
+  }
+
+  // coordinate-dependent parts are always computed from the molecule that was passed in
+  const issueDetails = topo.issueDetails.map((d) => ({ ...d, ...(d.allowed ? { allowed: d.allowed.slice() } : {}) }))
+  const issues = topo.issues.slice()
+  for (const [i, j] of overlappingPairs(m)) {
+    const A = m.atoms[i], B = m.atoms[j]
+    const d = dist(A.pos, B.pos)
+    issueDetails.push({ code: 'overlap', atomId: A.id, symbol: A.symbol, otherAtomId: B.id, distance: d })
+    issues.push(`Çakışan atomlar: ${A.symbol}${A.id} ve ${B.symbol}${B.id} arası ${d.toFixed(3)} Å`)
+  }
+
+  // fresh containers so callers can never mutate the cached copy
+  return {
+    ...topo,
+    bondCounts: { ...topo.bondCounts },
+    composition: topo.composition.map((c) => ({ ...c })),
+    functionalGroups: topo.functionalGroups.slice(),
+    functionalGroupIds: topo.functionalGroupIds.slice(),
+    lipinski: { ...topo.lipinski },
+    sizeAng: sizeOf(m),
     issues,
     issueDetails,
   }

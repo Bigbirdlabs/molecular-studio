@@ -2,14 +2,16 @@ import { PALETTE, el } from '../chem/elements'
 import { useStudio } from '../store'
 import { elementName } from './i18n'
 import { Tip } from './Tip'
+import { useRoving } from './roving'
 
 /** Periodic-style chips with CPK swatches. Used by the Add Atom options and the inspector's "change element". */
 export function ElementPicker({
   value, onPick, ariaLabel, columns = 7, className = '',
 }: { value: string | null; onPick: (symbol: string) => void; ariaLabel: string; columns?: number; className?: string }) {
   const lang = useStudio((s) => s.language)
+  const roving = useRoving<HTMLDivElement>({ orientation: 'both', columns })
   return (
-    <div role="radiogroup" aria-label={ariaLabel} className={`grid gap-1 ${className}`} style={{ gridTemplateColumns: `repeat(${columns}, var(--hit))` }}>
+    <div ref={roving.ref} onKeyDown={roving.onKeyDown} onFocus={roving.onFocus} role="radiogroup" aria-label={ariaLabel} className={`grid gap-1 ${className}`} style={{ gridTemplateColumns: `repeat(${columns}, var(--hit))` }}>
       {PALETTE.map((symbol) => {
         const e = el(symbol)
         const on = symbol === value

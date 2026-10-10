@@ -6,10 +6,9 @@ import { useSceneContext } from './sceneContext'
 import { installTestHook } from './testHook'
 
 /** Store fields that change what is drawn. Anything else (camera status, toasts, save status...) is ignored. */
-const WATCHED: (keyof StudioState)[] = [
-  'mol', 'style', 'selection', 'selectedBond', 'hovered', 'hoveredBond', 'pendingBondFrom', 'measure',
-  'showLabels', 'showCharges', 'showHydrogens', 'tool', 'autoH', 'reducedMotion', 'loadNonce',
-]
+const WATCHED: (keyof StudioState)[] = ['mol', 'style', 'showLabels', 'showCharges', 'showHydrogens', 'reducedMotion', 'loadNonce', 'language']
+/** Fields that only change the overlays (shells, rings, measurement, labels); the atom / bond buffers are not rewritten. */
+const OVERLAY_ONLY: (keyof StudioState)[] = ['selection', 'selectedBond', 'hovered', 'hoveredBond', 'pendingBondFrom', 'measure', 'tool', 'autoH']
 
 /**
  * Bridges the store to the THREE objects without React re-renders: a store subscription marks the rig dirty and asks
@@ -29,9 +28,13 @@ export function MoleculeLayer() {
     scene.add(rig.root)
     rigRef.current = rig
     ctx.dirty.current = true
+    ctx.shellDirty.current = true
     const unsub = useStudio.subscribe((s, prev) => {
       for (const k of WATCHED) {
         if (s[k] !== prev[k]) { ctx.dirty.current = true; invalidate(); return }
+      }
+      for (const k of OVERLAY_ONLY) {
+        if (s[k] !== prev[k]) { ctx.shellDirty.current = true; invalidate(); return }
       }
     })
     const removeHook = installTestHook(ctx, rig, gl, camera)
@@ -51,8 +54,10 @@ export function MoleculeLayer() {
     ctx.sync()
     const s = useStudio.getState()
     const active = ctx.model.step(delta, !s.reducedMotion)
-    if (ctx.dirty.current || active) {
+    const bodies = ctx.dirty.current || active
+    if (bodies || ctx.shellDirty.current) {
       ctx.dirty.current = false
+      ctx.shellDirty.current = false
       if (cache.current.selection !== s.selection) cache.current = { selection: s.selection, set: new Set(s.selection) }
       const view: ViewState = {
         selection: cache.current.set,
@@ -64,8 +69,9 @@ export function MoleculeLayer() {
         showLabels: s.showLabels,
         showCharges: s.showCharges,
         autoH: s.autoH,
+        tool: s.tool,
       }
-      rig.update(ctx.model, view)
+      rig.update(ctx.model, view, { bodies, overlays: true })
     }
     if (active) state.invalidate()
   })

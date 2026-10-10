@@ -6,9 +6,11 @@
   --color-surface-1: #101114;
   --color-surface-2: #16181c;
   --color-surface-3: #1d2025;
+  --color-surface-4: #262a31; /* pressed / selected-row fill */
   /* neutral borders */
   --color-line: #23262c;
   --color-line-strong: #323640;
+  --color-line-ctl: #6b7078; /* border of controls whose only cue is the border (3:1) */
   /* text */
   --color-ink: #e6e8eb;
   --color-ink-dim: #9aa1ab;
@@ -16,6 +18,12 @@
   /* one restrained accent (no CPK element is cyan) + meaningful states */
   --color-accent: #5ec8e5;
   --color-accent-dim: #2b6f82;
+  --color-accent-hover: #7ad4ec;
+  --color-accent-subtle: color-mix(in srgb, var(--color-accent) 14%, var(--color-surface-1));
+  --color-on-accent: #061418;
+  --color-danger-solid: #c8423e;
+  --color-hud: rgb(10 11 13 / 0.86);
+  --color-hud-line: rgb(255 255 255 / 0.10);
   --color-ok: #5fb983;
   --color-warn: #d9a441;
   --color-danger: #e5605a;
@@ -103,6 +111,13 @@
 :root[data-layout="mobile"] {
   --hit: 44px;
 }
+/* phone landscape: slightly tighter targets so the 40 px top bar and the two-column rail fit */
+@media (max-height: 499px) {
+  :root[data-layout="tablet"],
+  :root[data-layout="mobile"] {
+    --hit: 40px;
+  }
+}
 
 /* Reduced motion: the store resolves system preference + user override into this attribute. */
 [data-reduced-motion="true"] *,
@@ -116,7 +131,7 @@
 
 /* The 3D viewport: the only gradient in the UI, restrained. */
 .viewport-bg {
-  background: radial-gradient(120% 95% at 50% 42%, #15171b 0%, #0d0e11 62%, #0a0b0d 100%);
+  background: radial-gradient(120% 95% at 50% 42%, #121419 0%, #08090b 100%);
 }
 
 /* Canvas is owned by the scene; the UI only guarantees gesture handling and a tool-dependent cursor. */

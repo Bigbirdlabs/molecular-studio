@@ -1,0 +1,907 @@
+{
+ "results": [
+  {
+   "name": "m360",
+   "m": {
+    "iw": 360,
+    "ih": 740,
+    "sw": 360,
+    "sh": 740,
+    "bodySw": 360,
+    "layout": "mobile",
+    "rm": "true",
+    "lang": "tr",
+    "hit": "44px",
+    "nCtrls": 14,
+    "small": [],
+    "small24": [],
+    "offscreen": [],
+    "noName": [],
+    "sheet": null,
+    "canvas": {
+     "tabIndex": -1,
+     "w": 360,
+     "h": 602
+    },
+    "viewport": [
+     0,
+     53,
+     360,
+     602
+    ],
+    "inspector": null,
+    "trTexts": [
+     "Otomatik kayıt açık",
+     "Seç",
+     "4 bağ",
+     "Seçim yok"
+    ],
+    "trAttrs": [
+     "Proje adı",
+     "Adsız proje",
+     "Otomatik kayıt açık",
+     "Molekül bilgisi",
+     "Diğer seçenekler",
+     "3B molekül görünümü",
+     "Araçlar",
+     "Seç",
+     "Döndür",
+     "Kaydır",
+     "Yakınlaştır",
+     "Bağ Ekle",
+     "Ölç"
+    ],
+    "toolbars": 0,
+    "live": [
+     "flex min-h-(--hit) shrink-0 it"
+    ],
+    "dockBtns": [
+     "Seç [44x44 @8,690]",
+     "Döndür [44x44 @54,690]",
+     "Kaydır [44x44 @100,690]",
+     "Yakınlaştır [44x44 @146,690]",
+     "Atom Ekle [44x44 @192,690]",
+     "Bağ Ekle [44x44 @238,690]",
+     "Sil [44x44 @284,690]",
+     "Ölç [44x44 @330,690]",
+     "Eylemler [44x44 @310,690]"
+    ]
+   },
+   "shot-tr": "D:\\molecular-studio\\gauntlet\\critiques\\r1ux-resp\\run1\\m360-tr.png"
+  },
+  {
+   "name": "m390",
+   "m": {
+    "iw": 390,
+    "ih": 844,
+    "sw": 390,
+    "sh": 844,
+    "bodySw": 390,
+    "layout": "mobile",
+    "rm": "true",
+    "lang": "tr",
+    "hit": "44px",
+    "nCtrls": 14,
+    "small": [],
+    "small24": [],
+    "offscreen": [],
+    "noName": [],
+    "sheet": null,
+    "canvas": {
+     "tabIndex": -1,
+     "w": 390,
+     "h": 706
+    },
+    "viewport": [
+     0,
+     53,
+     390,
+     706
+    ],
+    "inspector": null,
+    "trTexts": [
+     "Otomatik kayıt açık",
+     "Seç",
+     "4 bağ",
+     "Seçim yok"
+    ],
+    "trAttrs": [
+     "Proje adı",
+     "Adsız proje",
+     "Otomatik kayıt açık",
+     "Molekül bilgisi",
+     "Diğer seçenekler",
+     "3B molekül görünümü",
+     "Araçlar",
+     "Seç",
+     "Döndür",
+     "Kaydır",
+     "Yakınlaştır",
+     "Bağ Ekle",
+     "Ölç"
+    ],
+    "toolbars": 0,
+    "live": [
+     "flex min-h-(--hit) shrink-0 it"
+    ],
+    "dockBtns": [
+     "Seç [44x44 @8,794]",
+     "Döndür [44x44 @54,794]",
+     "Kaydır [44x44 @100,794]",
+     "Yakınlaştır [44x44 @146,794]",
+     "Atom Ekle [44x44 @192,794]",
+     "Bağ Ekle [44x44 @238,794]",
+     "Sil [44x44 @284,794]",
+     "Ölç [44x44 @330,794]",
+     "Eylemler [44x44 @340,794]"
+    ]
+   },
+   "shot-tr": "D:\\molecular-studio\\gauntlet\\critiques\\r1ux-resp\\run1\\m390-tr.png"
+  },
+  {
+   "name": "t768",
+   "m": {
+    "iw": 768,
+    "ih": 1024,
+    "sw": 768,
+    "sh": 1024,
+    "bodySw": 768,
+    "layout": "tablet",
+    "rm": "true",
+    "lang": "tr",
+    "hit": "44px",
+    "nCtrls": 23,
+    "small": [],
+    "small24": [],
+    "offscreen": [],
+    "noName": [],
+    "sheet": null,
+    "canvas": {
+     "tabIndex": -1,
+     "w": 708,
+     "h": 946
+    },
+    "viewport": [
+     60,
+     52,
+     708,
+     946
+    ],
+    "inspector": null,
+    "trTexts": [
+     "Otomatik kayıt açık",
+     "Top-Çubuk",
+     "4 bağ",
+     "Seçim yok",
+     "Seç",
+     "Atom veya bağa tıklayarak seçin; atomu sürükleyerek taşıyın"
+    ],
+    "trAttrs": [
+     "Proje adı",
+     "Adsız proje",
+     "Otomatik kayıt açık",
+     "Kütüphane",
+     "Görünüm",
+     "Molekül bilgisi",
+     "Araçlar",
+     "Seç",
+     "Döndür",
+     "Kaydır",
+     "Yakınlaştır",
+     "Bağ Ekle",
+     "Ölç",
+     "Geometriyi düzenle (basit kuvvet alanı, yaklaşık)",
+     "Hidrojenleri kaldır",
+     "Yeni molekül",
+     "Kamerayı sıfırla",
+     "Yakınlaş",
+     "Uzaklaş",
+     "3B molekül görünümü"
+    ],
+    "toolbars": 0,
+    "live": [
+     "flex min-h-(--hit) shrink-0 it"
+    ],
+    "dockBtns": [
+     "Seç [44x44 @8,60]",
+     "Döndür [44x44 @8,108]",
+     "Kaydır [44x44 @8,156]",
+     "Yakınlaştır [44x44 @8,204]",
+     "Atom Ekle [44x44 @8,252]",
+     "Bağ Ekle [44x44 @8,300]",
+     "Sil [44x44 @8,348]",
+     "Ölç [44x44 @8,396]",
+     "Geometriyi düzenle (basit kuvvet alanı,  [44x44 @8,457]",
+     "Hidrojen ekle [44x44 @8,505]",
+     "Hidrojenleri kaldır [44x44 @8,553]",
+     "Yeni molekül [44x44 @8,601]",
+     "Kamerayı sıfırla [44x44 @8,649]",
+     "Yakınlaş [44x44 @8,697]",
+     "Uzaklaş [44x44 @8,745]"
+    ]
+   },
+   "shot-tr": "D:\\molecular-studio\\gauntlet\\critiques\\r1ux-resp\\run1\\t768-tr.png"
+  },
+  {
+   "name": "t820",
+   "m": {
+    "iw": 820,
+    "ih": 1180,
+    "sw": 820,
+    "sh": 1180,
+    "bodySw": 820,
+    "layout": "tablet",
+    "rm": "true",
+    "lang": "tr",
+    "hit": "44px",
+    "nCtrls": 23,
+    "small": [],
+    "small24": [],
+    "offscreen": [],
+    "noName": [],
+    "sheet": null,
+    "canvas": {
+     "tabIndex": -1,
+     "w": 760,
+     "h": 1102
+    },
+    "viewport": [
+     60,
+     52,
+     760,
+     1102
+    ],
+    "inspector": null,
+    "trTexts": [
+     "Otomatik kayıt açık",
+     "Top-Çubuk",
+     "4 bağ",
+     "Seçim yok",
+     "Seç",
+     "Atom veya bağa tıklayarak seçin; atomu sürükleyerek taşıyın"
+    ],
+    "trAttrs": [
+     "Proje adı",
+     "Adsız proje",
+     "Otomatik kayıt açık",
+     "Kütüphane",
+     "Görünüm",
+     "Molekül bilgisi",
+     "Araçlar",
+     "Seç",
+     "Döndür",
+     "Kaydır",
+     "Yakınlaştır",
+     "Bağ Ekle",
+     "Ölç",
+     "Geometriyi düzenle (basit kuvvet alanı, yaklaşık)",
+     "Hidrojenleri kaldır",
+     "Yeni molekül",
+     "Kamerayı sıfırla",
+     "Yakınlaş",
+     "Uzaklaş",
+     "3B molekül görünümü"
+    ],
+    "toolbars": 0,
+    "live": [
+     "flex min-h-(--hit) shrink-0 it"
+    ],
+    "dockBtns": [
+     "Seç [44x44 @8,60]",
+     "Döndür [44x44 @8,108]",
+     "Kaydır [44x44 @8,156]",
+     "Yakınlaştır [44x44 @8,204]",
+     "Atom Ekle [44x44 @8,252]",
+     "Bağ Ekle [44x44 @8,300]",
+     "Sil [44x44 @8,348]",
+     "Ölç [44x44 @8,396]",
+     "Geometriyi düzenle (basit kuvvet alanı,  [44x44 @8,457]",
+     "Hidrojen ekle [44x44 @8,505]",
+     "Hidrojenleri kaldır [44x44 @8,553]",
+     "Yeni molekül [44x44 @8,601]",
+     "Kamerayı sıfırla [44x44 @8,649]",
+     "Yakınlaş [44x44 @8,697]",
+     "Uzaklaş [44x44 @8,745]"
+    ]
+   },
+   "shot-tr": "D:\\molecular-studio\\gauntlet\\critiques\\r1ux-resp\\run1\\t820-tr.png"
+  },
+  {
+   "name": "t1024",
+   "m": {
+    "iw": 1024,
+    "ih": 768,
+    "sw": 1024,
+    "sh": 768,
+    "bodySw": 1024,
+    "layout": "tablet",
+    "rm": "true",
+    "lang": "tr",
+    "hit": "44px",
+    "nCtrls": 23,
+    "small": [],
+    "small24": [],
+    "offscreen": [],
+    "noName": [],
+    "sheet": null,
+    "canvas": {
+     "tabIndex": -1,
+     "w": 964,
+     "h": 690
+    },
+    "viewport": [
+     60,
+     52,
+     964,
+     690
+    ],
+    "inspector": null,
+    "trTexts": [
+     "Otomatik kayıt açık",
+     "Top-Çubuk",
+     "4 bağ",
+     "Seçim yok",
+     "Seç",
+     "Atom veya bağa tıklayarak seçin; atomu sürükleyerek taşıyın"
+    ],
+    "trAttrs": [
+     "Proje adı",
+     "Adsız proje",
+     "Otomatik kayıt açık",
+     "Kütüphane",
+     "Görünüm",
+     "Molekül bilgisi",
+     "Araçlar",
+     "Seç",
+     "Döndür",
+     "Kaydır",
+     "Yakınlaştır",
+     "Bağ Ekle",
+     "Ölç",
+     "Geometriyi düzenle (basit kuvvet alanı, yaklaşık)",
+     "Hidrojenleri kaldır",
+     "Yeni molekül",
+     "Kamerayı sıfırla",
+     "Yakınlaş",
+     "Uzaklaş",
+     "3B molekül görünümü"
+    ],
+    "toolbars": 0,
+    "live": [
+     "flex min-h-(--hit) shrink-0 it"
+    ],
+    "dockBtns": [
+     "Seç [44x44 @8,60]",
+     "Döndür [44x44 @8,108]",
+     "Kaydır [44x44 @8,156]",
+     "Yakınlaştır [44x44 @8,204]",
+     "Atom Ekle [44x44 @8,252]",
+     "Bağ Ekle [44x44 @8,300]",
+     "Sil [44x44 @8,348]",
+     "Ölç [44x44 @8,396]",
+     "Geometriyi düzenle (basit kuvvet alanı,  [44x44 @8,456]",
+     "Hidrojen ekle [44x44 @8,504]",
+     "Hidrojenleri kaldır [44x44 @8,552]",
+     "Yeni molekül [44x44 @8,600]",
+     "Kamerayı sıfırla [44x44 @8,648]",
+     "Yakınlaş [44x44 @8,696]",
+     "Uzaklaş [44x44 @8,744]"
+    ]
+   },
+   "shot-tr": "D:\\molecular-studio\\gauntlet\\critiques\\r1ux-resp\\run1\\t1024-tr.png"
+  },
+  {
+   "name": "d1366",
+   "m": {
+    "iw": 1366,
+    "ih": 768,
+    "sw": 1366,
+    "sh": 768,
+    "bodySw": 1366,
+    "layout": "desktop",
+    "rm": "true",
+    "lang": "tr",
+    "hit": "32px",
+    "nCtrls": 31,
+    "small": [
+     "Proje adı [224x32 @169,6]",
+     "Geri al [32x32 @881,6]",
+     "Yinele [32x32 @913,6]",
+     "Kütüphane [101x32 @962,6]",
+     "Dosya [91x32 @1068,6]",
+     "Görünüm [110x32 @1163,6]",
+     "Ayarlar [32x32 @1290,6]",
+     "Molekül bilgisini kapat [32x32 @1326,6]",
+     "Seç [32x32 @8,52]",
+     "Döndür [32x32 @8,88]",
+     "Kaydır [32x32 @8,124]",
+     "Yakınlaştır [32x32 @8,160]",
+     "Atom Ekle [32x32 @8,196]",
+     "Bağ Ekle [32x32 @8,232]",
+     "Sil [32x32 @8,268]",
+     "Ölç [32x32 @8,304]",
+     "Geometriyi düzenle (basit kuvvet alanı,  [32x32 @8,353]",
+     "Hidrojen ekle [32x32 @8,389]",
+     "Hidrojenleri kaldır [32x32 @8,425]",
+     "Yeni molekül [32x32 @8,461]",
+     "Kamerayı sıfırla [32x32 @8,497]",
+     "Yakınlaş [32x32 @8,533]",
+     "Uzaklaş [32x32 @8,569]",
+     "Paneli daralt [32x32 @1330,48]",
+     "Genel [319x32 @1047,181]",
+     "Yapı [319x32 @1047,371]",
+     "Hidrojen bağı [319x32 @1047,537]",
+     "Element bileşimi [319x32 @1047,671]",
+     "Fonksiyonel gruplarTahmini [319x32 @1047,759]",
+     "Lipinski kurallarıÜç kuralı da sağlıyor [319x32 @1047,822]",
+     "Değerlik sorunları [319x32 @1047,855]"
+    ],
+    "small24": [],
+    "offscreen": [],
+    "noName": [],
+    "sheet": null,
+    "canvas": {
+     "tabIndex": -1,
+     "w": 998,
+     "h": 698
+    },
+    "viewport": [
+     48,
+     44,
+     998,
+     698
+    ],
+    "inspector": [
+     1046,
+     320
+    ],
+    "trTexts": [
+     "Otomatik kayıt açık",
+     "Kütüphane",
+     "Görünüm",
+     "Molekül",
+     "Molekül formülü (Hill)",
+     "Molar kütle",
+     "Monoizotopik kütle",
+     "Atom sayısı",
+     "Ağır atom sayısı",
+     "Bağ sayısı",
+     "Yapı",
+     "Tekli bağ",
+     "Doymamışlık derecesi",
+     "Dönebilen bağ",
+     "Hidrojen bağı",
+     "H bağı vericisi",
+     "H bağı alıcısı",
+     "Sayım kuralı: verici = H taşıyan N/O atomu; alıcı = tüm N ve",
+     "Element bileşimi",
+     "Tanınan fonksiyonel grup yok",
+     "Lipinski kuralları",
+     "Üç kuralı da sağlıyor",
+     "Değerlik sorunları",
+     "Değerlik sorunu yok",
+     "Top-Çubuk",
+     "4 bağ",
+     "Seçim yok",
+     "Seç",
+     "Atom veya bağa tıklayarak seçin; atomu sürükleyerek taşıyın",
+     "yörünge · 5,08 Å · kamera sıfırlandı"
+    ],
+    "trAttrs": [
+     "Proje adı",
+     "Adsız proje",
+     "Otomatik kayıt açık",
+     "Kütüphane",
+     "Görünüm",
+     "Molekül bilgisini kapat",
+     "Araçlar",
+     "Seç",
+     "Döndür",
+     "Kaydır",
+     "Yakınlaştır",
+     "Bağ Ekle",
+     "Ölç",
+     "Geometriyi düzenle (basit kuvvet alanı, yaklaşık)",
+     "Hidrojenleri kaldır",
+     "Yeni molekül",
+     "Kamerayı sıfırla",
+     "Yakınlaş",
+     "Uzaklaş",
+     "3B molekül görünümü",
+     "Molekül",
+     "Formülden hesaplanan halka ve çoklu bağ toplamı.",
+     "Halkada olmayan, terminal olmayan tekli bağlar.",
+     "Sayım kuralı: verici = H taşıyan N/O atomu; alıcı = tüm N ve O atomları."
+    ],
+    "toolbars": 0,
+    "live": [
+     "flex min-h-(--hit) shrink-0 it"
+    ],
+    "dockBtns": [
+     "Seç [32x32 @8,52]",
+     "Döndür [32x32 @8,88]",
+     "Kaydır [32x32 @8,124]",
+     "Yakınlaştır [32x32 @8,160]",
+     "Atom Ekle [32x32 @8,196]",
+     "Bağ Ekle [32x32 @8,232]",
+     "Sil [32x32 @8,268]",
+     "Ölç [32x32 @8,304]",
+     "Geometriyi düzenle (basit kuvvet alanı,  [32x32 @8,353]",
+     "Hidrojen ekle [32x32 @8,389]",
+     "Hidrojenleri kaldır [32x32 @8,425]",
+     "Yeni molekül [32x32 @8,461]",
+     "Kamerayı sıfırla [32x32 @8,497]",
+     "Yakınlaş [32x32 @8,533]",
+     "Uzaklaş [32x32 @8,569]"
+    ]
+   },
+   "shot-tr": "D:\\molecular-studio\\gauntlet\\critiques\\r1ux-resp\\run1\\d1366-tr.png"
+  },
+  {
+   "name": "m360en",
+   "setEn": 1,
+   "m": {
+    "iw": 360,
+    "ih": 740,
+    "sw": 360,
+    "sh": 740,
+    "bodySw": 360,
+    "layout": "mobile",
+    "rm": "true",
+    "lang": "en",
+    "hit": "44px",
+    "nCtrls": 14,
+    "small": [],
+    "small24": [],
+    "offscreen": [],
+    "noName": [],
+    "sheet": null,
+    "canvas": {
+     "tabIndex": -1,
+     "w": 360,
+     "h": 602
+    },
+    "viewport": [
+     0,
+     53,
+     360,
+     602
+    ],
+    "inspector": null,
+    "trTexts": [],
+    "trAttrs": [],
+    "toolbars": 0,
+    "live": [
+     "flex min-h-(--hit) shrink-0 it"
+    ],
+    "dockBtns": [
+     "Select [44x44 @8,690]",
+     "Rotate [44x44 @54,690]",
+     "Pan [44x44 @100,690]",
+     "Zoom [44x44 @146,690]",
+     "Add Atom [44x44 @192,690]",
+     "Add Bond [44x44 @238,690]",
+     "Delete [44x44 @284,690]",
+     "Measure [44x44 @330,690]",
+     "Actions [44x44 @310,690]"
+    ]
+   },
+   "shot-en": "D:\\molecular-studio\\gauntlet\\critiques\\r1ux-resp\\run1\\m360en-en.png"
+  },
+  {
+   "name": "m390en",
+   "setEn": 1,
+   "m": {
+    "iw": 390,
+    "ih": 844,
+    "sw": 390,
+    "sh": 844,
+    "bodySw": 390,
+    "layout": "mobile",
+    "rm": "true",
+    "lang": "en",
+    "hit": "44px",
+    "nCtrls": 14,
+    "small": [],
+    "small24": [],
+    "offscreen": [],
+    "noName": [],
+    "sheet": null,
+    "canvas": {
+     "tabIndex": -1,
+     "w": 390,
+     "h": 706
+    },
+    "viewport": [
+     0,
+     53,
+     390,
+     706
+    ],
+    "inspector": null,
+    "trTexts": [],
+    "trAttrs": [],
+    "toolbars": 0,
+    "live": [
+     "flex min-h-(--hit) shrink-0 it"
+    ],
+    "dockBtns": [
+     "Select [44x44 @8,794]",
+     "Rotate [44x44 @54,794]",
+     "Pan [44x44 @100,794]",
+     "Zoom [44x44 @146,794]",
+     "Add Atom [44x44 @192,794]",
+     "Add Bond [44x44 @238,794]",
+     "Delete [44x44 @284,794]",
+     "Measure [44x44 @330,794]",
+     "Actions [44x44 @340,794]"
+    ]
+   },
+   "shot-en": "D:\\molecular-studio\\gauntlet\\critiques\\r1ux-resp\\run1\\m390en-en.png"
+  },
+  {
+   "name": "t768en",
+   "setEn": 1,
+   "m": {
+    "iw": 768,
+    "ih": 1024,
+    "sw": 768,
+    "sh": 1024,
+    "bodySw": 768,
+    "layout": "tablet",
+    "rm": "true",
+    "lang": "en",
+    "hit": "44px",
+    "nCtrls": 23,
+    "small": [],
+    "small24": [],
+    "offscreen": [],
+    "noName": [],
+    "sheet": null,
+    "canvas": {
+     "tabIndex": -1,
+     "w": 708,
+     "h": 946
+    },
+    "viewport": [
+     60,
+     52,
+     708,
+     946
+    ],
+    "inspector": null,
+    "trTexts": [],
+    "trAttrs": [],
+    "toolbars": 0,
+    "live": [
+     "flex min-h-(--hit) shrink-0 it"
+    ],
+    "dockBtns": [
+     "Select [44x44 @8,60]",
+     "Rotate [44x44 @8,108]",
+     "Pan [44x44 @8,156]",
+     "Zoom [44x44 @8,204]",
+     "Add Atom [44x44 @8,252]",
+     "Add Bond [44x44 @8,300]",
+     "Delete [44x44 @8,348]",
+     "Measure [44x44 @8,396]",
+     "Tidy geometry (simple force field, appro [44x44 @8,457]",
+     "Add hydrogens [44x44 @8,505]",
+     "Remove hydrogens [44x44 @8,553]",
+     "New molecule [44x44 @8,601]",
+     "Reset camera [44x44 @8,649]",
+     "Zoom in [44x44 @8,697]",
+     "Zoom out [44x44 @8,745]"
+    ]
+   },
+   "shot-en": "D:\\molecular-studio\\gauntlet\\critiques\\r1ux-resp\\run1\\t768en-en.png"
+  },
+  {
+   "name": "t820en",
+   "setEn": 1,
+   "m": {
+    "iw": 820,
+    "ih": 1180,
+    "sw": 820,
+    "sh": 1180,
+    "bodySw": 820,
+    "layout": "tablet",
+    "rm": "true",
+    "lang": "en",
+    "hit": "44px",
+    "nCtrls": 23,
+    "small": [],
+    "small24": [],
+    "offscreen": [],
+    "noName": [],
+    "sheet": null,
+    "canvas": {
+     "tabIndex": -1,
+     "w": 760,
+     "h": 1102
+    },
+    "viewport": [
+     60,
+     52,
+     760,
+     1102
+    ],
+    "inspector": null,
+    "trTexts": [],
+    "trAttrs": [],
+    "toolbars": 0,
+    "live": [
+     "flex min-h-(--hit) shrink-0 it"
+    ],
+    "dockBtns": [
+     "Select [44x44 @8,60]",
+     "Rotate [44x44 @8,108]",
+     "Pan [44x44 @8,156]",
+     "Zoom [44x44 @8,204]",
+     "Add Atom [44x44 @8,252]",
+     "Add Bond [44x44 @8,300]",
+     "Delete [44x44 @8,348]",
+     "Measure [44x44 @8,396]",
+     "Tidy geometry (simple force field, appro [44x44 @8,457]",
+     "Add hydrogens [44x44 @8,505]",
+     "Remove hydrogens [44x44 @8,553]",
+     "New molecule [44x44 @8,601]",
+     "Reset camera [44x44 @8,649]",
+     "Zoom in [44x44 @8,697]",
+     "Zoom out [44x44 @8,745]"
+    ]
+   },
+   "shot-en": "D:\\molecular-studio\\gauntlet\\critiques\\r1ux-resp\\run1\\t820en-en.png"
+  },
+  {
+   "name": "t1024en",
+   "setEn": 1,
+   "m": {
+    "iw": 1024,
+    "ih": 768,
+    "sw": 1024,
+    "sh": 768,
+    "bodySw": 1024,
+    "layout": "tablet",
+    "rm": "true",
+    "lang": "en",
+    "hit": "44px",
+    "nCtrls": 23,
+    "small": [],
+    "small24": [],
+    "offscreen": [],
+    "noName": [],
+    "sheet": null,
+    "canvas": {
+     "tabIndex": -1,
+     "w": 964,
+     "h": 690
+    },
+    "viewport": [
+     60,
+     52,
+     964,
+     690
+    ],
+    "inspector": null,
+    "trTexts": [],
+    "trAttrs": [],
+    "toolbars": 0,
+    "live": [
+     "flex min-h-(--hit) shrink-0 it"
+    ],
+    "dockBtns": [
+     "Select [44x44 @8,60]",
+     "Rotate [44x44 @8,108]",
+     "Pan [44x44 @8,156]",
+     "Zoom [44x44 @8,204]",
+     "Add Atom [44x44 @8,252]",
+     "Add Bond [44x44 @8,300]",
+     "Delete [44x44 @8,348]",
+     "Measure [44x44 @8,396]",
+     "Tidy geometry (simple force field, appro [44x44 @8,456]",
+     "Add hydrogens [44x44 @8,504]",
+     "Remove hydrogens [44x44 @8,552]",
+     "New molecule [44x44 @8,600]",
+     "Reset camera [44x44 @8,648]",
+     "Zoom in [44x44 @8,696]",
+     "Zoom out [44x44 @8,744]"
+    ]
+   },
+   "shot-en": "D:\\molecular-studio\\gauntlet\\critiques\\r1ux-resp\\run1\\t1024en-en.png"
+  },
+  {
+   "name": "d1366en",
+   "setEn": 1,
+   "m": {
+    "iw": 1366,
+    "ih": 768,
+    "sw": 1366,
+    "sh": 768,
+    "bodySw": 1366,
+    "layout": "desktop",
+    "rm": "true",
+    "lang": "en",
+    "hit": "32px",
+    "nCtrls": 31,
+    "small": [
+     "Project name [224x32 @169,6]",
+     "Undo [32x32 @947,6]",
+     "Redo [32x32 @979,6]",
+     "Library [78x32 @1028,6]",
+     "File [75x32 @1110,6]",
+     "View [83x32 @1190,6]",
+     "Settings [32x32 @1290,6]",
+     "Close molecule info [32x32 @1326,6]",
+     "Select [32x32 @8,52]",
+     "Rotate [32x32 @8,88]",
+     "Pan [32x32 @8,124]",
+     "Zoom [32x32 @8,160]",
+     "Add Atom [32x32 @8,196]",
+     "Add Bond [32x32 @8,232]",
+     "Delete [32x32 @8,268]",
+     "Measure [32x32 @8,304]",
+     "Tidy geometry (simple force field, appro [32x32 @8,353]",
+     "Add hydrogens [32x32 @8,389]",
+     "Remove hydrogens [32x32 @8,425]",
+     "New molecule [32x32 @8,461]",
+     "Reset camera [32x32 @8,497]",
+     "Zoom in [32x32 @8,533]",
+     "Zoom out [32x32 @8,569]",
+     "Collapse panel [32x32 @1330,48]",
+     "General [319x32 @1047,181]",
+     "Structure [319x32 @1047,371]",
+     "Hydrogen bonding [319x32 @1047,537]",
+     "Elemental composition [319x32 @1047,671]",
+     "Functional groupsEstimated [319x32 @1047,759]",
+     "Lipinski rulesSatisfies all three rules [319x32 @1047,822]",
+     "Valence issues [319x32 @1047,855]"
+    ],
+    "small24": [],
+    "offscreen": [],
+    "noName": [],
+    "sheet": null,
+    "canvas": {
+     "tabIndex": -1,
+     "w": 998,
+     "h": 698
+    },
+    "viewport": [
+     48,
+     44,
+     998,
+     698
+    ],
+    "inspector": [
+     1046,
+     320
+    ],
+    "trTexts": [],
+    "trAttrs": [],
+    "toolbars": 0,
+    "live": [
+     "flex min-h-(--hit) shrink-0 it"
+    ],
+    "dockBtns": [
+     "Select [32x32 @8,52]",
+     "Rotate [32x32 @8,88]",
+     "Pan [32x32 @8,124]",
+     "Zoom [32x32 @8,160]",
+     "Add Atom [32x32 @8,196]",
+     "Add Bond [32x32 @8,232]",
+     "Delete [32x32 @8,268]",
+     "Measure [32x32 @8,304]",
+     "Tidy geometry (simple force field, appro [32x32 @8,353]",
+     "Add hydrogens [32x32 @8,389]",
+     "Remove hydrogens [32x32 @8,425]",
+     "New molecule [32x32 @8,461]",
+     "Reset camera [32x32 @8,497]",
+     "Zoom in [32x32 @8,533]",
+     "Zoom out [32x32 @8,569]"
+    ]
+   },
+   "shot-en": "D:\\molecular-studio\\gauntlet\\critiques\\r1ux-resp\\run1\\d1366en-en.png"
+  }
+ ],
+ "logs": []
+}

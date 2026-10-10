@@ -1,6 +1,8 @@
 import { useCallback, useEffect, useRef, useState, type ReactNode } from 'react'
 import { createPortal } from 'react-dom'
 
+const LONG_PRESS_MS = 500
+
 export type TipSide = 'right' | 'bottom' | 'top' | 'left'
 
 interface TipProps {
@@ -17,13 +19,16 @@ interface Pos { left?: number; right?: number; top?: number; bottom?: number; tx
 
 /**
  * Lightweight tooltip rendered in a portal (so scrolling toolbars cannot clip it).
- * Mouse hover and keyboard focus only: touch users get the same information through
- * accessible names and the status-bar hint.
+ * Mouse hover, keyboard focus, and a 500 ms long press on touch / pen (which replaces hover there);
+ * the press that opened a tooltip does not also activate the control.
  */
 export function Tip({ label, shortcut, note, side = 'right', children, className = '' }: TipProps) {
   const ref = useRef<HTMLSpanElement>(null)
   const timer = useRef<ReturnType<typeof setTimeout> | null>(null)
   const [pos, setPos] = useState<Pos | null>(null)
+  const pressTimer = useRef<ReturnType<typeof setTimeout> | null>(null)
+  const hideTimer = useRef<ReturnType<typeof setTimeout> | null>(null)
+  const longPressed = useRef(false)
 
   const hide = useCallback(() => {
     if (timer.current) clearTimeout(timer.current)
@@ -53,16 +58,45 @@ export function Tip({ label, shortcut, note, side = 'right', children, className
     [side],
   )
 
-  useEffect(() => () => { if (timer.current) clearTimeout(timer.current) }, [])
+  const clearPress = useCallback(() => {
+    if (pressTimer.current) clearTimeout(pressTimer.current)
+    pressTimer.current = null
+  }, [])
+
+  useEffect(() => () => {
+    if (timer.current) clearTimeout(timer.current)
+    if (pressTimer.current) clearTimeout(pressTimer.current)
+    if (hideTimer.current) clearTimeout(hideTimer.current)
+  }, [])
+
+  const onPointerDown = (e: React.PointerEvent) => {
+    if (e.pointerType === 'mouse') { hide(); return }
+    longPressed.current = false
+    clearPress()
+    if (hideTimer.current) clearTimeout(hideTimer.current)
+    pressTimer.current = setTimeout(() => { longPressed.current = true; show(0) }, LONG_PRESS_MS)
+  }
+  const onPointerEnd = (e: React.PointerEvent) => {
+    if (e.pointerType === 'mouse') return
+    clearPress()
+    if (longPressed.current) {
+      if (hideTimer.current) clearTimeout(hideTimer.current)
+      hideTimer.current = setTimeout(hide, 1800) // keep the tooltip readable after the finger lifts
+    }
+  }
 
   return (
     <>
       <span
         ref={ref}
-        className={`inline-flex ${className}`}
+        className={`inline-flex [-webkit-touch-callout:none] ${className}`}
         onPointerEnter={(e) => { if (e.pointerType === 'mouse') show(380) }}
-        onPointerLeave={hide}
-        onPointerDown={hide}
+        onPointerLeave={(e) => { if (e.pointerType === 'mouse') hide() }}
+        onPointerDown={onPointerDown}
+        onPointerUp={onPointerEnd}
+        onPointerCancel={onPointerEnd}
+        onClickCapture={(e) => { if (longPressed.current) { e.preventDefault(); e.stopPropagation(); longPressed.current = false } }}
+        onContextMenu={(e) => { if (longPressed.current) e.preventDefault() }}
         onFocus={(e) => { if ((e.target as HTMLElement).matches(':focus-visible')) show(0) }}
         onBlur={hide}
         onKeyDown={(e) => { if (e.key === 'Escape') hide() }}

@@ -4,7 +4,7 @@
  * Errors are thrown as `ChemIOError` whose `code` is language neutral; the UI maps the code to a
  * translated message (`io.<code>` style). `message` equals the code so it never leaks a single language.
  */
-import { ELEMENTS, el, isKnownElement } from './elements'
+import { ELEMENTS, el, isKnownElement, supportedElementsText } from './elements'
 import {
   type Atom,
   type Bond,
@@ -23,6 +23,7 @@ export type IoErrorCode =
   | 'invalidMolfile'
   | 'v3000Unsupported'
   | 'unsupportedElement'
+  | 'unsupportedIsotope'
   | 'invalidXYZ'
   | 'noAtoms'
   | 'tooLarge'
@@ -47,14 +48,24 @@ export class ChemIOError extends Error {
 
 const MAX_ATOMS = 5000
 
-/** Normalise an element symbol ("CL" -> "Cl", "D"/"T" -> "H"); throws for elements the app does not model. */
+/** Error for an element the app does not model: params carry the symbol and the supported list (SPEC A1.1). */
+function unsupportedElement(symbol: string): ChemIOError {
+  return new ChemIOError('unsupportedElement', { symbol, supported: supportedElementsText() })
+}
+
+/**
+ * Normalise an element symbol ("CL" -> "Cl"); throws for anything the app does not model.
+ *  - "D" / "T" are hydrogen ISOTOPES, not elements: they are rejected with 'unsupportedIsotope'
+ *    (UI text "Desteklenmeyen izotop: D") instead of being silently turned into H with a fabricated mass.
+ *  - every other unknown symbol (Fe, Se, ...) throws 'unsupportedElement' with the supported list
+ *    (UI text "Desteklenmeyen element: Fe. Desteklenen: H, B, C, ...").
+ */
 function normaliseSymbol(raw: string): string {
   const t = raw.trim()
   if (!t) throw new ChemIOError('invalidMolfile')
   const s = t[0].toUpperCase() + t.slice(1).toLowerCase()
-  // D/T (isotopes) are not modelled: reject instead of silently turning them into H.
-  // UI message: "Desteklenmeyen element/izotop: X" (toast.importElement with this symbol).
-  if (!isKnownElement(s)) throw new ChemIOError('unsupportedElement', { symbol: s })
+  if (s === 'D' || s === 'T') throw new ChemIOError('unsupportedIsotope', { symbol: s })
+  if (!isKnownElement(s)) throw unsupportedElement(s)
   return s
 }
 
@@ -329,7 +340,7 @@ export function parseXYZ(text: string): Molecule {
     const t = l.split(/\s+/)
     if (t.length < 4) throw new ChemIOError('invalidXYZ')
     const sym = /^\d+$/.test(t[0]) ? SYMBOL_BY_Z.get(Number(t[0])) : normaliseSymbol(t[0])
-    if (!sym) throw new ChemIOError('unsupportedElement', { symbol: t[0] })
+    if (!sym) throw unsupportedElement(t[0])
     const p = [Number(t[1]), Number(t[2]), Number(t[3])]
     if (!p.every(Number.isFinite)) throw new ChemIOError('invalidXYZ')
     m.atoms.push({ id: m.nextId++, symbol: sym, pos: p as Vec3, charge: 0 })
@@ -554,7 +565,7 @@ export async function fetchPubChem(nameOrCid: string | number, opts: PubChemOpti
   try {
     mol = parseMolfile(text)
   } catch (e) {
-    if (e instanceof ChemIOError && e.code === 'unsupportedElement') throw e
+    if (e instanceof ChemIOError && (e.code === 'unsupportedElement' || e.code === 'unsupportedIsotope')) throw e
     throw new ChemIOError('pubchemBadResponse')
   }
   mol.name = isCid ? `PubChem CID ${query}` : query.charAt(0).toUpperCase() + query.slice(1)

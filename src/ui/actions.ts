@@ -1,5 +1,6 @@
 import { useStudio, DEFAULT_PROJECT_NAME } from '../store'
 import { methane, type Molecule } from '../chem/molecule'
+import { BG_CENTER } from '../scene/theme'
 import { t, type TrKey } from './i18n'
 
 /**
@@ -96,7 +97,7 @@ function drawViewport(canvas: HTMLCanvasElement): HTMLCanvasElement | null {
   out.height = canvas.height
   const ctx = out.getContext('2d')
   if (!ctx) return null
-  ctx.fillStyle = '#0d0e11'
+  ctx.fillStyle = BG_CENTER
   ctx.fillRect(0, 0, out.width, out.height)
   try {
     ctx.drawImage(canvas, 0, 0)

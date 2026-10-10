@@ -138,26 +138,30 @@ export function formula(m: Molecule, pretty = true): string {
   return buildFormula(m, hillOrder(formulaCounts(m)), pretty)
 }
 
-/** IUPAC-style electropositive → electronegative order for carbon-free species (metals first). */
-const CONVENTIONAL_ORDER = ['Na', 'Mg', 'B', 'Si', 'P', 'N', 'H', 'S', 'I', 'Br', 'Cl', 'O', 'F']
-
 /**
- * Conventional formula: NH3, H2O, SO2, NaCl, H2SO4 for carbon-free species; carbon-containing
- * species fall back to the Hill formula (C2H6O). The Hill formula itself (`formula`) is unchanged.
+ * Exact conventional-formula lookup for carbon-free species (SPEC A2.1), keyed by the plain Hill string including the
+ * charge (`formula(m, false)`). Everything not listed keeps its strict Hill formula (e.g. BF₃, H₃O⁺, H₂O, NO₂ and every
+ * carbon-containing species). The value is the pretty (Unicode) conventional formula.
  */
-export function conventionalFormula(m: Molecule, pretty = true): string {
-  const counts = formulaCounts(m)
-  if (counts.C) return formula(m, pretty)
-  const rank = (k: string) => { const i = CONVENTIONAL_ORDER.indexOf(k); return i < 0 ? -1 : i }
-  const keys = Object.keys(counts).sort((x, y) => rank(x) - rank(y) || x.localeCompare(y))
-  return buildFormula(m, keys, pretty)
+export const CONVENTIONAL_FORMULA: Readonly<Record<string, string>> = {
+  H3N: 'NH₃', O2S: 'SO₂', F6S: 'SF₆', H2O4S: 'H₂SO₄', H3O4P: 'H₃PO₄', ClH: 'HCl', ClNa: 'NaCl', 'H4N+': 'NH₄⁺',
+  HNaO: 'NaOH', BrH: 'HBr', FH: 'HF', H4Si: 'SiH₄', O3S: 'SO₃', H2O3S: 'H₂SO₃', H3P: 'PH₃', F5P: 'PF₅',
+  Cl3P: 'PCl₃', Cl5P: 'PCl₅', Cl2Mg: 'MgCl₂', FNa: 'NaF', BrNa: 'NaBr', INa: 'NaI', H4N2: 'N₂H₄', ClHO: 'HClO',
+  ClHO4: 'HClO₄', O2Si: 'SiO₂', Cl4Si: 'SiCl₄', F4S: 'SF₄', Cl2S: 'SCl₂', BH3O3: 'H₃BO₃',
+  'O4S2-': 'SO₄²⁻', 'HO4S-': 'HSO₄⁻', 'H4P+': 'PH₄⁺',
 }
 
-/** True when the degree of unsaturation is meaningful: only C/H/N/O/F/Cl/Br/I, all neutral, standard valence, no missing H. */
-export function canComputeUnsaturation(m: Molecule): boolean {
-  if (!m.atoms.length) return false
-  const ok = new Set(['C', 'H', 'N', 'O', 'F', 'Cl', 'Br', 'I'])
-  return m.atoms.every((a) => ok.has(a.symbol) && a.charge === 0 && valenceState(m, a) === 'ok' && missingHydrogens(m, a) === 0)
+const toPlain = (s: string): string =>
+  s.replace(/[₀-₉]/g, (d) => String(SUB.indexOf(d))).replace(/[⁰-⁹]/g, (d) => String(SUP.indexOf(d))).replace('⁺', '+').replace('⁻', '-')
+
+/**
+ * Conventional formula: the exact CONVENTIONAL_FORMULA entry when the current composition matches a key (NH₃, SO₂,
+ * H₃PO₄, NaCl, ...), otherwise the strict Hill formula. `formula()` itself always stays Hill.
+ */
+export function conventionalFormula(m: Molecule, pretty = true): string {
+  const key = formula(m, false)
+  if (Object.hasOwn(CONVENTIONAL_FORMULA, key)) return pretty ? CONVENTIONAL_FORMULA[key] : toPlain(CONVENTIONAL_FORMULA[key])
+  return formula(m, pretty)
 }
 
 function buildFormula(m: Molecule, order: string[], pretty: boolean): string {
@@ -218,14 +222,12 @@ export function inRing(m: Molecule, b: Bond): boolean {
   return false
 }
 
-/** Degree of unsaturation from the formula (halogens count as H, N/P add half). */
+/**
+ * Degree of unsaturation from the graph: rings + π bonds = ringCount + Σ(order − 1), aromatic bonds at their Kekulé
+ * order, no clamp. Only meaningful for neutral C/H/N/O/halogen molecules at standard valence (gate in properties.ts).
+ */
 export function unsaturation(m: Molecule): number {
-  const c = formulaCounts(m)
-  const g = (s: string) => c[s] ?? 0
-  const C = g('C') + g('Si')
-  const N = g('N') + g('P') + g('B')
-  const X = g('H') + g('F') + g('Cl') + g('Br') + g('I') + g('Na')
-  return Math.max(0, (2 * C + 2 + N - X) / 2)
+  return ringCount(m) + m.bonds.reduce((s, b) => s + (b.order - 1), 0)
 }
 
 // ---------- geometry measurements ----------
@@ -248,11 +250,75 @@ export function bondLength(m: Molecule, b: Bond): number {
   return dist(atomById(m, b.a)!.pos, atomById(m, b.b)!.pos)
 }
 
-/** Ideal bond length (Å) from covalent radii; multiple bonds shortened (C–C 1.52, C=C 1.33, C≡C 1.20). */
-export function idealBondLength(sa: string, sb: string, order: number): number {
-  const base = el(sa).covalent + el(sb).covalent
-  return base * (order === 1 ? 1 : order === 2 ? 0.875 : 0.79)
+// ---------- reference bond lengths (the single table; geometry.ts re-exports bondTargetLength) ----------
+
+/** Source family of a reference-length row. */
+type LengthSource = 'A' | 'C' | 'T'
+const LENGTH_SOURCE_TEXT: Record<LengthSource, string> = {
+  A: 'Allen 1987 (rounded)', // Allen et al., J. Chem. Soc. Perkin Trans. 2 1987, S1
+  C: 'CCCBDB gas-phase', // NIST Computational Chemistry Comparison and Benchmark Database, e.g. C≡N 1.16 ~ HCN 1.153, C≡C 1.20 ~ C2H2 1.203
+  T: 'typical reference value (row source not verified)', // textbook-typical value rounded to 0.01 Å; re-check against CCCBDB when touched
 }
+
+/**
+ * [a, b, order (4 = aromatic), length in Å, source]. Typical reference lengths rounded to 0.01 Å. Each row carries its
+ * source family (A = Allen 1987 rounded, C = CCCBDB gas-phase, T = typical value, row source not verified).
+ * Key values asserted by tests: C–C 1.54, C=C 1.34, C≡C 1.20, C⋯C aromatic 1.39, C–H 1.09, C–O 1.43, C=O 1.21, O–H 0.96, N–H 1.01.
+ */
+const LENGTHS: [string, string, number, number, LengthSource][] = [
+  ['C', 'C', 1, 1.54, 'A'], ['C', 'C', 2, 1.34, 'A'], ['C', 'C', 3, 1.2, 'C'],
+  ['C', 'C', 4, 1.39, 'A'], ['C', 'H', 1, 1.09, 'A'], ['C', 'N', 1, 1.47, 'A'],
+  ['C', 'N', 2, 1.28, 'A'], ['C', 'N', 3, 1.16, 'C'], ['C', 'N', 4, 1.34, 'A'],
+  ['C', 'O', 1, 1.43, 'A'], ['C', 'O', 2, 1.21, 'A'], ['C', 'O', 3, 1.13, 'C'],
+  ['C', 'O', 4, 1.36, 'A'], ['C', 'S', 1, 1.82, 'A'], ['C', 'S', 2, 1.61, 'A'],
+  ['C', 'S', 4, 1.72, 'A'], ['C', 'F', 1, 1.35, 'A'], ['C', 'Cl', 1, 1.77, 'A'],
+  ['C', 'Br', 1, 1.94, 'A'], ['C', 'I', 1, 2.14, 'A'], ['C', 'P', 1, 1.84, 'T'],
+  ['C', 'P', 2, 1.67, 'T'], ['C', 'Si', 1, 1.87, 'T'], ['C', 'B', 1, 1.56, 'T'],
+  ['C', 'Mg', 1, 2.1, 'T'], ['N', 'H', 1, 1.01, 'A'], ['N', 'N', 1, 1.45, 'A'],
+  ['N', 'N', 2, 1.25, 'A'], ['N', 'N', 3, 1.1, 'C'], ['N', 'N', 4, 1.35, 'A'],
+  ['N', 'O', 1, 1.4, 'A'], ['N', 'O', 2, 1.21, 'A'], ['N', 'O', 4, 1.37, 'A'],
+  ['N', 'F', 1, 1.36, 'T'], ['N', 'Cl', 1, 1.75, 'T'], ['N', 'S', 1, 1.65, 'T'],
+  ['N', 'P', 1, 1.68, 'T'], ['N', 'B', 1, 1.4, 'T'], ['O', 'H', 1, 0.96, 'A'],
+  ['O', 'O', 1, 1.48, 'A'], ['O', 'O', 2, 1.21, 'C'], ['O', 'S', 1, 1.58, 'T'],
+  ['O', 'S', 2, 1.43, 'T'], ['O', 'P', 1, 1.61, 'T'], ['O', 'P', 2, 1.48, 'T'],
+  ['O', 'Si', 1, 1.64, 'T'], ['O', 'B', 1, 1.37, 'T'], ['O', 'B', 2, 1.36, 'T'],
+  ['O', 'Cl', 1, 1.7, 'T'], ['O', 'Na', 1, 2.1, 'T'], ['O', 'Mg', 1, 2.0, 'T'],
+  ['S', 'H', 1, 1.34, 'C'], ['S', 'S', 1, 2.05, 'A'], ['S', 'F', 1, 1.58, 'T'],
+  ['S', 'Cl', 1, 2.07, 'T'], ['P', 'H', 1, 1.42, 'C'], ['P', 'Cl', 1, 2.04, 'T'],
+  ['P', 'F', 1, 1.56, 'T'], ['Si', 'H', 1, 1.48, 'C'], ['Si', 'Cl', 1, 2.05, 'T'],
+  ['Si', 'F', 1, 1.6, 'T'], ['B', 'H', 1, 1.19, 'T'], ['B', 'F', 1, 1.31, 'C'],
+  ['B', 'Cl', 1, 1.75, 'T'], ['H', 'H', 1, 0.74, 'C'], ['F', 'F', 1, 1.42, 'C'],
+  ['Cl', 'Cl', 1, 1.99, 'C'], ['Br', 'Br', 1, 2.28, 'C'], ['I', 'I', 1, 2.67, 'C'],
+  ['Na', 'Cl', 1, 2.36, 'C'], ['Na', 'F', 1, 1.93, 'C'], ['Na', 'Br', 1, 2.5, 'C'],
+  ['Na', 'I', 1, 2.71, 'C'], ['Mg', 'Cl', 1, 2.2, 'T'], ['Cl', 'F', 1, 1.63, 'C'],
+]
+const lenKey = (a: string, b: string, o: number) => (a < b ? `${a}|${b}|${o}` : `${b}|${a}|${o}`)
+const LEN = new Map<string, { length: number; source: LengthSource }>(LENGTHS.map(([a, b, o, l, s]) => [lenKey(a, b, o), { length: l, source: s }]))
+
+/** Covalent-radius fallback (Cordero 2008) for pairs missing from the table: sum x 1 / 0.875 / 0.79 for single / double / triple. */
+const covalentEstimate = (sa: string, sb: string, order: number): number =>
+  (el(sa).covalent + el(sb).covalent) * (order === 1 ? 1 : order === 2 ? 0.875 : 0.79)
+
+/** Reference bond length (Å). Aromatic bonds use aromatic values; unknown pairs fall back to covalent radii. */
+export function bondTargetLength(sa: string, sb: string, order: number, aromatic = false): number {
+  if (aromatic) {
+    const v = LEN.get(lenKey(sa, sb, 4))
+    if (v) return v.length
+    const s = LEN.get(lenKey(sa, sb, 1))?.length ?? covalentEstimate(sa, sb, 1)
+    const d = LEN.get(lenKey(sa, sb, 2))?.length ?? covalentEstimate(sa, sb, 2)
+    return (s + d) / 2
+  }
+  return LEN.get(lenKey(sa, sb, order))?.length ?? covalentEstimate(sa, sb, order)
+}
+
+/** Source text of the reference-length row used for this bond, or null when the covalent-radius fallback applies. */
+export function bondLengthSource(sa: string, sb: string, order: number, aromatic = false): string | null {
+  const row = LEN.get(lenKey(sa, sb, aromatic ? 4 : order))
+  return row ? LENGTH_SOURCE_TEXT[row.source] : null
+}
+
+/** Ideal bond length (Å): delegates to the single reference table (bondTargetLength). */
+export const idealBondLength = (sa: string, sb: string, order: number): number => bondTargetLength(sa, sb, order)
 
 export const centroid = (m: Molecule): Vec3 => {
   if (!m.atoms.length) return [0, 0, 0]

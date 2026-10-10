@@ -1,8 +1,8 @@
 import { useEffect, useRef } from 'react'
 import { AnimatePresence, MotionConfig, motion } from 'motion/react'
-import { PanelRightClose, X } from 'lucide-react'
+import { LucideProvider, PanelRightClose, X } from 'lucide-react'
 import { useStudio } from './store'
-import { useLayout, type Layout } from './ui/layout'
+import { useLayout, useMediaQuery, type Layout } from './ui/layout'
 import { useT } from './ui/i18n'
 import { useShortcuts } from './ui/shortcuts'
 import { loadFromUrl } from './ui/actions'
@@ -33,7 +33,7 @@ function InspectorPanel({ layout }: { layout: Layout }) {
   const open = useStudio((s) => s.inspectorOpen)
   const setOpen = useStudio((s) => s.setInspectorOpen)
   const reduced = useStudio((s) => s.reducedMotion)
-  const overlay = layout === 'tablet'
+  const drawer = layout === 'tablet'
   const dur = reduced ? 0 : 0.2
   return (
     <AnimatePresence>
@@ -45,18 +45,15 @@ function InspectorPanel({ layout }: { layout: Layout }) {
           animate={{ opacity: 1, x: 0 }}
           exit={{ opacity: 0, x: 16 }}
           transition={{ duration: dur, ease: [0.2, 0, 0, 1] }}
-          className={
-            overlay
-              ? 'absolute inset-y-0 right-0 z-20 flex w-[min(360px,92%)] flex-col border-l border-line-strong bg-surface-1 shadow-[-8px_0_24px_rgba(0,0,0,0.4)]'
-              : 'flex w-80 shrink-0 flex-col border-l border-line bg-surface-1'
-          }
+          // In flow on tablet too: the canvas narrows instead of being covered, so the molecule stays centred in the uncovered area.
+          className="flex w-80 shrink-0 flex-col border-l border-line bg-surface-1"
         >
           <div className="flex h-10 shrink-0 items-center justify-between border-b border-line pl-4 pr-1">
             <h2 className="m-0 text-label font-medium text-ink-dim">{t('insp.title')}</h2>
             <IconButton
-              label={overlay ? t('insp.close') : t('insp.collapse')}
+              label={drawer ? t('insp.close') : t('insp.collapse')}
               tip="left"
-              icon={overlay ? <X size={16} aria-hidden /> : <PanelRightClose size={16} aria-hidden />}
+              icon={drawer ? <X size={16} aria-hidden /> : <PanelRightClose size={16} aria-hidden />}
               onClick={() => setOpen(false)}
             />
           </div>
@@ -90,6 +87,28 @@ function MobileInfoSheet() {
   )
 }
 
+/** Phones: the bottom chrome (tool options, status bar, dock). The info sheet rests on top of it instead of covering it. */
+function MobileChrome() {
+  const ref = useRef<HTMLDivElement>(null)
+  const setChromeBottom = useUI((s) => s.setChromeBottom)
+  useEffect(() => {
+    const node = ref.current
+    if (!node || typeof ResizeObserver === 'undefined') return
+    const measure = () => setChromeBottom(Math.round(node.getBoundingClientRect().height))
+    measure()
+    const ro = new ResizeObserver(measure)
+    ro.observe(node)
+    return () => { ro.disconnect(); setChromeBottom(0) }
+  }, [setChromeBottom])
+  return (
+    <div ref={ref} className="flex shrink-0 flex-col">
+      <ToolOptions layout="mobile" />
+      <StatusBar layout="mobile" />
+      <Dock />
+    </div>
+  )
+}
+
 export default function App() {
   const layout = useLayout()
   const reduced = useStudio((s) => s.reducedMotion)
@@ -108,15 +127,20 @@ export default function App() {
   useEffect(() => { void loadFromUrl() }, [])
 
   // Inspector default per layout model; desktop remembers its state for the session.
+  // Tablets follow orientation (drawer collapsed in portrait, open in landscape); phones start with the sheet closed.
+  const landscape = useMediaQuery('(orientation: landscape)')
   const lastLayout = useRef<Layout | null>(null)
+  const lastKey = useRef<string | null>(null)
   const layoutDriven = useRef(false)
   useEffect(() => {
-    if (lastLayout.current === layout) return
+    const key = layout === 'tablet' ? `tablet:${landscape}` : layout
+    if (lastKey.current === key) return
+    lastKey.current = key
     lastLayout.current = layout
     layoutDriven.current = true
-    useStudio.getState().setInspectorOpen(layout === 'desktop' ? readDesktopInspector() : false)
+    useStudio.getState().setInspectorOpen(layout === 'desktop' ? readDesktopInspector() : layout === 'tablet' ? landscape : false)
     layoutDriven.current = false
-  }, [layout])
+  }, [layout, landscape])
   useEffect(
     () =>
       useStudio.subscribe((s, p) => {
@@ -140,17 +164,16 @@ export default function App() {
   )
 
   return (
+    <LucideProvider strokeWidth={1.75}>
     <MotionConfig reducedMotion={reduced ? 'always' : 'never'}>
       <div className="flex h-dvh w-full flex-col overflow-hidden bg-surface-0 text-ink">
         <TopBar layout={layout} />
         <div className="relative flex min-h-0 flex-1">
           {layout !== 'mobile' && <Toolbar layout={layout} />}
-          <ViewportHost>{layout !== 'mobile' && <ToolOptions layout={layout} />}</ViewportHost>
+          <ViewportHost layout={layout}>{layout !== 'mobile' && <ToolOptions layout={layout} />}</ViewportHost>
           {layout !== 'mobile' && <InspectorPanel layout={layout} />}
         </div>
-        {layout === 'mobile' && <ToolOptions layout="mobile" />}
-        <StatusBar layout={layout} />
-        {layout === 'mobile' && <Dock />}
+        {layout === 'mobile' ? <MobileChrome /> : <StatusBar layout={layout} />}
         {layout === 'mobile' && <MobileInfoSheet />}
         <LibraryDialog />
         <SettingsDialog />
@@ -159,5 +182,6 @@ export default function App() {
         <ToastHost layout={layout} />
       </div>
     </MotionConfig>
+    </LucideProvider>
   )
 }

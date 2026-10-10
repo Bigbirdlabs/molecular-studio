@@ -8,7 +8,9 @@
  *  - addAllHydrogens / removeAllHydrogens
  *  - relaxStep         damped, energy-monotone force-field relaxation (bonds, angles, planarity, repulsion)
  *  - centerMolecule    centroid -> origin
- *  - bondTargetLength  reference bond length in Å (exported helper; used by the force field and placement)
+ *  - bondTargetLength  reference bond length in Å (table in molecule.ts, re-exported; used by the force field and placement)
+ *  - electronDomains   the single VSEPR classification (σ neighbours, lone pairs, steric number, conjugated N) used by
+ *                      placement AND by the Inspector's geometry card (properties.ts must not re-implement it)
  *
  * The force-field energy is an indicative number (arbitrary units); it is only meaningful as "lower is better".
  */
@@ -25,7 +27,6 @@ import {
   cross,
   dist,
   dot,
-  idealBondLength,
   inRing,
   len,
   neighbours,
@@ -34,59 +35,19 @@ import {
   scale,
   sub,
   valenceUsed,
+  bondTargetLength,
 } from './molecule'
+import { VALENCE_ELECTRONS } from './elements'
+
+/** The one reference bond-length table lives in molecule.ts (SPEC A3.1); re-exported here for existing callers. */
+export { bondTargetLength }
 
 const DEG = Math.PI / 180
 const TETRA = Math.acos(-1 / 3) // 109.4712206 deg
 
 // ===================================================================================================================
-// Reference bond lengths
-// ===================================================================================================================
-
-/** [a, b, order (4 = aromatic), length in Å] — experimental / textbook values. */
-const LENGTHS: [string, string, number, number][] = [
-  ['C', 'C', 1, 1.54], ['C', 'C', 2, 1.34], ['C', 'C', 3, 1.2], ['C', 'C', 4, 1.39],
-  ['C', 'H', 1, 1.09], ['C', 'N', 1, 1.47], ['C', 'N', 2, 1.28], ['C', 'N', 3, 1.16], ['C', 'N', 4, 1.34],
-  ['C', 'O', 1, 1.43], ['C', 'O', 2, 1.21], ['C', 'O', 3, 1.13], ['C', 'O', 4, 1.36],
-  ['C', 'S', 1, 1.82], ['C', 'S', 2, 1.61], ['C', 'S', 4, 1.72],
-  ['C', 'F', 1, 1.35], ['C', 'Cl', 1, 1.77], ['C', 'Br', 1, 1.94], ['C', 'I', 1, 2.14],
-  ['C', 'P', 1, 1.84], ['C', 'P', 2, 1.67], ['C', 'Si', 1, 1.87], ['C', 'B', 1, 1.56], ['C', 'Mg', 1, 2.1],
-  ['N', 'H', 1, 1.01], ['N', 'N', 1, 1.45], ['N', 'N', 2, 1.25], ['N', 'N', 3, 1.1], ['N', 'N', 4, 1.35],
-  ['N', 'O', 1, 1.4], ['N', 'O', 2, 1.21], ['N', 'O', 4, 1.37], ['N', 'F', 1, 1.36], ['N', 'Cl', 1, 1.75],
-  ['N', 'S', 1, 1.65], ['N', 'P', 1, 1.68], ['N', 'B', 1, 1.4],
-  ['O', 'H', 1, 0.96], ['O', 'O', 1, 1.48], ['O', 'O', 2, 1.21], ['O', 'S', 1, 1.58], ['O', 'S', 2, 1.43],
-  ['O', 'P', 1, 1.61], ['O', 'P', 2, 1.48], ['O', 'Si', 1, 1.64], ['O', 'B', 1, 1.37], ['O', 'B', 2, 1.36],
-  ['O', 'Cl', 1, 1.7], ['O', 'Na', 1, 2.1], ['O', 'Mg', 1, 2.0],
-  ['S', 'H', 1, 1.34], ['S', 'S', 1, 2.05], ['S', 'F', 1, 1.58], ['S', 'Cl', 1, 2.07],
-  ['P', 'H', 1, 1.42], ['P', 'Cl', 1, 2.04], ['P', 'F', 1, 1.56],
-  ['Si', 'H', 1, 1.48], ['Si', 'Cl', 1, 2.05], ['Si', 'F', 1, 1.6],
-  ['B', 'H', 1, 1.19], ['B', 'F', 1, 1.31], ['B', 'Cl', 1, 1.75],
-  ['H', 'H', 1, 0.74], ['F', 'F', 1, 1.42], ['Cl', 'Cl', 1, 1.99], ['Br', 'Br', 1, 2.28], ['I', 'I', 1, 2.67],
-  ['Na', 'Cl', 1, 2.36], ['Na', 'F', 1, 1.93], ['Na', 'Br', 1, 2.5], ['Na', 'I', 1, 2.71], ['Mg', 'Cl', 1, 2.2],
-  ['Cl', 'F', 1, 1.63],
-]
-const lenKey = (a: string, b: string, o: number) => (a < b ? `${a}|${b}|${o}` : `${b}|${a}|${o}`)
-const LEN = new Map<string, number>(LENGTHS.map(([a, b, o, l]) => [lenKey(a, b, o), l]))
-
-/** Reference bond length (Å). Aromatic bonds use aromatic values; unknown pairs fall back to covalent radii. */
-export function bondTargetLength(sa: string, sb: string, order: number, aromatic = false): number {
-  if (aromatic) {
-    const v = LEN.get(lenKey(sa, sb, 4))
-    if (v) return v
-    const s = LEN.get(lenKey(sa, sb, 1)) ?? idealBondLength(sa, sb, 1)
-    const d = LEN.get(lenKey(sa, sb, 2)) ?? idealBondLength(sa, sb, 2)
-    return (s + d) / 2
-  }
-  return LEN.get(lenKey(sa, sb, order)) ?? idealBondLength(sa, sb, order)
-}
-
-// ===================================================================================================================
 // Electron-domain analysis
 // ===================================================================================================================
-
-const VALENCE_ELECTRONS: Record<string, number> = {
-  H: 1, B: 3, C: 4, N: 5, O: 6, F: 7, Na: 1, Mg: 2, Si: 4, P: 5, S: 6, Cl: 7, Br: 7, I: 7,
-}
 
 /** Lowest allowed valence >= used (or the largest one when the atom is over-saturated). */
 function targetFor(a: Atom, used: number): { target: number; missing: number } {
@@ -97,10 +58,15 @@ function targetFor(a: Atom, used: number): { target: number; missing: number } {
   return { target, missing: Math.max(0, target - used) }
 }
 
-function lonePairs(a: Atom, target: number): number {
+/** Raw non-bonding electron count on the atom at valence `target`: valence electrons − formal charge − bonds. */
+function nonBondingElectrons(a: Atom, target: number): number {
   const ve = VALENCE_ELECTRONS[a.symbol]
-  if (ve === undefined) return 0
-  return Math.max(0, Math.floor((ve - a.charge - target) / 2))
+  return ve === undefined ? 0 : ve - a.charge - target
+}
+
+/** Lone-pair count used for placement (clamped so odd-electron / hypervalent oddities still place something). */
+function lonePairs(a: Atom, target: number): number {
+  return Math.max(0, Math.floor(nonBondingElectrons(a, target) / 2))
 }
 
 /** True when the atom takes part in a double / triple / aromatic bond. */
@@ -116,6 +82,8 @@ interface Geo {
   target: number
   /** hydrogens still missing on top of the neighbours counted in `nbIds` */
   missing: number
+  /** nitrogen whose lone pair is delocalised into an adjacent pi system (planar, treated as 3 domains) */
+  conjugated: boolean
 }
 
 /**
@@ -127,12 +95,45 @@ function geoFor(m: Molecule, a: Atom, nbIds: number[], used: number, added: numb
   const { target, missing } = targetFor(a, used)
   let lp = lonePairs(a, target)
   let D = nbIds.length + added + missing + lp
-  // A nitrogen lone pair conjugated with a pi system (amide, aniline, pyrrole) makes the centre planar.
+  // A nitrogen lone pair conjugated with a pi system (amide, aniline, pyrrole, sulfonamide) makes the centre planar.
+  let conjugated = false
   if (a.symbol === 'N' && lp === 1 && D === 4 && nbIds.some((id) => hasPi(m, id))) {
     D = 3
     lp = 0
+    conjugated = true
   }
-  return { D, lp, target, missing }
+  return { D, lp, target, missing, conjugated }
+}
+
+/** Electron-domain classification of one atom, shared by placement and the Inspector (SPEC A4.2). */
+export interface ElectronDomains {
+  /** explicit neighbours + implicit (missing) hydrogens */
+  sigma: number
+  /** lone pairs; for a conjugated N the lone pair belongs to the π system and is counted as 0 (sp²), so sn = sigma + lp */
+  lp: number
+  /** steric number = sigma + lp */
+  sn: number
+  /** false when the lone-pair count is not a non-negative integer (odd-electron, over-saturated, unsupported charge): show "hesaplanamadı" */
+  lpExact: boolean
+  /** N whose lone pair is delocalised into an adjacent π system (amide, aniline, N–S(=O)): planar, trigonal */
+  conjugated: boolean
+  /** valence the atom is counted at (lowest allowed valence that fits the bonding) */
+  target: number
+}
+
+/**
+ * The one electron-domain classification. geometry.ts placement (geoFor) and properties.ts AtomInfo both use it, so
+ * a centre is never placed as one thing and labelled as another. `lpExact` is false instead of silently clamping.
+ */
+export function electronDomains(m: Molecule, a: Atom): ElectronDomains {
+  const nbs = neighbours(m, a.id)
+  const used = valenceUsed(m, a.id)
+  const g = geoFor(m, a, nbs.map((n) => n.atom.id), used, 0)
+  const nb = nonBondingElectrons(a, g.target)
+  const lpExact = allowedValences(a).length > 0 && Number.isInteger(nb / 2) && nb >= 0
+  const sigma = nbs.length + g.missing
+  const lp = g.conjugated ? 0 : Math.max(0, Math.floor(nb / 2))
+  return { sigma, lp, sn: sigma + lp, lpExact, conjugated: g.conjugated, target: g.target }
 }
 
 /** Bond angle (deg) between bonds of a four-domain centre that carries lone pairs. */
@@ -605,6 +606,8 @@ interface System {
   impropers: ImproperTerm[]
   torsions: TorsionTerm[]
   pairs: PairTerm[]
+  /** true when a term depends on the current coordinates (5-/6-domain angle snapping): such a system is never cached */
+  positionDependent: boolean
 }
 
 /** Size of the smallest ring through p - centre - q (0 when none up to `maxSize`). */
@@ -655,6 +658,7 @@ function buildSystem(m: Molecule, x: Float64Array): System {
   const domain: number[] = new Array(n).fill(0)
   const angles: AngleTerm[] = []
   const impropers: ImproperTerm[] = []
+  let positionDependent = false
   const atomAngle = (i: number, a: number, b: number) => {
     const ax = x[a * 3] - x[i * 3], ay = x[a * 3 + 1] - x[i * 3 + 1], az = x[a * 3 + 2] - x[i * 3 + 2]
     const bx = x[b * 3] - x[i * 3], by = x[b * 3 + 1] - x[i * 3 + 1], bz = x[b * 3 + 2] - x[i * 3 + 2]
@@ -674,6 +678,7 @@ function buildSystem(m: Molecule, x: Float64Array): System {
     for (let p = 0; p < nb.length; p++) for (let q = p + 1; q < nb.length; q++) pairs.push([nb[p], nb[q]])
     const thetas: number[] = []
     if (g.D >= 5) {
+      positionDependent = true
       const set = g.D === 5 ? [90, 120, 180] : [90, 180]
       for (const [p, q] of pairs) {
         const cur = atomAngle(i, p, q)
@@ -729,7 +734,29 @@ function buildSystem(m: Molecule, x: Float64Array): System {
       const d0 = NB_SCALE * ((VDW[m.atoms[i].symbol] ?? 1.7) + (VDW[m.atoms[j].symbol] ?? 1.7))
       pairs.push({ i, j, d0 })
     }
-  return { n, bonds, angles, impropers, torsions, pairs }
+  return { n, bonds, angles, impropers, torsions, pairs, positionDependent }
+}
+
+/**
+ * Topology signature: everything buildSystem reads except coordinates (atom order, element, charge, bond endpoints /
+ * order / aromatic flag). An animated clean-up calls relaxStep many times on the same topology, so the system (ring
+ * detection, pair list, angle terms) is built once and reused.
+ */
+function topologyKey(m: Molecule): string {
+  let k = `${m.atoms.length}:`
+  for (const a of m.atoms) k += `${a.id}${a.symbol}${a.charge},`
+  k += '|'
+  for (const b of m.bonds) k += `${b.a}-${b.b}-${b.order}${b.aromatic ? 'a' : ''},`
+  return k
+}
+let systemCache: { key: string; system: System } | null = null
+
+function systemFor(m: Molecule, x: Float64Array): System {
+  const key = topologyKey(m)
+  if (systemCache && systemCache.key === key) return systemCache.system
+  const system = buildSystem(m, x)
+  systemCache = system.positionDependent ? null : { key, system }
+  return system
 }
 
 /** Deterministic pseudo-direction for coincident atoms. */
@@ -883,7 +910,7 @@ export function relaxStep(m: Molecule, steps: number): { mol: Molecule; energy: 
   m.atoms.forEach((a, i) => { x[i * 3] = a.pos[0]; x[i * 3 + 1] = a.pos[1]; x[i * 3 + 2] = a.pos[2] })
   if (!x.every(Number.isFinite)) return { mol: m, energy: 0, maxForce: 0 }
 
-  const S = buildSystem(m, x)
+  const S = systemFor(m, x)
   let g = new Float64Array(n * 3), h = new Float64Array(n)
   let xt = new Float64Array(n * 3), gt = new Float64Array(n * 3), ht = new Float64Array(n)
   let E = evaluate(S, x, g, h)

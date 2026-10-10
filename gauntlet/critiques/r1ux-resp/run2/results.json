@@ -1,0 +1,965 @@
+{
+ "results": [
+  {
+   "name": "A-m390",
+   "s0": {
+    "err": "TypeError: Cannot read properties of undefined (reading 'getState')\n    at <anonymous>:1:36\n    at <anonymous>:1:474"
+   },
+   "tapInfo": "NOT FOUND /^Molekül bilgisi/",
+   "s1": {
+    "err": "TypeError: Cannot read properties of undefined (reading 'getState')\n    at <anonymous>:1:36\n    at <anonymous>:1:474"
+   },
+   "m1": {
+    "err": "TypeError: Cannot read properties of null (reading 'getBoundingClientRect')\n    at <anonymous>:25:69\n    at <anonymous>:25:187\n    at <anonymous>:31:3"
+   },
+   "shot-1-info": "D:\\molecular-studio\\gauntlet\\critiques\\r1ux-resp\\run2\\A-m390-1-info.png",
+   "s2": {
+    "err": "TypeError: Cannot read properties of undefined (reading 'getState')\n    at <anonymous>:1:36\n    at <anonymous>:1:474"
+   },
+   "shot-2-tapC": "D:\\molecular-studio\\gauntlet\\critiques\\r1ux-resp\\run2\\A-m390-2-tapC.png",
+   "dragUp": "no sheet",
+   "s3": {
+    "err": "TypeError: Cannot read properties of undefined (reading 'getState')\n    at <anonymous>:1:36\n    at <anonymous>:1:474"
+   },
+   "shot-3-half": "D:\\molecular-studio\\gauntlet\\critiques\\r1ux-resp\\run2\\A-m390-3-half.png",
+   "esc1": "Escape",
+   "s4": {
+    "err": "TypeError: Cannot read properties of undefined (reading 'getState')\n    at <anonymous>:1:36\n    at <anonymous>:1:474"
+   },
+   "shot-4-esc": "D:\\molecular-studio\\gauntlet\\critiques\\r1ux-resp\\run2\\A-m390-4-esc.png",
+   "tapAtom": "NOT FOUND /^Atom Ekle/",
+   "s5": {
+    "err": "TypeError: Cannot read properties of undefined (reading 'getState')\n    at <anonymous>:1:36\n    at <anonymous>:1:474"
+   },
+   "m5": {
+    "err": "TypeError: Cannot read properties of null (reading 'getBoundingClientRect')\n    at <anonymous>:25:69\n    at <anonymous>:25:187\n    at <anonymous>:31:3"
+   },
+   "shot-5-atomtool": "D:\\molecular-studio\\gauntlet\\critiques\\r1ux-resp\\run2\\A-m390-5-atomtool.png",
+   "tapActions": "NOT FOUND /^Eylemler/",
+   "shot-6-actions": "D:\\molecular-studio\\gauntlet\\critiques\\r1ux-resp\\run2\\A-m390-6-actions.png",
+   "esc2": "Escape",
+   "tapMore": "NOT FOUND /^Diğer|^Daha fazla|^Menü/",
+   "shot-7-more": "D:\\molecular-studio\\gauntlet\\critiques\\r1ux-resp\\run2\\A-m390-7-more.png",
+   "tapSettings": "NOT FOUND /^Ayarlar$/",
+   "s8": {
+    "err": "TypeError: Cannot read properties of undefined (reading 'getState')\n    at <anonymous>:1:36\n    at <anonymous>:1:474"
+   },
+   "m8": {
+    "err": "TypeError: Cannot read properties of null (reading 'getBoundingClientRect')\n    at <anonymous>:25:69\n    at <anonymous>:25:187\n    at <anonymous>:31:3"
+   },
+   "shot-8-settings": "D:\\molecular-studio\\gauntlet\\critiques\\r1ux-resp\\run2\\A-m390-8-settings.png"
+  },
+  {
+   "name": "B-m390lib",
+   "more": "ERR Error: {\"code\":-32602,\"message\":\"Invalid parameters\",\"data\":\"Failed to deserialize params.touchPoints.x - BINDINGS: mandatory field missing at position 52\"}",
+   "shot-1-overflow": "D:\\molecular-studio\\gauntlet\\critiques\\r1ux-resp\\run2\\B-m390lib-1-overflow.png",
+   "m1": {
+    "err": "TypeError: Cannot read properties of null (reading 'getBoundingClientRect')\n    at <anonymous>:25:69\n    at <anonymous>:25:187\n    at <anonymous>:31:3"
+   },
+   "lib": "NOT FOUND /^Kütüphane$/",
+   "s2": {
+    "err": "TypeError: Cannot read properties of undefined (reading 'getState')\n    at <anonymous>:1:36\n    at <anonymous>:1:474"
+   },
+   "m2": {
+    "err": "TypeError: Cannot read properties of null (reading 'getBoundingClientRect')\n    at <anonymous>:25:69\n    at <anonymous>:25:187\n    at <anonymous>:31:3"
+   },
+   "shot-2-library": "D:\\molecular-studio\\gauntlet\\critiques\\r1ux-resp\\run2\\B-m390lib-2-library.png"
+  },
+  {
+   "name": "C-t820",
+   "tapInfo": "NOT FOUND /^Molekül bilgisi/",
+   "animQuick": {
+    "err": "TypeError: Failed to execute 'getComputedStyle' on 'Window': parameter 1 is not of type 'Element'.\n    at <anonymous>:1:1"
+   },
+   "s1": {
+    "err": "TypeError: Cannot read properties of undefined (reading 'getState')\n    at <anonymous>:1:36\n    at <anonymous>:1:474"
+   },
+   "m1": {
+    "err": "TypeError: Cannot read properties of null (reading 'getBoundingClientRect')\n    at <anonymous>:25:69\n    at <anonymous>:25:187\n    at <anonymous>:31:3"
+   },
+   "shot-1-drawer": "D:\\molecular-studio\\gauntlet\\critiques\\r1ux-resp\\run2\\C-t820-1-drawer.png",
+   "s2": {
+    "err": "TypeError: Cannot read properties of undefined (reading 'getState')\n    at <anonymous>:1:36\n    at <anonymous>:1:474"
+   },
+   "shot-2-sel": "D:\\molecular-studio\\gauntlet\\critiques\\r1ux-resp\\run2\\C-t820-2-sel.png"
+  },
+  {
+   "name": "C2-t1024",
+   "tapInfo": "NOT FOUND /^Molekül bilgisi/",
+   "m1": {
+    "err": "TypeError: Cannot read properties of null (reading 'getBoundingClientRect')\n    at <anonymous>:25:69\n    at <anonymous>:25:187\n    at <anonymous>:31:3"
+   },
+   "shot-1-drawer": "D:\\molecular-studio\\gauntlet\\critiques\\r1ux-resp\\run2\\C2-t1024-1-drawer.png"
+  },
+  {
+   "name": "D-d1366kbd",
+   "anim": {
+    "btnTransition": "0.15s",
+    "aside": {
+     "op": "1",
+     "tf": "none"
+    }
+   },
+   "tabs": [
+    "Proje adı <input> @169,6 | outline solid 2px rgb(94, 200, 229) fv=true",
+    "Geri al <button> @881,6 | outline solid 2px rgb(94, 200, 229) fv=true",
+    "Yinele <button> @913,6 | outline solid 2px rgb(154, 161, 171) fv=true",
+    "Kütüphane <button> @962,6 | outline solid 2px rgb(94, 200, 229) fv=true",
+    "Dosya <button> @1068,6 | outline solid 2px rgb(95, 200, 228) fv=true",
+    "Görünüm <button> @1163,6 | outline solid 2px rgb(94, 200, 229) fv=true",
+    "Ayarlar <button> @1290,6 | outline solid 2px rgb(94, 200, 229) fv=true",
+    "Molekül bilgisini kapat <button> @1326,6 | outline solid 2px rgb(94, 200, 229) fv=true",
+    "Seç <button> @8,52 | outline solid 2px rgb(154, 161, 171) fv=true",
+    "Döndür <button> @8,88 | outline solid 2px rgb(154, 161, 171) fv=true",
+    "Kaydır <button> @8,124 | outline solid 2px rgb(154, 161, 171) fv=true",
+    "Yakınlaştır <button> @8,160 | outline solid 2px rgb(154, 161, 171) fv=true",
+    "Atom Ekle <button> @8,196 | outline solid 2px rgb(154, 161, 171) fv=true",
+    "Bağ Ekle <button> @8,232 | outline solid 2px rgb(154, 161, 171) fv=true",
+    "Sil <button> @8,268 | outline solid 2px rgb(154, 161, 171) fv=true",
+    "Ölç <button> @8,304 | outline solid 2px rgb(154, 161, 171) fv=true",
+    "Geometriyi düzenle (basit kuvvet a <button> @8,353 | outline solid 2px rgb(154, 161, 171) fv=true",
+    "Hidrojen ekle <button> @8,389 | outline solid 2px rgb(154, 161, 171) fv=true",
+    "Hidrojenleri kaldır <button> @8,425 | outline solid 2px rgb(94, 200, 229) fv=true",
+    "Yeni molekül <button> @8,461 | outline solid 2px rgb(94, 200, 229) fv=true",
+    "Kamerayı sıfırla <button> @8,497 | outline solid 2px rgb(94, 200, 229) fv=true",
+    "Yakınlaş <button> @8,533 | outline solid 2px rgb(94, 200, 229) fv=true",
+    "Uzaklaş <button> @8,569 | outline solid 2px rgb(94, 200, 229) fv=true",
+    "Paneli daralt <button> @1330,48 | outline solid 2px rgb(94, 200, 229) fv=true",
+    "Genel <button> @1047,181 | outline solid 2px rgb(154, 161, 171) fv=true",
+    "Yapı <button> @1047,371 | outline solid 2px rgb(154, 161, 171) fv=true",
+    "Hidrojen bağı <button> @1047,537 | outline solid 2px rgb(154, 161, 171) fv=true",
+    "Element bileşimi <button> @1047,671 | outline solid 2px rgb(154, 161, 171) fv=true",
+    "Fonksiyonel gruplarTahmini <button> @1047,584 | outline solid 2px rgb(154, 161, 171) fv=true",
+    "Lipinski kurallarıÜç kuralı da sağ <button> @1047,647 | outline solid 2px rgb(94, 200, 229) fv=true",
+    "Değerlik sorunları <button> @1047,680 | outline solid 2px rgb(94, 200, 229) fv=true",
+    "Molecular StudioOtomatik kayıt açı <body> @0,0 | outline none 3px rgb(230, 232, 235) fv=false",
+    "Proje adı <input> @169,6 | outline solid 2px rgb(94, 200, 229) fv=true",
+    "Geri al <button> @881,6 | outline solid 2px rgb(154, 161, 171) fv=true",
+    "Yinele <button> @913,6 | outline solid 2px rgb(154, 161, 171) fv=true",
+    "Kütüphane <button> @962,6 | outline solid 2px rgb(154, 161, 171) fv=true",
+    "Dosya <button> @1068,6 | outline solid 2px rgb(154, 161, 171) fv=true",
+    "Görünüm <button> @1163,6 | outline solid 2px rgb(154, 161, 171) fv=true",
+    "Ayarlar <button> @1290,6 | outline solid 2px rgb(154, 161, 171) fv=true",
+    "Molekül bilgisini kapat <button> @1326,6 | outline solid 2px rgb(94, 200, 229) fv=true"
+   ],
+   "shot-tabs-end": "D:\\molecular-studio\\gauntlet\\critiques\\r1ux-resp\\run2\\D-d1366kbd-tabs-end.png",
+   "blur": 1,
+   "q": "?",
+   "afterQ": {
+    "tool": "select",
+    "sel": [],
+    "insp": true,
+    "sheetTop": 46,
+    "sheetVisibleH": 722,
+    "role": "dialog",
+    "active": "Kapat",
+    "lang": "tr"
+   },
+   "shot-q": "D:\\molecular-studio\\gauntlet\\critiques\\r1ux-resp\\run2\\D-d1366kbd-q.png",
+   "escq": "Escape",
+   "afterEsc": {
+    "tool": "select",
+    "sel": [],
+    "insp": true,
+    "sheetTop": null,
+    "sheetVisibleH": null,
+    "role": null,
+    "active": "BODY",
+    "lang": "tr"
+   },
+   "m": "m",
+   "afterM": {
+    "tool": "measure",
+    "sel": [],
+    "insp": true,
+    "sheetTop": null,
+    "sheetVisibleH": null,
+    "role": null,
+    "active": "BODY",
+    "lang": "tr"
+   }
+  },
+  {
+   "name": "E-d1366rm",
+   "anim": {
+    "btnTransition": "1e-05s",
+    "aside": {
+     "op": "1",
+     "tf": "none"
+    }
+   },
+   "closeInsp": [
+    1346,
+    63.5,
+    "Paneli daralt",
+    32,
+    32
+   ],
+   "openInsp": [
+    1342,
+    21.5,
+    "Molekül bilgisi",
+    32,
+    32
+   ],
+   "asideImmediate": [
+    "1",
+    "none"
+   ]
+  },
+  {
+   "name": "F-d1366en",
+   "setEn": 1,
+   "s1": {
+    "tool": "select",
+    "sel": [
+     1
+    ],
+    "insp": true,
+    "sheetTop": null,
+    "sheetVisibleH": null,
+    "role": null,
+    "active": "BODY",
+    "lang": "en"
+   },
+   "m-sel": {
+    "iw": 1366,
+    "ih": 768,
+    "sw": 1366,
+    "sh": 768,
+    "bodySw": 1366,
+    "layout": "desktop",
+    "rm": "true",
+    "lang": "en",
+    "hit": "32px",
+    "nCtrls": 34,
+    "small": [
+     "Project name [224x32 @169,6]",
+     "Undo [32x32 @947,6]",
+     "Redo [32x32 @979,6]",
+     "Library [78x32 @1028,6]",
+     "File [75x32 @1110,6]",
+     "View [83x32 @1190,6]",
+     "Settings [32x32 @1290,6]",
+     "Close molecule info [32x32 @1326,6]",
+     "Select [32x32 @8,52]",
+     "Rotate [32x32 @8,88]",
+     "Pan [32x32 @8,124]",
+     "Zoom [32x32 @8,160]",
+     "Add Atom [32x32 @8,196]",
+     "Add Bond [32x32 @8,232]",
+     "Delete [32x32 @8,268]",
+     "Measure [32x32 @8,304]",
+     "Tidy geometry (simple force field, appro [32x32 @8,353]",
+     "Add hydrogens [32x32 @8,389]",
+     "Remove hydrogens [32x32 @8,425]",
+     "New molecule [32x32 @8,461]",
+     "Reset camera [32x32 @8,497]",
+     "Zoom in [32x32 @8,533]",
+     "Zoom out [32x32 @8,569]",
+     "Collapse panel [32x32 @1330,48]",
+     "Element [319x32 @1047,149]",
+     "Bonding [319x32 @1047,363]",
+     "Decrease charge [32x32 @1242,567]",
+     "Increase charge [32x32 @1318,567]",
+     "H#2 [61x32 @1063,631]",
+     "H#3 [61x32 @1130,631]",
+     "H#4 [61x32 @1197,631]",
+     "H#5 [61x32 @1263,631]",
+     "Change element [319x32 @1047,676]",
+     "Delete atom [287x32 @1063,725]"
+    ],
+    "small24": [],
+    "offscreen": [],
+    "noName": [],
+    "sheet": null,
+    "canvas": {
+     "tabIndex": -1,
+     "w": 998,
+     "h": 698
+    },
+    "viewport": [
+     48,
+     44,
+     998,
+     698
+    ],
+    "inspector": [
+     1046,
+     320
+    ],
+    "trTexts": [],
+    "trAttrs": [],
+    "toolbars": 0,
+    "live": [
+     "flex min-h-(--hit) shrink-0 it",
+     "min-w-8 text-center text-ui ta"
+    ],
+    "dockBtns": [
+     "Select [32x32 @8,52]",
+     "Rotate [32x32 @8,88]",
+     "Pan [32x32 @8,124]",
+     "Zoom [32x32 @8,160]",
+     "Add Atom [32x32 @8,196]",
+     "Add Bond [32x32 @8,232]",
+     "Delete [32x32 @8,268]",
+     "Measure [32x32 @8,304]",
+     "Tidy geometry (simple force field, appro [32x32 @8,353]",
+     "Add hydrogens [32x32 @8,389]",
+     "Remove hydrogens [32x32 @8,425]",
+     "New molecule [32x32 @8,461]",
+     "Reset camera [32x32 @8,497]",
+     "Zoom in [32x32 @8,533]",
+     "Zoom out [32x32 @8,569]"
+    ]
+   },
+   "shot-1-sel": "D:\\molecular-studio\\gauntlet\\critiques\\r1ux-resp\\run2\\F-d1366en-1-sel.png",
+   "file": [
+    1147.8515625,
+    21.5,
+    "File",
+    75,
+    32
+   ],
+   "m-file": {
+    "iw": 1366,
+    "ih": 768,
+    "sw": 1366,
+    "sh": 768,
+    "bodySw": 1366,
+    "layout": "desktop",
+    "rm": "true",
+    "lang": "en",
+    "hit": "32px",
+    "nCtrls": 40,
+    "small": [
+     "Project name [224x32 @169,6]",
+     "Undo [32x32 @947,6]",
+     "Redo [32x32 @979,6]",
+     "Library [78x32 @1028,6]",
+     "File [75x32 @1110,6]",
+     "View [83x32 @1190,6]",
+     "Settings [32x32 @1290,6]",
+     "Close molecule info [32x32 @1326,6]",
+     "Select [32x32 @8,52]",
+     "Rotate [32x32 @8,88]",
+     "Pan [32x32 @8,124]",
+     "Zoom [32x32 @8,160]",
+     "Add Atom [32x32 @8,196]",
+     "Add Bond [32x32 @8,232]",
+     "Delete [32x32 @8,268]",
+     "Measure [32x32 @8,304]",
+     "Tidy geometry (simple force field, appro [32x32 @8,353]",
+     "Add hydrogens [32x32 @8,389]",
+     "Remove hydrogens [32x32 @8,425]",
+     "New molecule [32x32 @8,461]",
+     "Reset camera [32x32 @8,497]",
+     "Zoom in [32x32 @8,533]",
+     "Zoom out [32x32 @8,569]",
+     "Collapse panel [32x32 @1330,48]",
+     "Element [319x32 @1047,149]",
+     "Bonding [319x32 @1047,363]",
+     "Decrease charge [32x32 @1242,567]",
+     "Increase charge [32x32 @1318,567]",
+     "H#2 [61x32 @1063,631]",
+     "H#3 [61x32 @1130,631]",
+     "H#4 [61x32 @1197,631]",
+     "H#5 [61x32 @1263,631]",
+     "Change element [319x32 @1047,676]",
+     "Delete atom [287x32 @1063,725]",
+     "Save nowCtrl+S [218x32 @1111,49]",
+     "Open file (MOL, SDF, XYZ) [218x32 @1111,81]",
+     "Search PubChem [218x32 @1111,113]",
+     "Download as MOL [218x32 @1111,154]",
+     "Download as XYZ [218x32 @1111,186]",
+     "PNG screenshot [218x32 @1111,218]"
+    ],
+    "small24": [],
+    "offscreen": [],
+    "noName": [],
+    "sheet": null,
+    "canvas": {
+     "tabIndex": -1,
+     "w": 998,
+     "h": 698
+    },
+    "viewport": [
+     48,
+     44,
+     998,
+     698
+    ],
+    "inspector": [
+     1046,
+     320
+    ],
+    "trTexts": [],
+    "trAttrs": [],
+    "toolbars": 0,
+    "live": [
+     "flex min-h-(--hit) shrink-0 it",
+     "min-w-8 text-center text-ui ta"
+    ],
+    "dockBtns": [
+     "Select [32x32 @8,52]",
+     "Rotate [32x32 @8,88]",
+     "Pan [32x32 @8,124]",
+     "Zoom [32x32 @8,160]",
+     "Add Atom [32x32 @8,196]",
+     "Add Bond [32x32 @8,232]",
+     "Delete [32x32 @8,268]",
+     "Measure [32x32 @8,304]",
+     "Tidy geometry (simple force field, appro [32x32 @8,353]",
+     "Add hydrogens [32x32 @8,389]",
+     "Remove hydrogens [32x32 @8,425]",
+     "New molecule [32x32 @8,461]",
+     "Reset camera [32x32 @8,497]",
+     "Zoom in [32x32 @8,533]",
+     "Zoom out [32x32 @8,569]"
+    ]
+   },
+   "shot-2-file": "D:\\molecular-studio\\gauntlet\\critiques\\r1ux-resp\\run2\\F-d1366en-2-file.png",
+   "e1": "Escape",
+   "view": [
+    1231.2890625,
+    21.5,
+    "View",
+    83,
+    32
+   ],
+   "m-view": {
+    "iw": 1366,
+    "ih": 768,
+    "sw": 1366,
+    "sh": 768,
+    "bodySw": 1366,
+    "layout": "desktop",
+    "rm": "true",
+    "lang": "en",
+    "hit": "32px",
+    "nCtrls": 43,
+    "small": [
+     "Project name [224x32 @169,6]",
+     "Undo [32x32 @947,6]",
+     "Redo [32x32 @979,6]",
+     "Library [78x32 @1028,6]",
+     "File [75x32 @1110,6]",
+     "View [83x32 @1190,6]",
+     "Settings [32x32 @1290,6]",
+     "Close molecule info [32x32 @1326,6]",
+     "Select [32x32 @8,52]",
+     "Rotate [32x32 @8,88]",
+     "Pan [32x32 @8,124]",
+     "Zoom [32x32 @8,160]",
+     "Add Atom [32x32 @8,196]",
+     "Add Bond [32x32 @8,232]",
+     "Delete [32x32 @8,268]",
+     "Measure [32x32 @8,304]",
+     "Tidy geometry (simple force field, appro [32x32 @8,353]",
+     "Add hydrogens [32x32 @8,389]",
+     "Remove hydrogens [32x32 @8,425]",
+     "New molecule [32x32 @8,461]",
+     "Reset camera [32x32 @8,497]",
+     "Zoom in [32x32 @8,533]",
+     "Zoom out [32x32 @8,569]",
+     "Collapse panel [32x32 @1330,48]",
+     "Element [319x32 @1047,149]",
+     "Bonding [319x32 @1047,363]",
+     "Decrease charge [32x32 @1242,567]",
+     "Increase charge [32x32 @1318,567]",
+     "H#2 [61x32 @1063,631]",
+     "H#3 [61x32 @1130,631]",
+     "H#4 [61x32 @1197,631]",
+     "H#5 [61x32 @1263,631]",
+     "Change element [319x32 @1047,676]",
+     "Delete atom [287x32 @1063,725]",
+     "Ball & Stick [218x32 @1054,77]",
+     "Space Filling [218x32 @1054,109]",
+     "Stick [218x32 @1054,141]",
+     "Wireframe [218x32 @1054,173]",
+     "Show hydrogens [218x32 @1054,242]",
+     "Labels [218x32 @1054,274]",
+     "Partial charges (approximate) [218x32 @1054,306]",
+     "Unavailable while reduced motion is on [218x32 @1054,338]",
+     "Reset cameraF [218x32 @1054,379]"
+    ],
+    "small24": [],
+    "offscreen": [],
+    "noName": [],
+    "sheet": null,
+    "canvas": {
+     "tabIndex": -1,
+     "w": 998,
+     "h": 698
+    },
+    "viewport": [
+     48,
+     44,
+     998,
+     698
+    ],
+    "inspector": [
+     1046,
+     320
+    ],
+    "trTexts": [],
+    "trAttrs": [],
+    "toolbars": 0,
+    "live": [
+     "flex min-h-(--hit) shrink-0 it",
+     "min-w-8 text-center text-ui ta"
+    ],
+    "dockBtns": [
+     "Select [32x32 @8,52]",
+     "Rotate [32x32 @8,88]",
+     "Pan [32x32 @8,124]",
+     "Zoom [32x32 @8,160]",
+     "Add Atom [32x32 @8,196]",
+     "Add Bond [32x32 @8,232]",
+     "Delete [32x32 @8,268]",
+     "Measure [32x32 @8,304]",
+     "Tidy geometry (simple force field, appro [32x32 @8,353]",
+     "Add hydrogens [32x32 @8,389]",
+     "Remove hydrogens [32x32 @8,425]",
+     "New molecule [32x32 @8,461]",
+     "Reset camera [32x32 @8,497]",
+     "Zoom in [32x32 @8,533]",
+     "Zoom out [32x32 @8,569]"
+    ]
+   },
+   "shot-3-view": "D:\\molecular-studio\\gauntlet\\critiques\\r1ux-resp\\run2\\F-d1366en-3-view.png",
+   "e2": "Escape",
+   "settings": [
+    1306,
+    21.5,
+    "Settings",
+    32,
+    32
+   ],
+   "m-set": {
+    "iw": 1366,
+    "ih": 768,
+    "sw": 1366,
+    "sh": 768,
+    "bodySw": 1366,
+    "layout": "desktop",
+    "rm": "true",
+    "lang": "en",
+    "hit": "32px",
+    "nCtrls": 42,
+    "small": [
+     "Project name [224x32 @169,6]",
+     "Undo [32x32 @947,6]",
+     "Redo [32x32 @979,6]",
+     "Library [78x32 @1028,6]",
+     "File [75x32 @1110,6]",
+     "View [83x32 @1190,6]",
+     "Settings [32x32 @1290,6]",
+     "Close molecule info [32x32 @1326,6]",
+     "Select [32x32 @8,52]",
+     "Rotate [32x32 @8,88]",
+     "Pan [32x32 @8,124]",
+     "Zoom [32x32 @8,160]",
+     "Add Atom [32x32 @8,196]",
+     "Add Bond [32x32 @8,232]",
+     "Delete [32x32 @8,268]",
+     "Measure [32x32 @8,304]",
+     "Tidy geometry (simple force field, appro [32x32 @8,353]",
+     "Add hydrogens [32x32 @8,389]",
+     "Remove hydrogens [32x32 @8,425]",
+     "New molecule [32x32 @8,461]",
+     "Reset camera [32x32 @8,497]",
+     "Zoom in [32x32 @8,533]",
+     "Zoom out [32x32 @8,569]",
+     "Collapse panel [32x32 @1330,48]",
+     "Element [319x32 @1047,149]",
+     "Bonding [319x32 @1047,363]",
+     "Decrease charge [32x32 @1242,567]",
+     "Increase charge [32x32 @1318,567]",
+     "H#2 [61x32 @1063,631]",
+     "H#3 [61x32 @1130,631]",
+     "H#4 [61x32 @1197,631]",
+     "H#5 [61x32 @1263,631]",
+     "Change element [319x32 @1047,676]",
+     "Delete atom [287x32 @1063,725]",
+     "Close [32x32 @914,63]",
+     "Türkçe [58x26 @423,147]",
+     "English [61x26 @481,147]",
+     "Follow system [101x26 @423,222]",
+     "Reduced [70x26 @524,222]",
+     "Full [40x26 @593,222]",
+     "BUTTON [36x20 @910,295]",
+     "Show shortcuts [114x32 @832,347]"
+    ],
+    "small24": [
+     "BUTTON [36x20 @910,295]"
+    ],
+    "offscreen": [],
+    "noName": [],
+    "sheet": null,
+    "canvas": {
+     "tabIndex": -1,
+     "w": 998,
+     "h": 698
+    },
+    "viewport": [
+     48,
+     44,
+     998,
+     698
+    ],
+    "inspector": [
+     1046,
+     320
+    ],
+    "trTexts": [
+     "Türkçe"
+    ],
+    "trAttrs": [],
+    "toolbars": 0,
+    "live": [
+     "flex min-h-(--hit) shrink-0 it",
+     "min-w-8 text-center text-ui ta"
+    ],
+    "dockBtns": [
+     "Select [32x32 @8,52]",
+     "Rotate [32x32 @8,88]",
+     "Pan [32x32 @8,124]",
+     "Zoom [32x32 @8,160]",
+     "Add Atom [32x32 @8,196]",
+     "Add Bond [32x32 @8,232]",
+     "Delete [32x32 @8,268]",
+     "Measure [32x32 @8,304]",
+     "Tidy geometry (simple force field, appro [32x32 @8,353]",
+     "Add hydrogens [32x32 @8,389]",
+     "Remove hydrogens [32x32 @8,425]",
+     "New molecule [32x32 @8,461]",
+     "Reset camera [32x32 @8,497]",
+     "Zoom in [32x32 @8,533]",
+     "Zoom out [32x32 @8,569]"
+    ]
+   },
+   "shot-4-settings": "D:\\molecular-studio\\gauntlet\\critiques\\r1ux-resp\\run2\\F-d1366en-4-settings.png",
+   "e3": "Escape",
+   "lib": [
+    1067.1953125,
+    21.5,
+    "Library",
+    78,
+    32
+   ],
+   "m-lib": {
+    "iw": 1366,
+    "ih": 768,
+    "sw": 1366,
+    "sh": 768,
+    "bodySw": 1366,
+    "layout": "desktop",
+    "rm": "true",
+    "lang": "en",
+    "hit": "32px",
+    "nCtrls": 90,
+    "small": [
+     "Project name [224x32 @169,6]",
+     "Undo [32x32 @947,6]",
+     "Redo [32x32 @979,6]",
+     "Library [78x32 @1028,6]",
+     "File [75x32 @1110,6]",
+     "View [83x32 @1190,6]",
+     "Settings [32x32 @1290,6]",
+     "Close molecule info [32x32 @1326,6]",
+     "Select [32x32 @8,52]",
+     "Rotate [32x32 @8,88]",
+     "Pan [32x32 @8,124]",
+     "Zoom [32x32 @8,160]",
+     "Add Atom [32x32 @8,196]",
+     "Add Bond [32x32 @8,232]",
+     "Delete [32x32 @8,268]",
+     "Measure [32x32 @8,304]",
+     "Tidy geometry (simple force field, appro [32x32 @8,353]",
+     "Add hydrogens [32x32 @8,389]",
+     "Remove hydrogens [32x32 @8,425]",
+     "New molecule [32x32 @8,461]",
+     "Reset camera [32x32 @8,497]",
+     "Zoom in [32x32 @8,533]",
+     "Zoom out [32x32 @8,569]",
+     "Collapse panel [32x32 @1330,48]",
+     "Element [319x32 @1047,149]",
+     "Bonding [319x32 @1047,363]",
+     "Decrease charge [32x32 @1242,567]",
+     "Increase charge [32x32 @1318,567]",
+     "H#2 [61x32 @1063,631]",
+     "H#3 [61x32 @1130,631]",
+     "H#4 [61x32 @1197,631]",
+     "H#5 [61x32 @1263,631]",
+     "Change element [319x32 @1047,676]",
+     "Delete atom [287x32 @1063,725]",
+     "Close [32x32 @954,57]",
+     "INPUT [606x32 @380,112]",
+     "All [37x32 @380,152]",
+     "Hydrocarbons [103x32 @423,152]",
+     "Basic molecules [112x32 @531,152]",
+     "Special geometries [130x32 @649,152]",
+     "Aromatic compounds [145x32 @785,152]",
+     "Alcohols, ethers and carbonyls [196x32 @937,152]",
+     "Biomolecules [98x32 @1139,152]",
+     "Drugs and alkaloids [135x32 @1243,152]"
+    ],
+    "small24": [],
+    "offscreen": [],
+    "noName": [],
+    "sheet": null,
+    "canvas": {
+     "tabIndex": -1,
+     "w": 998,
+     "h": 698
+    },
+    "viewport": [
+     48,
+     44,
+     998,
+     698
+    ],
+    "inspector": [
+     1046,
+     320
+    ],
+    "trTexts": [
+     "CH₄N₂O — Contains two NH₂ groups on a carbonyl group. In 182",
+     "C₁₇H₁₉NO₃ — A potent opioid analgesic obtained from the opiu"
+    ],
+    "trAttrs": [],
+    "toolbars": 0,
+    "live": [
+     "flex min-h-(--hit) shrink-0 it",
+     "min-w-8 text-center text-ui ta",
+     "text-label text-ink-faint"
+    ],
+    "dockBtns": [
+     "Select [32x32 @8,52]",
+     "Rotate [32x32 @8,88]",
+     "Pan [32x32 @8,124]",
+     "Zoom [32x32 @8,160]",
+     "Add Atom [32x32 @8,196]",
+     "Add Bond [32x32 @8,232]",
+     "Delete [32x32 @8,268]",
+     "Measure [32x32 @8,304]",
+     "Tidy geometry (simple force field, appro [32x32 @8,353]",
+     "Add hydrogens [32x32 @8,389]",
+     "Remove hydrogens [32x32 @8,425]",
+     "New molecule [32x32 @8,461]",
+     "Reset camera [32x32 @8,497]",
+     "Zoom in [32x32 @8,533]",
+     "Zoom out [32x32 @8,569]"
+    ]
+   },
+   "shot-5-lib": "D:\\molecular-studio\\gauntlet\\critiques\\r1ux-resp\\run2\\F-d1366en-5-lib.png",
+   "e4": "Escape",
+   "atom": [
+    23.5,
+    212,
+    "Add Atom",
+    32,
+    32
+   ],
+   "m-atom": {
+    "iw": 1366,
+    "ih": 768,
+    "sw": 1366,
+    "sh": 768,
+    "bodySw": 1366,
+    "layout": "desktop",
+    "rm": "true",
+    "lang": "en",
+    "hit": "32px",
+    "nCtrls": 51,
+    "small": [
+     "Project name [224x32 @169,6]",
+     "Undo [32x32 @947,6]",
+     "Redo [32x32 @979,6]",
+     "Library [78x32 @1028,6]",
+     "File [75x32 @1110,6]",
+     "View [83x32 @1190,6]",
+     "Settings [32x32 @1290,6]",
+     "Close molecule info [32x32 @1326,6]",
+     "Select [32x32 @8,52]",
+     "Rotate [32x32 @8,88]",
+     "Pan [32x32 @8,124]",
+     "Zoom [32x32 @8,160]",
+     "Add Atom [32x32 @8,196]",
+     "Add Bond [32x32 @8,232]",
+     "Delete [32x32 @8,268]",
+     "Measure [32x32 @8,304]",
+     "Tidy geometry (simple force field, appro [32x32 @8,353]",
+     "Add hydrogens [32x32 @8,389]",
+     "Remove hydrogens [32x32 @8,425]",
+     "New molecule [32x32 @8,461]",
+     "Reset camera [32x32 @8,497]",
+     "Zoom in [32x32 @8,533]",
+     "Zoom out [32x32 @8,569]",
+     "Hydrogen (H, 1) [32x32 @71,89]",
+     "Carbon (C, 6) [32x32 @107,89]",
+     "Nitrogen (N, 7) [32x32 @143,89]",
+     "Oxygen (O, 8) [32x32 @179,89]",
+     "Fluorine (F, 9) [32x32 @215,89]",
+     "Phosphorus (P, 15) [32x32 @251,89]",
+     "Sulfur (S, 16) [32x32 @287,89]",
+     "Chlorine (Cl, 17) [32x32 @71,125]",
+     "Bromine (Br, 35) [32x32 @107,125]",
+     "Iodine (I, 53) [32x32 @143,125]",
+     "Sodium (Na, 11) [32x32 @179,125]",
+     "Magnesium (Mg, 12) [32x32 @215,125]",
+     "Silicon (Si, 14) [32x32 @251,125]",
+     "Boron (B, 5) [32x32 @287,125]",
+     "Single [38x26 @202,170]",
+     "Double [38x26 @240,170]",
+     "Triple [38x26 @278,170]",
+     "Collapse panel [32x32 @1330,48]",
+     "Element [319x32 @1047,149]",
+     "Bonding [319x32 @1047,363]",
+     "Decrease charge [32x32 @1242,567]",
+     "Increase charge [32x32 @1318,567]",
+     "H#2 [61x32 @1063,631]",
+     "H#3 [61x32 @1130,631]",
+     "H#4 [61x32 @1197,631]",
+     "H#5 [61x32 @1263,631]",
+     "Change element [319x32 @1047,676]",
+     "Delete atom [287x32 @1063,725]"
+    ],
+    "small24": [],
+    "offscreen": [],
+    "noName": [],
+    "sheet": null,
+    "canvas": {
+     "tabIndex": -1,
+     "w": 998,
+     "h": 698
+    },
+    "viewport": [
+     48,
+     44,
+     998,
+     698
+    ],
+    "inspector": [
+     1046,
+     320
+    ],
+    "trTexts": [],
+    "trAttrs": [],
+    "toolbars": 0,
+    "live": [
+     "flex min-h-(--hit) shrink-0 it",
+     "min-w-8 text-center text-ui ta"
+    ],
+    "dockBtns": [
+     "Select [32x32 @8,52]",
+     "Rotate [32x32 @8,88]",
+     "Pan [32x32 @8,124]",
+     "Zoom [32x32 @8,160]",
+     "Add Atom [32x32 @8,196]",
+     "Add Bond [32x32 @8,232]",
+     "Delete [32x32 @8,268]",
+     "Measure [32x32 @8,304]",
+     "Tidy geometry (simple force field, appro [32x32 @8,353]",
+     "Add hydrogens [32x32 @8,389]",
+     "Remove hydrogens [32x32 @8,425]",
+     "New molecule [32x32 @8,461]",
+     "Reset camera [32x32 @8,497]",
+     "Zoom in [32x32 @8,533]",
+     "Zoom out [32x32 @8,569]"
+    ]
+   },
+   "shot-6-atom": "D:\\molecular-studio\\gauntlet\\critiques\\r1ux-resp\\run2\\F-d1366en-6-atom.png",
+   "measure": [
+    23.5,
+    320,
+    "Measure",
+    32,
+    32
+   ],
+   "m-meas": {
+    "iw": 1366,
+    "ih": 768,
+    "sw": 1366,
+    "sh": 768,
+    "bodySw": 1366,
+    "layout": "desktop",
+    "rm": "true",
+    "lang": "en",
+    "hit": "32px",
+    "nCtrls": 25,
+    "small": [
+     "Project name [224x32 @169,6]",
+     "Undo [32x32 @947,6]",
+     "Redo [32x32 @979,6]",
+     "Library [78x32 @1028,6]",
+     "File [75x32 @1110,6]",
+     "View [83x32 @1190,6]",
+     "Settings [32x32 @1290,6]",
+     "Close molecule info [32x32 @1326,6]",
+     "Select [32x32 @8,52]",
+     "Rotate [32x32 @8,88]",
+     "Pan [32x32 @8,124]",
+     "Zoom [32x32 @8,160]",
+     "Add Atom [32x32 @8,196]",
+     "Add Bond [32x32 @8,232]",
+     "Delete [32x32 @8,268]",
+     "Measure [32x32 @8,304]",
+     "Tidy geometry (simple force field, appro [32x32 @8,353]",
+     "Add hydrogens [32x32 @8,389]",
+     "Remove hydrogens [32x32 @8,425]",
+     "New molecule [32x32 @8,461]",
+     "Reset camera [32x32 @8,497]",
+     "Zoom in [32x32 @8,533]",
+     "Zoom out [32x32 @8,569]",
+     "Collapse panel [32x32 @1330,48]",
+     "Clear measurement [287x32 @1063,246]"
+    ],
+    "small24": [],
+    "offscreen": [],
+    "noName": [],
+    "sheet": null,
+    "canvas": {
+     "tabIndex": -1,
+     "w": 998,
+     "h": 698
+    },
+    "viewport": [
+     48,
+     44,
+     998,
+     698
+    ],
+    "inspector": [
+     1046,
+     320
+    ],
+    "trTexts": [],
+    "trAttrs": [],
+    "toolbars": 0,
+    "live": [
+     "flex min-h-(--hit) shrink-0 it"
+    ],
+    "dockBtns": [
+     "Select [32x32 @8,52]",
+     "Rotate [32x32 @8,88]",
+     "Pan [32x32 @8,124]",
+     "Zoom [32x32 @8,160]",
+     "Add Atom [32x32 @8,196]",
+     "Add Bond [32x32 @8,232]",
+     "Delete [32x32 @8,268]",
+     "Measure [32x32 @8,304]",
+     "Tidy geometry (simple force field, appro [32x32 @8,353]",
+     "Add hydrogens [32x32 @8,389]",
+     "Remove hydrogens [32x32 @8,425]",
+     "New molecule [32x32 @8,461]",
+     "Reset camera [32x32 @8,497]",
+     "Zoom in [32x32 @8,533]",
+     "Zoom out [32x32 @8,569]"
+    ]
+   }
+  }
+ ],
+ "logs": []
+}

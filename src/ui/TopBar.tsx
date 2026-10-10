@@ -1,48 +1,31 @@
 import { useEffect, useRef, useState, type ReactNode } from 'react'
 import {
-  AlertTriangle, Check, ChevronDown, CircleDot, EllipsisVertical, FileText, Info, Library, Loader2, Redo2, ScanEye, Settings, Undo2,
+  AlertTriangle, Check, ChevronDown, CircleDot, EllipsisVertical, FileText, Info, Library, Redo2, ScanEye, Settings, Undo2,
 } from 'lucide-react'
 import { DEFAULT_PROJECT_NAME, useStudio } from '../store'
-import { useT, type TFn } from './i18n'
+import { useT } from './i18n'
 import { useUI } from './uiStore'
 import { IconButton } from './controls'
 import { LogoMark } from './icons'
 import { Menu, type MenuEntry } from './Menu'
 import { useFileItems, useViewItems } from './menus'
 import { MOD } from './shortcuts'
-import type { Layout } from './layout'
+import { saveProjectNow } from './actions'
+import { useShortScreen, type Layout } from './layout'
 
-function relativeTime(t: TFn, ms: number, now: number): string {
-  const s = Math.max(0, Math.round((now - ms) / 1000))
-  if (s < 45) return t('time.now')
-  const m = Math.round(s / 60)
-  if (m < 60) return t('time.min', { n: Math.max(1, m) })
-  const h = Math.round(m / 60)
-  if (h < 24) return t('time.hour', { n: h })
-  return t('time.day', { n: Math.round(h / 24) })
-}
-
-/** Save status derived from the real autosave state machine in the store. */
+/** Save status derived from the real autosave state machine in the store (no spinner: writes are synchronous). */
 function SaveStatus({ compact }: { compact: boolean }) {
   const t = useT()
   const status = useStudio((s) => s.saveStatus)
   const savedAt = useStudio((s) => s.lastSavedAt)
   const lang = useStudio((s) => s.language)
-  const [now, setNow] = useState(() => Date.now())
-
-  useEffect(() => {
-    if (savedAt === null) return
-    setNow(Date.now())
-    const id = setInterval(() => setNow(Date.now()), 30_000)
-    return () => clearInterval(id)
-  }, [savedAt, status])
 
   let icon: ReactNode
   let label: string
   let tone = 'text-ink-dim'
   let title: string | undefined
   if (status === 'saving') {
-    icon = <Loader2 size={14} aria-hidden className="animate-spin" />
+    icon = <CircleDot size={14} aria-hidden className="text-accent" />
     label = t('save.saving')
   } else if (status === 'unsaved') {
     icon = <CircleDot size={14} aria-hidden className="text-warn" />
@@ -52,19 +35,36 @@ function SaveStatus({ compact }: { compact: boolean }) {
     icon = <AlertTriangle size={14} aria-hidden className="text-danger" />
     label = t('save.error')
     tone = 'text-danger'
-    title = t('save.errorHint')
+    title = `${t('save.errorHint')} (${t('save.retry')})`
   } else if (savedAt !== null) {
     icon = <Check size={14} aria-hidden className="text-ok" />
-    label = `${t('save.saved')} · ${relativeTime(t, savedAt, now)}`
+    label = t('save.saved')
     title = t('save.at', { time: new Date(savedAt).toLocaleTimeString(lang === 'tr' ? 'tr-TR' : 'en-GB') })
   } else {
     icon = <Check size={14} aria-hidden className="text-ink-faint" />
     label = t('save.ready')
   }
+  const text = <span className={compact ? 'sr-only' : 'whitespace-nowrap'}>{label}</span>
+  if (status === 'error') {
+    return (
+      <div role="status" aria-live="polite" className="flex shrink-0 items-center">
+        <button
+          type="button"
+          title={title}
+          aria-label={`${label}. ${t('save.retry')}`}
+          onClick={saveProjectNow}
+          className={`flex min-h-(--hit) shrink-0 items-center gap-1.5 rounded-ctl px-2 text-label hover:bg-surface-3 ${tone}`}
+        >
+          {icon}
+          {text}
+        </button>
+      </div>
+    )
+  }
   return (
     <div role="status" aria-live="polite" title={title ?? label} className={`flex min-h-(--hit) shrink-0 items-center gap-1.5 px-2 text-label ${tone}`}>
       {icon}
-      <span className={compact ? 'sr-only' : 'whitespace-nowrap'}>{label}</span>
+      {text}
     </div>
   )
 }
@@ -132,8 +132,9 @@ function MenuTrigger({
         buttonRef={ref}
         label={label}
         tip={showText ? false : 'bottom'}
-        icon={<>{icon}{showText && <ChevronDown size={13} aria-hidden className="-ml-0.5 opacity-70" />}</>}
+        icon={icon}
         text={showText ? label : undefined}
+        trailing={showText ? <ChevronDown size={13} aria-hidden className="-ml-0.5 opacity-70" /> : undefined}
         active={open}
         aria-haspopup="menu"
         aria-expanded={open}
@@ -151,6 +152,8 @@ export function TopBar({ layout }: { layout: Layout }) {
   const setInspectorOpen = useStudio((s) => s.setInspectorOpen)
   const fileItems = useFileItems()
   const viewItems = useViewItems()
+  const phoneViewItems = useViewItems(true)
+  const short = useShortScreen()
   const moreRef = useRef<HTMLButtonElement>(null)
   const [moreOpen, setMoreOpen] = useState(false)
   const desktop = layout === 'desktop'
@@ -170,15 +173,14 @@ export function TopBar({ layout }: { layout: Layout }) {
   if (mobile) {
     const moreItems: MenuEntry[] = [
       { type: 'item', label: t('top.library'), icon: <Library size={15} aria-hidden />, onSelect: () => openDialog('library') },
+      { type: 'item', label: t('top.settings'), icon: <Settings size={15} aria-hidden />, onSelect: () => openDialog('settings') },
       { type: 'sep' },
       ...fileItems,
       { type: 'sep' },
-      ...viewItems,
-      { type: 'sep' },
-      { type: 'item', label: t('top.settings'), icon: <Settings size={15} aria-hidden />, onSelect: () => openDialog('settings') },
+      ...phoneViewItems,
     ]
     return (
-      <header className="flex h-[52px] shrink-0 items-center gap-1 border-b border-line bg-surface-1 pl-3 pr-1 pt-[env(safe-area-inset-top)] box-content">
+      <header className={`flex shrink-0 items-center gap-1 border-b border-line bg-surface-1 pl-3 pr-1 pt-[env(safe-area-inset-top)] box-content ${short ? 'h-10' : 'h-[52px]'}`}>
         <LogoMark size={22} />
         <ProjectName className="flex-1" />
         <SaveStatus compact />
@@ -191,7 +193,7 @@ export function TopBar({ layout }: { layout: Layout }) {
   }
 
   return (
-    <header className={`flex shrink-0 items-center gap-1 border-b border-line bg-surface-1 px-2 ${desktop ? 'h-11' : 'h-[52px]'}`}>
+    <header className={`flex shrink-0 items-center gap-1 border-b border-line bg-surface-1 px-2 ${short ? 'h-10' : desktop ? 'h-11' : 'h-[52px]'}`}>
       <div className="flex shrink-0 items-center gap-2 pl-1 pr-2">
         <LogoMark size={22} />
         {desktop && <span className="text-ui font-medium tracking-[0.01em] text-ink">{t('app.name')}</span>}

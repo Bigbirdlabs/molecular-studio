@@ -68,7 +68,9 @@ export class InstancePool {
     mesh.frustumCulled = false // bounding sphere would be stale; the molecule is always near the view centre
     mesh.renderOrder = this.renderOrder
     mesh.count = 0
-    mesh.visible = false
+    // Always "visible": an empty instanced mesh draws nothing, but it registers its geometry / program on the very first
+    // frame, so showing a layer later (first selection, wireframe, measurement) never allocates (render.geometries stays flat).
+    mesh.visible = true
     return mesh
   }
 
@@ -100,7 +102,6 @@ export class InstancePool {
   end(): void {
     const m = this.mesh
     m.count = this.count
-    m.visible = this.count > 0
     if (this.count > 0) {
       m.instanceMatrix.clearUpdateRanges()
       m.instanceMatrix.addUpdateRange(0, this.count * 16)
@@ -132,10 +133,11 @@ export class PointCloud {
   constructor(parent: THREE.Object3D, material: THREE.Material, renderOrder: number, capacity = 64) {
     this.capacity = capacity
     this.geo = this.makeGeometry(capacity)
+    this.geo.setDrawRange(0, 0)
     this.points = new THREE.Points(this.geo, material)
     this.points.frustumCulled = false
     this.points.renderOrder = renderOrder
-    this.points.visible = false
+    this.points.visible = true // empty draw range draws nothing; see InstancePool.create
     parent.add(this.points)
   }
 
@@ -159,6 +161,7 @@ export class PointCloud {
     this.geo.dispose()
     this.capacity = cap
     this.geo = this.makeGeometry(cap)
+    this.geo.setDrawRange(0, 0)
     this.points.geometry = this.geo
   }
 
@@ -178,7 +181,6 @@ export class PointCloud {
 
   end(): void {
     this.geo.setDrawRange(0, this.count)
-    this.points.visible = this.count > 0
     for (const k of ['position', 'aColor', 'aSize'] as const) this.geo.attributes[k].needsUpdate = true
   }
 

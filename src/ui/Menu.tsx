@@ -112,7 +112,7 @@ export function Menu({ anchor, open, onClose, items, placement = 'bottom-start',
               {it.role ? (it.checked ? <Check size={14} aria-hidden className="text-accent" /> : null) : it.icon}
             </span>
             <span className="flex-1">{it.label}</span>
-            {it.shortcut && <kbd className="font-mono text-micro text-ink-faint">{it.shortcut}</kbd>}
+            {it.shortcut && <kbd className="font-mono text-micro text-ink-faint [@media(pointer:coarse)]:hidden in-data-[layout=mobile]:hidden">{it.shortcut}</kbd>}
           </button>
         )
       })}

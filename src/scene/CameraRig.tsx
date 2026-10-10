@@ -3,10 +3,11 @@ import { useFrame, useThree } from '@react-three/fiber'
 import * as THREE from 'three'
 import { OrbitControls } from 'three/examples/jsm/controls/OrbitControls.js'
 import type { Molecule } from '../chem/molecule'
-import { useStudio, type CameraMode, type RenderStyle, type Tool } from '../store'
-import { clamp, computeFit, easeInOutCubic, wheelPixels } from './cameraMath'
+import { useStudio, type CameraMode, type Tool } from '../store'
+import { useUI } from '../ui/uiStore'
+import { boundingRadius, clamp, computeFit, easeInOutCubic, wheelPixels } from './cameraMath'
 import { useSceneContext } from './sceneContext'
-import { CAMERA_TWEEN_MS, DEFAULT_VIEW_DIR, FIT_FILL, FOV, ZOOM_IN_FACTOR } from './theme'
+import { CAMERA_TWEEN_MS, DEFAULT_VIEW_DIR, FIT_FILL, FOV, MAX_DISTANCE_RADII, MIN_CAMERA_DISTANCE } from './theme'
 
 interface Tween {
   t0: number
@@ -27,14 +28,17 @@ interface RigState {
   pristineUntil: number // layout settling may still re-frame until this time (unless the user touched the camera)
   pendingFit: 'none' | 'fit' | 'reset'
   zoomRequest: number | null
-  styleFrom: RenderStyle | null
   mode: CameraMode
   lastDist: number
   lastMode: CameraMode
   limitMol: Molecule | null
-  limitStyle: RenderStyle | null
   limitAspect: number
   limitHide: boolean
+  /** Pixels of the canvas hidden by the mobile info sheet (smoothed / target / as last applied to the projection). */
+  cover: number
+  coverTarget: number
+  coverApplied: number
+  coverSize: string
   publish: () => void
   setDistance: (d: number) => void
 }
@@ -60,8 +64,9 @@ export function CameraRig() {
   const ctx = useSceneContext()
 
   const st = useRef<RigState>({
-    controls: null, tween: null, chase: null, initialized: false, pristineUntil: 0, pendingFit: 'none', zoomRequest: null, styleFrom: null,
-    mode: 'orbit', lastDist: -1, lastMode: 'orbit', limitMol: null, limitStyle: null, limitAspect: 0, limitHide: true,
+    controls: null, tween: null, chase: null, initialized: false, pristineUntil: 0, pendingFit: 'none', zoomRequest: null,
+    mode: 'orbit', lastDist: -1, lastMode: 'orbit', limitMol: null, limitAspect: 0, limitHide: true,
+    cover: 0, coverTarget: 0, coverApplied: 0, coverSize: '',
     publish: () => {}, setDistance: () => {},
   })
   const scratch = useRef({ pts: [] as number[], q: new THREE.Quaternion(), qi: new THREE.Quaternion() })
@@ -172,12 +177,33 @@ export function CameraRig() {
     host.addEventListener('wheel', onWheel, { capture: true, passive: false })
     host.addEventListener('contextmenu', onContextMenu)
 
+    /** Pixels at the bottom of the canvas hidden by the mobile molecule-info sheet at its current snap (0 elsewhere). */
+    const sheetCover = (): number => {
+      if (!useStudio.getState().inspectorOpen || typeof window.matchMedia !== 'function' || !window.matchMedia('(max-width: 767.98px)').matches) return 0
+      const vh = window.visualViewport?.height ?? window.innerHeight
+      const snap = useUI.getState().infoSnap
+      const sheetH = snap === 'peek' ? 132 : vh * (snap === 'half' ? 0.5 : 0.9)
+      const rect = canvas.getBoundingClientRect()
+      return clamp(rect.bottom - (vh - sheetH), 0, rect.height * 0.62)
+    }
+    s.coverTarget = sheetCover()
+    const unsubUI = useUI.subscribe((next, prev) => {
+      if (next.infoSnap === prev.infoSnap) return
+      s.coverTarget = sheetCover()
+      invalidate()
+    })
+    const onResizeWin = () => { s.coverTarget = sheetCover(); invalidate() }
+    window.addEventListener('resize', onResizeWin)
+    window.visualViewport?.addEventListener('resize', onResizeWin)
+
     const unsub = useStudio.subscribe((next, prev) => {
       let touched = false
       if (next.cameraResetNonce !== prev.cameraResetNonce) { s.pendingFit = 'reset'; touched = true }
       else if (next.fitNonce !== prev.fitNonce && s.pendingFit !== 'reset') { s.pendingFit = 'fit'; touched = true }
       if (next.zoomNonce !== prev.zoomNonce) { s.zoomRequest = next.zoomFactor; touched = true }
-      if (next.style !== prev.style) { s.styleFrom = prev.style; touched = true }
+      // A style switch never moves the camera (SPEC C1 / acceptance 8); the Fit control re-frames for the new style.
+      if (next.style !== prev.style) touched = true
+      if (next.inspectorOpen !== prev.inspectorOpen) { s.coverTarget = sheetCover(); touched = true }
       if (next.tool !== prev.tool) { applyTool(next.tool); s.publish(); touched = true }
       if (next.reducedMotion !== prev.reducedMotion) { controls.enableDamping = !next.reducedMotion; touched = true }
       if (next.autoRotate !== prev.autoRotate) touched = true
@@ -187,6 +213,13 @@ export function CameraRig() {
     invalidate()
     return () => {
       unsub()
+      unsubUI()
+      window.removeEventListener('resize', onResizeWin)
+      window.visualViewport?.removeEventListener('resize', onResizeWin)
+      camera.clearViewOffset()
+      camera.zoom = 1
+      s.cover = s.coverApplied = 0
+      s.coverSize = ''
       controls.removeEventListener('change', onChange)
       controls.removeEventListener('start', onStart)
       controls.removeEventListener('end', onEnd)
@@ -214,16 +247,16 @@ export function CameraRig() {
     if (!c) return
     const store = useStudio.getState()
     const hide = !store.showHydrogens
-    if (s.limitMol === store.mol && s.limitStyle === store.style && s.limitAspect === camera.aspect && s.limitHide === hide) return
+    if (s.limitMol === store.mol && s.limitAspect === camera.aspect && s.limitHide === hide) return
     s.limitMol = store.mol
-    s.limitStyle = store.style
     s.limitAspect = camera.aspect
     s.limitHide = hide
     const pts = scratch.current.pts
-    ctx.model.collectFit(store.style, pts)
+    // Limits come from the largest style (space filling) so a style switch never changes them, hence never the camera.
+    ctx.model.collectFit('spacefill', pts)
     const fit = computeFit(pts, dirTuple(DEFAULT_DIR), FOV, camera.aspect, FIT_FILL)
-    c.minDistance = fit.distance / ZOOM_IN_FACTOR
-    c.maxDistance = fit.distance * ZOOM_IN_FACTOR
+    c.minDistance = MIN_CAMERA_DISTANCE // absolute, from the orbit target (SPEC B.1 / E13)
+    c.maxDistance = Math.max(MAX_DISTANCE_RADII * boundingRadius(pts), fit.distance * 2)
     camera.near = clamp(c.minDistance * 0.08, 0.02, 0.5)
     camera.far = fit.distance * 40 + 100
     camera.updateProjectionMatrix()
@@ -295,23 +328,6 @@ export function CameraRig() {
       frame(kind, false)
     }
 
-    if (s.styleFrom !== null) {
-      // A new style changes the silhouette (space filling is much larger). Re-frame when the molecule would overflow,
-      // or when the camera was sitting at the fitted distance of the previous style; a deliberate zoom is left alone.
-      const from = s.styleFrom
-      s.styleFrom = null
-      if (s.pendingFit === 'none' && !s.tween) {
-        const cur = camera.position.clone().sub(c.target)
-        const dir = cur.clone().normalize()
-        const pts = scratch.current.pts
-        ctx.model.collectFit(store.style, pts)
-        const fitNew = computeFit(pts, dirTuple(dir), FOV, camera.aspect, FIT_FILL)
-        ctx.model.collectFit(from, pts)
-        const fitOld = computeFit(pts, dirTuple(dir), FOV, camera.aspect, FIT_FILL)
-        if (cur.length() < fitNew.distance * 0.97 || Math.abs(cur.length() / fitOld.distance - 1) < 0.2) frame('fit', false)
-      }
-    }
-
     if (s.zoomRequest !== null) {
       const f = s.zoomRequest
       s.zoomRequest = null
@@ -322,6 +338,23 @@ export function CameraRig() {
       s.mode = 'zoom'
       if (store.reducedMotion) { s.chase = null; s.setDistance(next) }
       else s.chase = next
+    }
+
+    // keep the molecule visible above the mobile info sheet: shift (and shrink) the view into the uncovered part of the canvas
+    if (Math.abs(s.cover - s.coverTarget) > 0.5) {
+      s.cover = store.reducedMotion ? s.coverTarget : s.cover + (s.coverTarget - s.cover) * (1 - Math.exp(-Math.min(delta, 0.05) / 0.09))
+      state.invalidate()
+    } else s.cover = s.coverTarget
+    const sizeKey = `${width}x${height}`
+    if (s.cover !== s.coverApplied || (s.cover > 0 && sizeKey !== s.coverSize)) {
+      s.coverApplied = s.cover
+      s.coverSize = sizeKey
+      if (s.cover < 0.5) { camera.clearViewOffset(); camera.zoom = 1 }
+      else {
+        camera.zoom = Math.max(0.38, (height - s.cover) / height)
+        camera.setViewOffset(width, height, 0, s.cover / 2, width, height)
+      }
+      camera.updateProjectionMatrix()
     }
 
     const { q, qi } = scratch.current

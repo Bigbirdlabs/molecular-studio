@@ -1,4 +1,5 @@
 import { useId, type ReactNode } from 'react'
+import { useRoving } from './roving'
 import { ChevronRight } from 'lucide-react'
 import { Tip, type TipSide } from './Tip'
 import { useT, type TrKey } from './i18n'
@@ -6,8 +7,11 @@ import { useT, type TrKey } from './i18n'
 /** Class fragments shared by every interactive control so the chrome stays visually consistent. */
 export const ctl = {
   base: 'inline-flex shrink-0 select-none items-center justify-center gap-1.5 rounded-ctl text-ink-dim transition-colors duration-150 ease-ui',
-  hover: 'hover:bg-surface-3 hover:text-ink',
-  active: 'bg-accent/15 text-accent ring-1 ring-inset ring-accent-dim hover:bg-accent/20 hover:text-accent',
+  hover: 'hover:bg-surface-3 hover:text-ink active:bg-surface-4',
+  active: 'bg-accent-subtle text-accent ring-1 ring-inset ring-accent-dim hover:bg-surface-3 hover:text-accent',
+  /** Tool state: accent fill plus a 2px inner accent bar (never colour alone). */
+  barLeft: 'relative bg-accent-subtle text-accent hover:bg-surface-3 hover:text-accent before:absolute before:inset-y-1.5 before:left-0.5 before:w-0.5 before:rounded-full before:bg-accent',
+  barBottom: 'relative bg-accent-subtle text-accent hover:bg-surface-3 hover:text-accent before:absolute before:inset-x-2 before:bottom-0.5 before:h-0.5 before:rounded-full before:bg-accent',
   disabled: 'opacity-40 hover:bg-transparent hover:text-ink-dim',
 }
 
@@ -28,13 +32,17 @@ interface IconButtonProps {
   className?: string
   /** Optional visible text after the icon. */
   text?: string
+  /** Rendered after the text (menu chevron). */
+  trailing?: ReactNode
+  /** Active state drawn as a 2px inner accent bar on this edge instead of a ring. */
+  bar?: 'left' | 'bottom'
   'aria-haspopup'?: 'menu' | 'dialog'
   'aria-expanded'?: boolean
   buttonRef?: React.Ref<HTMLButtonElement>
 }
 
 export function IconButton({
-  label, icon, onClick, shortcut, active, toggle, disabled, disabledReason, tip = 'right', busy, className = '', text, buttonRef, ...aria
+  label, icon, onClick, shortcut, active, toggle, disabled, disabledReason, tip = 'right', busy, className = '', text, trailing, bar, buttonRef, ...aria
 }: IconButtonProps) {
   const name = disabled && disabledReason ? `${label} (${disabledReason})` : label
   const button = (
@@ -48,10 +56,11 @@ export function IconButton({
       aria-haspopup={aria['aria-haspopup']}
       aria-expanded={aria['aria-expanded']}
       onClick={() => { if (!disabled) onClick?.() }}
-      className={`${ctl.base} ${text ? 'h-(--hit) px-2' : 'size-(--hit)'} ${active ? ctl.active : ctl.hover} ${disabled ? ctl.disabled : ''} ${className}`}
+      className={`${ctl.base} ${text ? 'h-(--hit) px-2' : 'size-(--hit)'} ${active ? (bar === 'left' ? ctl.barLeft : bar === 'bottom' ? ctl.barBottom : ctl.active) : ctl.hover} ${disabled ? ctl.disabled : ''} ${className}`}
     >
       {icon}
       {text && <span className="text-ui">{text}</span>}
+      {trailing}
     </button>
   )
   if (tip === false) return button
@@ -65,10 +74,11 @@ export function IconButton({
 interface SegOption<T> { value: T; label: string; icon?: ReactNode; title?: string }
 
 export function Segmented<T extends string | number>({
-  value, options, onChange, ariaLabel, className = '', fill, iconOnly,
-}: { value: T; options: SegOption<T>[]; onChange: (v: T) => void; ariaLabel: string; className?: string; fill?: boolean; iconOnly?: boolean }) {
+  value, options, onChange, ariaLabel, className = '', fill, iconOnly, hud,
+}: { value: T; options: SegOption<T>[]; onChange: (v: T) => void; ariaLabel: string; className?: string; fill?: boolean; iconOnly?: boolean; hud?: boolean }) {
+  const roving = useRoving<HTMLDivElement>({ orientation: 'both', select: true })
   return (
-    <div role="radiogroup" aria-label={ariaLabel} className={`flex rounded-ctl border border-line bg-surface-0 p-0.5 ${fill ? 'w-full' : 'w-fit max-w-full'} ${className}`}>
+    <div ref={roving.ref} onKeyDown={roving.onKeyDown} onFocus={roving.onFocus} role="radiogroup" aria-label={ariaLabel} className={`flex rounded-ctl border border-line-ctl p-0.5 ${hud ? 'bg-hud' : 'bg-surface-0'} ${fill ? 'w-full' : 'w-fit max-w-full'} ${className}`}>
       {options.map((o) => {
         const on = o.value === value
         return (
@@ -79,8 +89,8 @@ export function Segmented<T extends string | number>({
             aria-checked={on}
             title={o.title}
             onClick={() => onChange(o.value)}
-            className={`inline-flex min-h-[calc(var(--hit)-6px)] items-center justify-center gap-1.5 rounded-[4px] px-2.5 text-ui transition-colors duration-150 ease-ui ${fill ? 'flex-1' : ''} ${
-              on ? 'bg-surface-3 text-ink ring-1 ring-inset ring-line-strong' : 'text-ink-dim hover:text-ink'
+            className={`inline-flex min-h-[calc(var(--hit)-6px)] items-center justify-center gap-1.5 rounded-[4px] whitespace-nowrap transition-colors ${hud ? 'px-2 text-label' : 'px-2.5 text-ui'} duration-150 ease-ui ${fill ? 'flex-1' : ''} ${
+              on ? 'bg-surface-4 text-ink ring-1 ring-inset ring-line-strong' : 'text-ink-dim hover:text-ink'
             }`}
           >
             {o.icon}
@@ -164,7 +174,7 @@ export function PrimaryButton({
   type?: 'button' | 'submit'; variant?: 'solid' | 'quiet' | 'danger'; className?: string
 }) {
   const variants = {
-    solid: 'bg-accent text-surface-0 hover:bg-[#7ad4ec] font-medium',
+    solid: 'bg-accent text-on-accent hover:bg-accent-hover font-medium',
     quiet: 'border border-line-strong bg-surface-2 text-ink hover:bg-surface-3',
     danger: 'border border-danger/50 text-danger hover:bg-danger/10',
   }

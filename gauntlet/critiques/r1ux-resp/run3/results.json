@@ -1,0 +1,808 @@
+{
+ "results": [
+  {
+   "name": "A-m390",
+   "s0": {
+    "tool": "select",
+    "sel": [],
+    "insp": false,
+    "sheetTop": null,
+    "sheetVisibleH": null,
+    "role": null,
+    "active": "BODY",
+    "lang": "tr"
+   },
+   "tapInfo": [
+    316,
+    26,
+    "Molekül bilgisi",
+    44,
+    44
+   ],
+   "s1": {
+    "tool": "select",
+    "sel": [],
+    "insp": true,
+    "sheetTop": 712,
+    "sheetVisibleH": 132,
+    "role": "complementary",
+    "active": "Molekül bilgisini kapat",
+    "lang": "tr"
+   },
+   "m1": {
+    "iw": 390,
+    "ih": 844,
+    "sw": 390,
+    "sh": 844,
+    "bodySw": 390,
+    "layout": "mobile",
+    "rm": "true",
+    "lang": "tr",
+    "hit": "44px",
+    "nCtrls": 22,
+    "small": [],
+    "small24": [],
+    "offscreen": [],
+    "noName": [],
+    "sheet": {
+     "top": 712,
+     "h": 760,
+     "label": "Molekül"
+    },
+    "canvas": {
+     "tabIndex": -1,
+     "w": 390,
+     "h": 706
+    },
+    "viewport": [
+     0,
+     53,
+     390,
+     706
+    ],
+    "inspector": null,
+    "trTexts": [
+     "Otomatik kayıt açık",
+     "Seç",
+     "4 bağ",
+     "Seçim yok",
+     "Molekül",
+     "Molekül formülü (Hill)",
+     "Molar kütle",
+     "Monoizotopik kütle",
+     "Atom sayısı",
+     "Ağır atom sayısı",
+     "Bağ sayısı",
+     "Yapı",
+     "Tekli bağ",
+     "Doymamışlık derecesi",
+     "Dönebilen bağ",
+     "Hidrojen bağı",
+     "H bağı vericisi",
+     "H bağı alıcısı",
+     "Sayım kuralı: verici = H taşıyan N/O atomu; alıcı = tüm N ve",
+     "Element bileşimi",
+     "Tanınan fonksiyonel grup yok",
+     "Lipinski kuralları",
+     "Üç kuralı da sağlıyor",
+     "Değerlik sorunları",
+     "Değerlik sorunu yok"
+    ],
+    "trAttrs": [
+     "Proje adı",
+     "Adsız proje",
+     "Otomatik kayıt açık",
+     "Molekül bilgisini kapat",
+     "Diğer seçenekler",
+     "3B molekül görünümü",
+     "Araçlar",
+     "Seç",
+     "Döndür",
+     "Kaydır",
+     "Yakınlaştır",
+     "Bağ Ekle",
+     "Ölç",
+     "Molekül",
+     "Formülden hesaplanan halka ve çoklu bağ toplamı.",
+     "Halkada olmayan, terminal olmayan tekli bağlar.",
+     "Sayım kuralı: verici = H taşıyan N/O atomu; alıcı = tüm N ve O atomları."
+    ],
+    "toolbars": 0,
+    "live": [
+     "flex min-h-(--hit) shrink-0 it",
+     "flex items-center gap-2 pb-1 t"
+    ],
+    "dockBtns": [
+     "Seç [44x44 @8,794]",
+     "Döndür [44x44 @54,794]",
+     "Kaydır [44x44 @100,794]",
+     "Yakınlaştır [44x44 @146,794]",
+     "Atom Ekle [44x44 @192,794]",
+     "Bağ Ekle [44x44 @238,794]",
+     "Sil [44x44 @284,794]",
+     "Ölç [44x44 @330,794]",
+     "Eylemler [44x44 @340,794]"
+    ]
+   },
+   "shot-1-info": "D:\\molecular-studio\\gauntlet\\critiques\\r1ux-resp\\run3\\A-m390-1-info.png",
+   "s2": {
+    "tool": "select",
+    "sel": [
+     1
+    ],
+    "insp": true,
+    "sheetTop": 712,
+    "sheetVisibleH": 132,
+    "role": "complementary",
+    "active": "BODY",
+    "lang": "tr"
+   },
+   "shot-2-tapC": "D:\\molecular-studio\\gauntlet\\critiques\\r1ux-resp\\run3\\A-m390-2-tapC.png",
+   "dragUp": 712,
+   "s3": {
+    "tool": "select",
+    "sel": [
+     1
+    ],
+    "insp": true,
+    "sheetTop": 422,
+    "sheetVisibleH": 422,
+    "role": "complementary",
+    "active": "Molekül",
+    "lang": "tr"
+   },
+   "shot-3-half": "D:\\molecular-studio\\gauntlet\\critiques\\r1ux-resp\\run3\\A-m390-3-half.png",
+   "esc1": "Escape",
+   "s4": {
+    "tool": "select",
+    "sel": [],
+    "insp": false,
+    "sheetTop": null,
+    "sheetVisibleH": null,
+    "role": null,
+    "active": "Molekül bilgisi",
+    "lang": "tr"
+   },
+   "shot-4-esc": "D:\\molecular-studio\\gauntlet\\critiques\\r1ux-resp\\run3\\A-m390-4-esc.png",
+   "tapAtom": [
+    214,
+    816,
+    "Atom Ekle",
+    44,
+    44
+   ],
+   "s5": {
+    "tool": "atom",
+    "sel": [],
+    "insp": false,
+    "sheetTop": null,
+    "sheetVisibleH": null,
+    "role": null,
+    "active": "Atom Ekle",
+    "lang": "tr"
+   },
+   "m5": {
+    "iw": 390,
+    "ih": 844,
+    "sw": 390,
+    "sh": 844,
+    "bodySw": 390,
+    "layout": "mobile",
+    "rm": "true",
+    "lang": "tr",
+    "hit": "44px",
+    "nCtrls": 31,
+    "small": [
+     "Tekli [38x38 @11,712]",
+     "Çift [38x38 @49,712]",
+     "Üçlü [38x38 @87,712]"
+    ],
+    "small24": [],
+    "offscreen": [],
+    "noName": [],
+    "sheet": null,
+    "canvas": {
+     "tabIndex": -1,
+     "w": 390,
+     "h": 649
+    },
+    "viewport": [
+     0,
+     53,
+     390,
+     649
+    ],
+    "inspector": null,
+    "trTexts": [
+     "Otomatik kayıt açık",
+     "Çift",
+     "Üçlü",
+     "4 bağ",
+     "Seçim yok"
+    ],
+    "trAttrs": [
+     "Proje adı",
+     "Adsız proje",
+     "Otomatik kayıt açık",
+     "Molekül bilgisi",
+     "Diğer seçenekler",
+     "3B molekül görünümü",
+     "Bağ derecesi",
+     "Çift",
+     "Üçlü",
+     "Kükürt (S, 16)",
+     "İyot (I, 53)",
+     "Araçlar",
+     "Seç",
+     "Döndür",
+     "Kaydır",
+     "Yakınlaştır",
+     "Bağ Ekle",
+     "Ölç"
+    ],
+    "toolbars": 0,
+    "live": [
+     "flex min-h-(--hit) shrink-0 it"
+    ],
+    "dockBtns": [
+     "Seç [44x44 @8,794]",
+     "Döndür [44x44 @54,794]",
+     "Kaydır [44x44 @100,794]",
+     "Yakınlaştır [44x44 @146,794]",
+     "Atom Ekle [44x44 @192,794]",
+     "Bağ Ekle [44x44 @238,794]",
+     "Sil [44x44 @284,794]",
+     "Ölç [44x44 @330,794]",
+     "Eylemler [44x44 @340,794]"
+    ]
+   },
+   "shot-5-atomtool": "D:\\molecular-studio\\gauntlet\\critiques\\r1ux-resp\\run3\\A-m390-5-atomtool.png",
+   "tapActions": [
+    362,
+    816,
+    "Eylemler",
+    44,
+    44
+   ],
+   "shot-6-actions": "D:\\molecular-studio\\gauntlet\\critiques\\r1ux-resp\\run3\\A-m390-6-actions.png",
+   "esc2": "Escape",
+   "tapMore": [
+    364,
+    26,
+    "Diğer seçenekler",
+    44,
+    44
+   ],
+   "shot-7-more": "D:\\molecular-studio\\gauntlet\\critiques\\r1ux-resp\\run3\\A-m390-7-more.png",
+   "tapSettings": [
+    258,
+    895.375,
+    "Ayarlar",
+    246,
+    44
+   ],
+   "s8": {
+    "tool": "atom",
+    "sel": [],
+    "insp": false,
+    "sheetTop": null,
+    "sheetVisibleH": null,
+    "role": null,
+    "active": "BODY",
+    "lang": "tr"
+   },
+   "m8": {
+    "iw": 390,
+    "ih": 844,
+    "sw": 390,
+    "sh": 844,
+    "bodySw": 390,
+    "layout": "mobile",
+    "rm": "true",
+    "lang": "tr",
+    "hit": "44px",
+    "nCtrls": 31,
+    "small": [
+     "Tekli [38x38 @11,712]",
+     "Çift [38x38 @49,712]",
+     "Üçlü [38x38 @87,712]"
+    ],
+    "small24": [],
+    "offscreen": [],
+    "noName": [],
+    "sheet": null,
+    "canvas": {
+     "tabIndex": -1,
+     "w": 390,
+     "h": 649
+    },
+    "viewport": [
+     0,
+     53,
+     390,
+     649
+    ],
+    "inspector": null,
+    "trTexts": [
+     "Otomatik kayıt açık",
+     "Çift",
+     "Üçlü",
+     "4 bağ",
+     "Seçim yok"
+    ],
+    "trAttrs": [
+     "Proje adı",
+     "Adsız proje",
+     "Otomatik kayıt açık",
+     "Molekül bilgisi",
+     "Diğer seçenekler",
+     "3B molekül görünümü",
+     "Bağ derecesi",
+     "Çift",
+     "Üçlü",
+     "Kükürt (S, 16)",
+     "İyot (I, 53)",
+     "Araçlar",
+     "Seç",
+     "Döndür",
+     "Kaydır",
+     "Yakınlaştır",
+     "Bağ Ekle",
+     "Ölç"
+    ],
+    "toolbars": 0,
+    "live": [
+     "flex min-h-(--hit) shrink-0 it"
+    ],
+    "dockBtns": [
+     "Seç [44x44 @8,794]",
+     "Döndür [44x44 @54,794]",
+     "Kaydır [44x44 @100,794]",
+     "Yakınlaştır [44x44 @146,794]",
+     "Atom Ekle [44x44 @192,794]",
+     "Bağ Ekle [44x44 @238,794]",
+     "Sil [44x44 @284,794]",
+     "Ölç [44x44 @330,794]",
+     "Eylemler [44x44 @340,794]"
+    ]
+   },
+   "shot-8-settings": "D:\\molecular-studio\\gauntlet\\critiques\\r1ux-resp\\run3\\A-m390-8-settings.png"
+  },
+  {
+   "name": "B-m390lib",
+   "more": [
+    364,
+    26,
+    "Diğer seçenekler"
+   ],
+   "shot-1-overflow": "D:\\molecular-studio\\gauntlet\\critiques\\r1ux-resp\\run3\\B-m390lib-1-overflow.png",
+   "m1": {
+    "iw": 390,
+    "ih": 844,
+    "sw": 390,
+    "sh": 844,
+    "bodySw": 390,
+    "layout": "mobile",
+    "rm": "true",
+    "lang": "tr",
+    "hit": "44px",
+    "nCtrls": 31,
+    "small": [],
+    "small24": [],
+    "offscreen": [],
+    "noName": [],
+    "sheet": null,
+    "canvas": {
+     "tabIndex": -1,
+     "w": 390,
+     "h": 706
+    },
+    "viewport": [
+     0,
+     53,
+     390,
+     706
+    ],
+    "inspector": null,
+    "trTexts": [
+     "Otomatik kayıt açık",
+     "Seç",
+     "4 bağ",
+     "Seçim yok",
+     "Kütüphane",
+     "Şimdi kaydet",
+     "Dosya aç (MOL, SDF, XYZ)",
+     "PNG ekran görüntüsü",
+     "Gösterim biçimi",
+     "Top-Çubuk",
+     "Çubuk",
+     "Görünüm seçenekleri",
+     "Hidrojenleri göster",
+     "Kısmi yükler (yaklaşık)",
+     "Otomatik döndür",
+     "Kamerayı sıfırla"
+    ],
+    "trAttrs": [
+     "Proje adı",
+     "Adsız proje",
+     "Otomatik kayıt açık",
+     "Molekül bilgisi",
+     "Diğer seçenekler",
+     "3B molekül görünümü",
+     "Araçlar",
+     "Seç",
+     "Döndür",
+     "Kaydır",
+     "Yakınlaştır",
+     "Bağ Ekle",
+     "Ölç",
+     "Hareket azaltma açıkken kullanılamaz"
+    ],
+    "toolbars": 0,
+    "live": [
+     "flex min-h-(--hit) shrink-0 it"
+    ],
+    "dockBtns": [
+     "Seç [44x44 @8,794]",
+     "Döndür [44x44 @54,794]",
+     "Kaydır [44x44 @100,794]",
+     "Yakınlaştır [44x44 @146,794]",
+     "Atom Ekle [44x44 @192,794]",
+     "Bağ Ekle [44x44 @238,794]",
+     "Sil [44x44 @284,794]",
+     "Ölç [44x44 @330,794]",
+     "Eylemler [44x44 @340,794]"
+    ]
+   },
+   "lib": [
+    258,
+    81,
+    "Kütüphane",
+    246,
+    44
+   ],
+   "s2": {
+    "tool": "select",
+    "sel": [],
+    "insp": false,
+    "sheetTop": 84,
+    "sheetVisibleH": 760,
+    "role": "dialog",
+    "active": "BODY",
+    "lang": "tr"
+   },
+   "m2": {
+    "iw": 390,
+    "ih": 844,
+    "sw": 390,
+    "sh": 844,
+    "bodySw": 390,
+    "layout": "mobile",
+    "rm": "true",
+    "lang": "tr",
+    "hit": "44px",
+    "nCtrls": 15,
+    "small": [],
+    "small24": [],
+    "offscreen": [],
+    "noName": [],
+    "sheet": null,
+    "canvas": {
+     "tabIndex": -1,
+     "w": 390,
+     "h": 706
+    },
+    "viewport": [
+     0,
+     53,
+     390,
+     706
+    ],
+    "inspector": null,
+    "trTexts": [
+     "Otomatik kayıt açık",
+     "Seç",
+     "4 bağ",
+     "Seçim yok",
+     "Molekül kütüphanesi",
+     "Kütüphane yükleniyor…"
+    ],
+    "trAttrs": [
+     "Proje adı",
+     "Adsız proje",
+     "Otomatik kayıt açık",
+     "Molekül bilgisi",
+     "Diğer seçenekler",
+     "3B molekül görünümü",
+     "Araçlar",
+     "Seç",
+     "Döndür",
+     "Kaydır",
+     "Yakınlaştır",
+     "Bağ Ekle",
+     "Ölç",
+     "Molekül kütüphanesi"
+    ],
+    "toolbars": 0,
+    "live": [
+     "flex min-h-(--hit) shrink-0 it"
+    ],
+    "dockBtns": [
+     "Seç [44x44 @8,794]",
+     "Döndür [44x44 @54,794]",
+     "Kaydır [44x44 @100,794]",
+     "Yakınlaştır [44x44 @146,794]",
+     "Atom Ekle [44x44 @192,794]",
+     "Bağ Ekle [44x44 @238,794]",
+     "Sil [44x44 @284,794]",
+     "Ölç [44x44 @330,794]",
+     "Eylemler [44x44 @340,794]"
+    ]
+   },
+   "shot-2-library": "D:\\molecular-studio\\gauntlet\\critiques\\r1ux-resp\\run3\\B-m390lib-2-library.png"
+  },
+  {
+   "name": "C-t820",
+   "tapInfo": [
+    790,
+    25.5,
+    "Molekül bilgisi",
+    44,
+    44
+   ],
+   "animQuick": "1",
+   "s1": {
+    "tool": "select",
+    "sel": [],
+    "insp": true,
+    "sheetTop": null,
+    "sheetVisibleH": null,
+    "role": null,
+    "active": "Molekül bilgisini kapat",
+    "lang": "tr"
+   },
+   "m1": {
+    "iw": 820,
+    "ih": 1180,
+    "sw": 820,
+    "sh": 1180,
+    "bodySw": 820,
+    "layout": "tablet",
+    "rm": "true",
+    "lang": "tr",
+    "hit": "44px",
+    "nCtrls": 31,
+    "small": [],
+    "small24": [],
+    "offscreen": [],
+    "noName": [],
+    "sheet": null,
+    "canvas": {
+     "tabIndex": -1,
+     "w": 760,
+     "h": 1102
+    },
+    "viewport": [
+     60,
+     52,
+     760,
+     1102
+    ],
+    "inspector": [
+     460,
+     360
+    ],
+    "trTexts": [
+     "Otomatik kayıt açık",
+     "Molekül",
+     "Molekül formülü (Hill)",
+     "Molar kütle",
+     "Monoizotopik kütle",
+     "Atom sayısı",
+     "Ağır atom sayısı",
+     "Bağ sayısı",
+     "Yapı",
+     "Tekli bağ",
+     "Doymamışlık derecesi",
+     "Dönebilen bağ",
+     "Hidrojen bağı",
+     "H bağı vericisi",
+     "H bağı alıcısı",
+     "Sayım kuralı: verici = H taşıyan N/O atomu; alıcı = tüm N ve",
+     "Element bileşimi",
+     "Tanınan fonksiyonel grup yok",
+     "Lipinski kuralları",
+     "Üç kuralı da sağlıyor",
+     "Değerlik sorunları",
+     "Değerlik sorunu yok",
+     "Top-Çubuk",
+     "4 bağ",
+     "Seçim yok",
+     "Seç",
+     "Atom veya bağa tıklayarak seçin; atomu sürükleyerek taşıyın"
+    ],
+    "trAttrs": [
+     "Proje adı",
+     "Adsız proje",
+     "Otomatik kayıt açık",
+     "Kütüphane",
+     "Görünüm",
+     "Molekül bilgisini kapat",
+     "Araçlar",
+     "Seç",
+     "Döndür",
+     "Kaydır",
+     "Yakınlaştır",
+     "Bağ Ekle",
+     "Ölç",
+     "Geometriyi düzenle (basit kuvvet alanı, yaklaşık)",
+     "Hidrojenleri kaldır",
+     "Yeni molekül",
+     "Kamerayı sıfırla",
+     "Yakınlaş",
+     "Uzaklaş",
+     "3B molekül görünümü",
+     "Molekül",
+     "Formülden hesaplanan halka ve çoklu bağ toplamı.",
+     "Halkada olmayan, terminal olmayan tekli bağlar.",
+     "Sayım kuralı: verici = H taşıyan N/O atomu; alıcı = tüm N ve O atomları."
+    ],
+    "toolbars": 0,
+    "live": [
+     "flex min-h-(--hit) shrink-0 it"
+    ],
+    "dockBtns": [
+     "Seç [44x44 @8,60]",
+     "Döndür [44x44 @8,108]",
+     "Kaydır [44x44 @8,156]",
+     "Yakınlaştır [44x44 @8,204]",
+     "Atom Ekle [44x44 @8,252]",
+     "Bağ Ekle [44x44 @8,300]",
+     "Sil [44x44 @8,348]",
+     "Ölç [44x44 @8,396]",
+     "Geometriyi düzenle (basit kuvvet alanı,  [44x44 @8,457]",
+     "Hidrojen ekle [44x44 @8,505]",
+     "Hidrojenleri kaldır [44x44 @8,553]",
+     "Yeni molekül [44x44 @8,601]",
+     "Kamerayı sıfırla [44x44 @8,649]",
+     "Yakınlaş [44x44 @8,697]",
+     "Uzaklaş [44x44 @8,745]"
+    ]
+   },
+   "shot-1-drawer": "D:\\molecular-studio\\gauntlet\\critiques\\r1ux-resp\\run3\\C-t820-1-drawer.png",
+   "s2": {
+    "tool": "select",
+    "sel": [
+     1
+    ],
+    "insp": true,
+    "sheetTop": null,
+    "sheetVisibleH": null,
+    "role": null,
+    "active": "BODY",
+    "lang": "tr"
+   },
+   "shot-2-sel": "D:\\molecular-studio\\gauntlet\\critiques\\r1ux-resp\\run3\\C-t820-2-sel.png"
+  },
+  {
+   "name": "C2-t1024",
+   "tapInfo": [
+    994,
+    25.5,
+    "Molekül bilgisi",
+    44,
+    44
+   ],
+   "m1": {
+    "iw": 1024,
+    "ih": 768,
+    "sw": 1024,
+    "sh": 768,
+    "bodySw": 1024,
+    "layout": "tablet",
+    "rm": "true",
+    "lang": "tr",
+    "hit": "44px",
+    "nCtrls": 31,
+    "small": [],
+    "small24": [],
+    "offscreen": [],
+    "noName": [],
+    "sheet": null,
+    "canvas": {
+     "tabIndex": -1,
+     "w": 964,
+     "h": 690
+    },
+    "viewport": [
+     60,
+     52,
+     964,
+     690
+    ],
+    "inspector": [
+     664,
+     360
+    ],
+    "trTexts": [
+     "Otomatik kayıt açık",
+     "Molekül",
+     "Molekül formülü (Hill)",
+     "Molar kütle",
+     "Monoizotopik kütle",
+     "Atom sayısı",
+     "Ağır atom sayısı",
+     "Bağ sayısı",
+     "Yapı",
+     "Tekli bağ",
+     "Doymamışlık derecesi",
+     "Dönebilen bağ",
+     "Hidrojen bağı",
+     "H bağı vericisi",
+     "H bağı alıcısı",
+     "Sayım kuralı: verici = H taşıyan N/O atomu; alıcı = tüm N ve",
+     "Element bileşimi",
+     "Tanınan fonksiyonel grup yok",
+     "Lipinski kuralları",
+     "Üç kuralı da sağlıyor",
+     "Değerlik sorunları",
+     "Değerlik sorunu yok",
+     "Top-Çubuk",
+     "4 bağ",
+     "Seçim yok",
+     "Seç",
+     "Atom veya bağa tıklayarak seçin; atomu sürükleyerek taşıyın"
+    ],
+    "trAttrs": [
+     "Proje adı",
+     "Adsız proje",
+     "Otomatik kayıt açık",
+     "Kütüphane",
+     "Görünüm",
+     "Molekül bilgisini kapat",
+     "Araçlar",
+     "Seç",
+     "Döndür",
+     "Kaydır",
+     "Yakınlaştır",
+     "Bağ Ekle",
+     "Ölç",
+     "Geometriyi düzenle (basit kuvvet alanı, yaklaşık)",
+     "Hidrojenleri kaldır",
+     "Yeni molekül",
+     "Kamerayı sıfırla",
+     "Yakınlaş",
+     "Uzaklaş",
+     "3B molekül görünümü",
+     "Molekül",
+     "Formülden hesaplanan halka ve çoklu bağ toplamı.",
+     "Halkada olmayan, terminal olmayan tekli bağlar.",
+     "Sayım kuralı: verici = H taşıyan N/O atomu; alıcı = tüm N ve O atomları."
+    ],
+    "toolbars": 0,
+    "live": [
+     "flex min-h-(--hit) shrink-0 it"
+    ],
+    "dockBtns": [
+     "Seç [44x44 @8,60]",
+     "Döndür [44x44 @8,108]",
+     "Kaydır [44x44 @8,156]",
+     "Yakınlaştır [44x44 @8,204]",
+     "Atom Ekle [44x44 @8,252]",
+     "Bağ Ekle [44x44 @8,300]",
+     "Sil [44x44 @8,348]",
+     "Ölç [44x44 @8,396]",
+     "Geometriyi düzenle (basit kuvvet alanı,  [44x44 @8,456]",
+     "Hidrojen ekle [44x44 @8,504]",
+     "Hidrojenleri kaldır [44x44 @8,552]",
+     "Yeni molekül [44x44 @8,600]",
+     "Kamerayı sıfırla [44x44 @8,648]",
+     "Yakınlaş [44x44 @8,696]",
+     "Uzaklaş [44x44 @8,744]"
+    ]
+   },
+   "shot-1-drawer": "D:\\molecular-studio\\gauntlet\\critiques\\r1ux-resp\\run3\\C2-t1024-1-drawer.png"
+  }
+ ],
+ "logs": []
+}

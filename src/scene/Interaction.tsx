@@ -3,10 +3,11 @@ import { useThree } from '@react-three/fiber'
 import * as THREE from 'three'
 import { centroid, type Vec3 } from '../chem/molecule'
 import { useStudio, type Tool } from '../store'
-import { CLICK_SLOP_PX } from './theme'
+import { useUI } from '../ui/uiStore'
+import { CLICK_SLOP_PX, CLICK_SLOP_TOUCH_PX, PICK_FLOOR_ATOM_COARSE_PX, PICK_FLOOR_ATOM_FINE_PX, PICK_FLOOR_BOND_PX } from './theme'
 import { useSceneContext } from './sceneContext'
 import { ATOM_LONG_PRESS_EVENT, registerPicker, type AtomLongPressDetail } from './pickApi'
-import type { Pick } from './sceneModel'
+import type { Pick, PickFloors } from './sceneModel'
 
 const LONG_PRESS_MS = 500
 
@@ -25,6 +26,7 @@ interface Down {
   /** Atom this press may drag (select tool) or start a bond from (bond tool). */
   candidate: number | null
   longPressed: boolean
+  slop: number
 }
 
 const isCameraTool = (t: Tool) => t === 'rotate' || t === 'pan' || t === 'zoom'
@@ -80,6 +82,9 @@ export function Interaction() {
       if (c !== lastCursor) { lastCursor = c; canvas.style.cursor = c }
     }
     const touch = () => { ctx.dirty.current = true; invalidate() }
+    /** Rubber band only: no atom / bond buffer needs rewriting. */
+    const touchOverlay = () => { ctx.shellDirty.current = true; invalidate() }
+    const coarseQuery = typeof window.matchMedia === 'function' ? window.matchMedia('(pointer: coarse)') : null
 
     const rayAt = (x: number, y: number): THREE.Ray => {
       const r = canvas.getBoundingClientRect()
@@ -87,9 +92,16 @@ export function Interaction() {
       raycaster.setFromCamera(ndc, camera)
       return raycaster.ray
     }
-    const pickAt = (x: number, y: number): Pick => {
+    const pickAt = (x: number, y: number, coarse = coarseQuery?.matches === true): Pick => {
       const r = rayAt(x, y)
-      return model.pick(r.origin.x, r.origin.y, r.origin.z, r.direction.x, r.direction.y, r.direction.z)
+      // on-screen pick floors (SPEC B.1): CSS px per world unit at depth 1 follows the canvas size and the projection
+      const rect = canvas.getBoundingClientRect()
+      const floors: PickFloors = {
+        kPx: (rect.height * (camera as THREE.PerspectiveCamera).projectionMatrix.elements[5]) / 2,
+        atomPx: coarse ? PICK_FLOOR_ATOM_COARSE_PX : PICK_FLOOR_ATOM_FINE_PX,
+        bondPx: PICK_FLOOR_BOND_PX,
+      }
+      return model.pick(r.origin.x, r.origin.y, r.origin.z, r.direction.x, r.direction.y, r.direction.z, floors)
     }
     const planeHit = (ray: THREE.Ray, plane: THREE.Plane, out: THREE.Vector3): boolean => ray.intersectPlane(plane, out) !== null
     const facingPlane = (through: THREE.Vector3): THREE.Plane => {
@@ -108,7 +120,7 @@ export function Interaction() {
         setCursor(cursorFor(st.tool, null, !!down))
         return
       }
-      const hit = pickAt(e.clientX, e.clientY)
+      const hit = pickAt(e.clientX, e.clientY, e.pointerType === 'touch' ? true : undefined)
       st.setHovered(hit?.kind === 'atom' ? hit.id : null)
       st.setHoveredBond(hit?.kind === 'bond' ? hit.id : null)
       setCursor(cursorFor(st.tool, hit, false))
@@ -122,10 +134,10 @@ export function Interaction() {
         } else if (planeHit(rayAt(e.clientX, e.clientY), facingPlane(tmp2.set(from.p[0], from.p[1], from.p[2])), tmp)) {
           model.rubberTo = [tmp.x, tmp.y, tmp.z]
         }
-        touch()
+        touchOverlay()
       } else if (model.rubberTo) {
         model.rubberTo = null
-        touch()
+        touchOverlay()
       }
     }
     const scheduleHover = (e: PointerEvent) => {
@@ -163,7 +175,7 @@ export function Interaction() {
         const st = useStudio.getState()
         if (st.pendingBondFrom === d.gesture.from) st.clickAtom(d.gesture.from) // cancel: toggles the pending atom off
         model.rubberTo = null
-        touch()
+        touchOverlay()
       }
     }
 
@@ -175,23 +187,27 @@ export function Interaction() {
       if (e.button !== 0) { down = null; return } // middle / right drag belong to the camera
 
       const st = useStudio.getState()
-      const hit = isCameraTool(st.tool) ? null : pickAt(e.clientX, e.clientY)
+      const hit = isCameraTool(st.tool) ? null : pickAt(e.clientX, e.clientY, e.pointerType === 'touch' ? true : undefined)
       let candidate: number | null = null
       // touch: a one-finger drag always orbits (taps select); dragging atoms / drawing bonds is a mouse / pen gesture
       if (hit?.kind === 'atom' && e.pointerType !== 'touch') {
         if (st.tool === 'select') candidate = hit.id
         else if (st.tool === 'bond' && st.pendingBondFrom === null) candidate = hit.id
       }
-      down = { id: e.pointerId, x: e.clientX, y: e.clientY, pick: hit, moved: false, gesture: { kind: 'pending' }, candidate, longPressed: false }
+      down = { id: e.pointerId, x: e.clientX, y: e.clientY, pick: hit, moved: false, gesture: { kind: 'pending' }, candidate, longPressed: false, slop: e.pointerType === 'touch' ? CLICK_SLOP_TOUCH_PX : CLICK_SLOP_PX }
       clearLong()
       if (e.pointerType === 'touch' && hit?.kind === 'atom') {
-        // touch long-press on an atom: select it and tell the UI (quick actions: change element / delete)
+        // touch long-press on an atom: select it and reveal the inspector sheet, whose atom card carries the quick actions
+        // (change element, formal charge, delete); the event stays available for a dedicated UI listener
         const id = hit.id, cx = e.clientX, cy = e.clientY
         longTimer = window.setTimeout(() => {
           longTimer = 0
           if (!down || down.moved || down.id !== e.pointerId) return
           down.longPressed = true
-          useStudio.getState().setSelection([id])
+          const studio = useStudio.getState()
+          studio.setSelection([id])
+          useUI.getState().setInfoSnap('half')
+          studio.setInspectorOpen(true)
           window.dispatchEvent(new CustomEvent<AtomLongPressDetail>(ATOM_LONG_PRESS_EVENT, { detail: { id, clientX: cx, clientY: cy } }))
         }, LONG_PRESS_MS)
       }
@@ -204,7 +220,7 @@ export function Interaction() {
     const onMove = (e: PointerEvent) => {
       const d = down
       if (d && e.pointerId === d.id) {
-        if (!d.moved && Math.hypot(e.clientX - d.x, e.clientY - d.y) > CLICK_SLOP_PX) { d.moved = true; clearLong() }
+        if (!d.moved && Math.hypot(e.clientX - d.x, e.clientY - d.y) > d.slop) { d.moved = true; clearLong() }
         if (d.moved && d.candidate !== null) {
           const st = useStudio.getState()
           if (d.gesture.kind === 'pending') {
@@ -251,7 +267,7 @@ export function Interaction() {
 
       if (d.gesture.kind === 'bond-drag') {
         const from = d.gesture.from
-        const hit = pickAt(e.clientX, e.clientY)
+        const hit = pickAt(e.clientX, e.clientY, e.pointerType === 'touch' ? true : undefined)
         down = null
         if (ctx.controls.current) ctx.controls.current.enabled = true
         model.rubberTo = null
@@ -270,7 +286,7 @@ export function Interaction() {
       const st = useStudio.getState()
       if (st.tool === 'zoom') { st.zoomBy(e.altKey || e.shiftKey ? 1 / 1.5 : 1.5); return }
       if (isCameraTool(st.tool)) return
-      const hit = pickAt(e.clientX, e.clientY)
+      const hit = pickAt(e.clientX, e.clientY, e.pointerType === 'touch' ? true : undefined)
       if (hit?.kind === 'atom') st.clickAtom(hit.id, e.shiftKey || e.ctrlKey || e.metaKey)
       else if (hit?.kind === 'bond') st.clickBond(hit.id)
       else {
@@ -283,7 +299,7 @@ export function Interaction() {
       lastMove = null
       const st = useStudio.getState()
       st.setHovered(null); st.setHoveredBond(null)
-      if (model.rubberTo) { model.rubberTo = null; touch() }
+      if (model.rubberTo) { model.rubberTo = null; touchOverlay() }
     }
 
     canvas.addEventListener('pointermove', onMove)
@@ -297,9 +313,9 @@ export function Interaction() {
     const unsub = useStudio.subscribe((s, prev) => {
       if (s.tool !== prev.tool) {
         applyBaseCursor()
-        if (model.rubberTo) { model.rubberTo = null; touch() }
+        if (model.rubberTo) { model.rubberTo = null; touchOverlay() }
       }
-      if (s.pendingBondFrom !== prev.pendingBondFrom && s.pendingBondFrom === null && model.rubberTo) { model.rubberTo = null; touch() }
+      if (s.pendingBondFrom !== prev.pendingBondFrom && s.pendingBondFrom === null && model.rubberTo) { model.rubberTo = null; touchOverlay() }
     })
 
     return () => {

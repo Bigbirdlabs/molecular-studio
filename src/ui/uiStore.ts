@@ -15,6 +15,9 @@ interface UIState {
   /** Mobile: snap position of the molecule-info bottom sheet. */
   infoSnap: SheetSnap
   setInfoSnap: (s: SheetSnap) => void
+  /** Mobile: height (px) of the bottom chrome (tool options, status bar, dock) that the info sheet rests on. */
+  chromeBottom: number
+  setChromeBottom: (px: number) => void
 }
 
 export const useUI = create<UIState>((set) => ({
@@ -23,4 +26,6 @@ export const useUI = create<UIState>((set) => ({
   closeDialog: () => set({ dialog: null }),
   infoSnap: 'peek',
   setInfoSnap: (infoSnap) => set({ infoSnap }),
+  chromeBottom: 0,
+  setChromeBottom: (chromeBottom) => set((s) => (s.chromeBottom === chromeBottom ? s : { chromeBottom })),
 }))

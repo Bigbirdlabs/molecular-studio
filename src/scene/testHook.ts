@@ -98,7 +98,7 @@ export function installTestHook(ctx: SceneContext, rig: MoleculeRig, gl: THREE.W
   const benchUpdate = (iterations: number): number => {
     const view: ViewState = {
       selection: new Set(), selectedBond: null, hovered: null, hoveredBond: null, pendingFrom: null, measure: [],
-      showLabels: false, showCharges: false, autoH: true,
+      showLabels: false, showCharges: false, autoH: true, tool: 'select',
     }
     const t0 = performance.now()
     for (let i = 0; i < iterations; i++) rig.update(ctx.model, view)

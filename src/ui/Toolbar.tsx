@@ -1,7 +1,5 @@
 import { useEffect, useRef, useState, type ReactNode } from 'react'
-import {
-  Eraser, Focus, Hand, Loader2, MousePointer2, Rotate3d, Ruler, ScanSearch, Wand2, FilePlus, ZoomIn, ZoomOut, Ellipsis,
-} from 'lucide-react'
+import { Eraser, Hand, Loader2, MousePointer2, Rotate3d, Ruler, Wrench, FilePlus, ZoomIn, Ellipsis } from 'lucide-react'
 import { useStudio, type Tool } from '../store'
 import type { BondOrder } from '../chem/molecule'
 import { elementName, useT, type TFn, type TrKey } from './i18n'
@@ -10,7 +8,8 @@ import { AtomPlusIcon, BondIcon, HydrogenIcon } from './icons'
 import { ElementPicker } from './ElementPicker'
 import { Menu, type MenuEntry } from './Menu'
 import { TOOL_KEYS } from './shortcuts'
-import type { Layout } from './layout'
+import { useMediaQuery, type Layout } from './layout'
+import { useRoving } from './roving'
 
 const ICON_SIZE = 18
 
@@ -18,7 +17,7 @@ const TOOL_ICONS: Record<Tool, ReactNode> = {
   select: <MousePointer2 size={ICON_SIZE} aria-hidden />,
   rotate: <Rotate3d size={ICON_SIZE} aria-hidden />,
   pan: <Hand size={ICON_SIZE} aria-hidden />,
-  zoom: <ScanSearch size={ICON_SIZE} aria-hidden />,
+  zoom: <ZoomIn size={ICON_SIZE} aria-hidden />,
   atom: <AtomPlusIcon size={ICON_SIZE} />,
   bond: <BondIcon size={ICON_SIZE} />,
   erase: <Eraser size={ICON_SIZE} aria-hidden />,
@@ -26,6 +25,9 @@ const TOOL_ICONS: Record<Tool, ReactNode> = {
 }
 
 export const TOOL_ORDER: Tool[] = ['select', 'rotate', 'pan', 'zoom', 'atom', 'bond', 'erase', 'measure']
+/** Rail groups: camera navigation, then editing. */
+const NAV_TOOLS: Tool[] = ['select', 'rotate', 'pan', 'zoom']
+const EDIT_TOOLS: Tool[] = ['atom', 'bond', 'erase', 'measure']
 export const toolLabel = (t: TFn, tool: Tool): string => t(`tool.${tool}` as TrKey)
 
 interface ActionDef {
@@ -39,7 +41,7 @@ interface ActionDef {
   busy?: boolean
 }
 
-/** Secondary actions. Every entry is either wired to a real store action or honestly disabled with a reason. */
+/** Secondary actions (camera actions live in the viewport HUD). Every entry is wired to a real store action or honestly disabled with a reason. */
 function useActions(): ActionDef[] {
   const t = useT()
   const atoms = useStudio((s) => s.mol.atoms.length)
@@ -51,7 +53,7 @@ function useActions(): ActionDef[] {
     {
       id: 'optimize',
       label: relaxing ? t('act.optimizing') : t('act.optimize'),
-      icon: relaxing ? <Loader2 size={ICON_SIZE} aria-hidden className="animate-spin" /> : <Wand2 size={ICON_SIZE} aria-hidden />,
+      icon: relaxing ? <Loader2 size={ICON_SIZE} aria-hidden className="animate-spin" /> : <Wrench size={ICON_SIZE} aria-hidden />,
       onClick: run((st) => st.cleanUp()),
       disabled: relaxing || atoms < 2,
       reason: relaxing ? wait : t('act.reason.needTwo'),
@@ -60,13 +62,10 @@ function useActions(): ActionDef[] {
     { id: 'addH', label: t('act.addH'), icon: <HydrogenIcon size={ICON_SIZE} mode="add" />, onClick: run((st) => st.addHydrogens()), disabled: atoms === 0 || relaxing, reason: atoms === 0 ? t('act.reason.empty') : wait },
     { id: 'removeH', label: t('act.removeH'), icon: <HydrogenIcon size={ICON_SIZE} mode="remove" />, onClick: run((st) => st.removeHydrogens()), disabled: !hasH || relaxing, reason: relaxing ? wait : t('act.reason.noH') },
     { id: 'new', label: t('act.new'), icon: <FilePlus size={ICON_SIZE} aria-hidden />, onClick: run((st) => st.newMolecule()), disabled: atoms === 0 || relaxing, reason: atoms === 0 ? t('act.reason.empty') : wait },
-    { id: 'reset', label: t('act.resetCamera'), icon: <Focus size={ICON_SIZE} aria-hidden />, shortcut: 'F', onClick: run((st) => st.resetCamera()) },
-    { id: 'zoomIn', label: t('act.zoomIn'), icon: <ZoomIn size={ICON_SIZE} aria-hidden />, onClick: run((st) => st.zoomBy(1.25)), disabled: atoms === 0, reason: t('act.reason.empty') },
-    { id: 'zoomOut', label: t('act.zoomOut'), icon: <ZoomOut size={ICON_SIZE} aria-hidden />, onClick: run((st) => st.zoomBy(0.8)), disabled: atoms === 0, reason: t('act.reason.empty') },
   ]
 }
 
-function ToolButton({ tool, tip }: { tool: Tool; tip: 'right' | false }) {
+function ToolButton({ tool, tip, bar }: { tool: Tool; tip: 'right' | false; bar: 'left' | 'bottom' }) {
   const t = useT()
   const active = useStudio((s) => s.tool === tool)
   const setTool = useStudio((s) => s.setTool)
@@ -77,31 +76,48 @@ function ToolButton({ tool, tip }: { tool: Tool; tip: 'right' | false }) {
       tip={tip}
       icon={TOOL_ICONS[tool]}
       active={active}
+      bar={bar}
       toggle
       onClick={() => setTool(tool)}
     />
   )
 }
 
-/** Desktop and tablet: persistent vertical toolbar. */
+/**
+ * Desktop and tablet: persistent vertical toolbar (role=toolbar, one Tab stop, arrow keys), two tool groups split by a divider.
+ * On short screens (phone landscape) it becomes two columns so nothing is hidden behind a scroll.
+ */
 export function Toolbar({ layout }: { layout: Layout }) {
   const t = useT()
   const actions = useActions()
+  const compact = useMediaQuery(layout === 'desktop' ? '(max-height: 560px)' : '(max-height: 720px)')
+  const roving = useRoving<HTMLDivElement>({ orientation: 'vertical' })
+  const cluster = compact ? 'grid grid-cols-2 gap-0.5' : 'flex flex-col items-center gap-1'
+  const divider = <div role="separator" aria-orientation="horizontal" className="my-1 h-px w-6 shrink-0 bg-line" />
   return (
-    <nav
+    <div
+      ref={roving.ref}
+      onKeyDown={roving.onKeyDown}
+      onFocus={roving.onFocus}
+      role="toolbar"
+      aria-orientation="vertical"
       aria-label={t('tool.group')}
-      className={`no-scrollbar flex shrink-0 flex-col items-center gap-1 overflow-y-auto border-r border-line bg-surface-1 py-2 ${layout === 'desktop' ? 'w-12' : 'w-[60px]'}`}
+      className={`no-scrollbar flex shrink-0 flex-col items-center overflow-y-auto border-r border-line bg-surface-1 ${compact ? 'w-[100px] gap-0.5 px-1 py-1' : 'w-12 gap-1 py-2'}`}
     >
-      <div role="group" aria-label={t('tool.group')} className="flex flex-col items-center gap-1">
-        {TOOL_ORDER.map((tool) => <ToolButton key={tool} tool={tool} tip="right" />)}
+      <div role="group" aria-label={t('tool.nav')} className={cluster}>
+        {NAV_TOOLS.map((tool) => <ToolButton key={tool} tool={tool} tip="right" bar="left" />)}
       </div>
-      <div aria-hidden="true" className="my-1 h-px w-6 bg-line" />
-      <div role="group" aria-label={t('tool.actions')} className="flex flex-col items-center gap-1">
+      {divider}
+      <div role="group" aria-label={t('tool.edit')} className={cluster}>
+        {EDIT_TOOLS.map((tool) => <ToolButton key={tool} tool={tool} tip="right" bar="left" />)}
+      </div>
+      {divider}
+      <div role="group" aria-label={t('tool.actions')} className={cluster}>
         {actions.map((a) => (
           <IconButton key={a.id} label={a.label} icon={a.icon} shortcut={a.shortcut} tip="right" onClick={a.onClick} disabled={a.disabled} disabledReason={a.reason} busy={a.busy} />
         ))}
       </div>
-    </nav>
+    </div>
   )
 }
 
@@ -110,36 +126,45 @@ export function Dock() {
   const t = useT()
   const actions = useActions()
   const tool = useStudio((s) => s.tool)
-  const scroller = useRef<HTMLDivElement>(null)
+  const roving = useRoving<HTMLDivElement>({ orientation: 'horizontal' })
+  const scroller = roving.ref
   const moreRef = useRef<HTMLButtonElement>(null)
   const [moreOpen, setMoreOpen] = useState(false)
 
   useEffect(() => {
     scroller.current?.querySelector<HTMLElement>('[aria-pressed="true"]')?.scrollIntoView({ inline: 'nearest', block: 'nearest' })
-  }, [tool])
+  }, [tool, scroller])
 
   const items: MenuEntry[] = actions.map((a) => ({
     type: 'item', label: a.label, icon: a.icon, shortcut: a.shortcut, onSelect: a.onClick, disabled: a.disabled, reason: a.reason,
   }))
 
   return (
-    <nav aria-label={t('tool.group')} className="pb-safe flex shrink-0 items-center border-t border-line bg-surface-1">
-      <div ref={scroller} role="group" aria-label={t('tool.group')} className="no-scrollbar flex min-w-0 flex-1 items-center gap-0.5 overflow-x-auto px-2 py-1.5">
-        {TOOL_ORDER.map((id) => <ToolButton key={id} tool={id} tip={false} />)}
+    <div className="pb-safe flex shrink-0 items-center border-t border-line bg-surface-1">
+      <div
+        ref={scroller}
+        onKeyDown={roving.onKeyDown}
+        onFocus={roving.onFocus}
+        role="toolbar"
+        aria-orientation="horizontal"
+        aria-label={t('tool.group')}
+        className="no-scrollbar flex min-w-0 flex-1 items-center gap-0.5 overflow-x-auto px-2 py-1.5"
+      >
+        {TOOL_ORDER.map((id) => <ToolButton key={id} tool={id} tip={false} bar="bottom" />)}
       </div>
       <div aria-hidden="true" className="h-6 w-px bg-line" />
       <div className="px-1.5">
         <IconButton buttonRef={moreRef} label={t('tool.actions')} tip={false} icon={<Ellipsis size={ICON_SIZE} aria-hidden />} active={moreOpen} aria-haspopup="menu" aria-expanded={moreOpen} onClick={() => setMoreOpen((o) => !o)} />
       </div>
       <Menu anchor={moreRef} open={moreOpen} onClose={() => setMoreOpen(false)} items={items} placement="top-end" ariaLabel={t('tool.actions')} minWidth={236} />
-    </nav>
+    </div>
   )
 }
 
 function BondOrderGlyph({ order }: { order: number }) {
   const ys = order === 1 ? [8] : order === 2 ? [5.5, 10.5] : [3.5, 8, 12.5]
   return (
-    <svg width="18" height="16" viewBox="0 0 18 16" aria-hidden="true" stroke="currentColor" strokeWidth="1.6" strokeLinecap="round">
+    <svg width="18" height="16" viewBox="0 0 18 16" aria-hidden="true" stroke="currentColor" strokeWidth="1.75" strokeLinecap="round">
       {ys.map((y) => <path key={y} d={`M2 ${y}H16`} />)}
     </svg>
   )

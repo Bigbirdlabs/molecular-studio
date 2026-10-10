@@ -8,6 +8,15 @@
  * test (planar 5/6-membered ring, all sp2, 4n+2 pi electrons, no exocyclic C=O/C=S) carry the aromatic flag on
  * their bonds.
  *
+ * CCCBDB values below were copied from the NIST CCCBDB experimental-geometry pages (cccbdb.nist.gov/exp2x.asp), accessed 2026-10-10:
+ *  - CH4: r(C-H) 1.087 A (re, 1979Hir), H-C-H 109.471 deg
+ *  - H2O: r(O-H) 0.958 A (re, 1979Hoy/Bun; Cartesians give 0.9578 A), H-O-H 104.4776 deg (Cartesian-derived 104.478)
+ *  - NH3: r(N-H) 1.012 A, H-N-H 106.67 deg (1966Herzberg; CCCBDB does not state the structure type)
+ *  - CO2: r(C=O) 1.162 A (Cartesians 1.1621), 180 deg (1966Herzberg; type not stated)
+ *  - C2H4: r(C=C) 1.339 A, r(C-H) 1.086 A, H-C-H 117.6 deg (1966Herzberg; type not stated)
+ *  - C2H2: r(C#C) 1.203 A, r(C-H) 1.063 A (1998Kuchitsu, rm structure), 180 deg
+ *  - C6H6: r(C-C) 1.397 A, r(C-H) 1.084 A, 120 deg (1966Herzberg; type not stated)
+ *
  * Sources that are NOT PubChem conformers (PubChem has no usable 3D record for these):
  *  - metan: exact tetrahedron, C-H 1.087 A (CCCBDB experimental); su/amonyak/karbondioksit also use CCCBDB experimental geometries (O-H 0.9578 A, 104.48 deg; N-H 1.012 A, 106.67 deg; C=O 1.160 A, 180 deg)
  *  - bor-triflorur: D3h, B-F 1.313 A; kukurt-heksaflorur: Oh, S-F 1.56 A; kukurt-dioksit: S=O 1.431 A, O=S=O 119.3 deg
@@ -15,6 +24,9 @@
  *  - tristearin: RCSB Chemical Component Dictionary ideal coordinates (component TGL), a computed extended conformer.
  */
 import { emptyMolecule, type BondOrder, type Molecule } from './molecule'
+
+/** Where the coordinates of a library entry come from (shown as the coordinate-source line). */
+export type CoordSourceKind = 'cccbdb' | 'experimental' | 'rcsb' | 'pubchem'
 
 export interface LibraryEntry {
   id: string
@@ -24,6 +36,12 @@ export interface LibraryEntry {
   category: string
   description: string
   descriptionEn: string
+  /** Kind of coordinate source (additive). */
+  coordSource: CoordSourceKind
+  /** Turkish coordinate-source line, e.g. "Koordinatlar: NIST CCCBDB deneysel geometri ..." (additive). */
+  coordSourceText: string
+  /** English coordinate-source line (additive). */
+  coordSourceTextEn: string
   molecule: Molecule
 }
 
@@ -42,7 +60,7 @@ export const CATEGORY_EN: Record<string, string> = {
 type AtomRow = [string, number, number, number, number?]
 /** [atom number a (1-based), atom number b (1-based), order, aromatic flag (1)?] */
 type BondRow = [number, number, number, number?]
-interface RawEntry extends Omit<LibraryEntry, 'molecule'> {
+interface RawEntry extends Omit<LibraryEntry, 'molecule' | 'coordSource' | 'coordSourceText' | 'coordSourceTextEn'> {
   atoms: AtomRow[]
   bonds: BondRow[]
 }
@@ -82,8 +100,8 @@ const RAW: RawEntry[] = [
     category: 'Temel Moleküller',
     name: "Amonyak",
     nameEn: "Ammonia",
-    description: "H₃N — Üçgen piramit geometrisindedir: azot üzerinde bir ortaklanmamış elektron çifti vardır, N–H bağı 1,012 Å ve H–N–H açısı yaklaşık 106,7°'dir (düzlemsel değildir). Haber–Bosch süreciyle N₂ ve H₂'den endüstriyel ölçekte üretilir.",
-    descriptionEn: "H₃N — Trigonal pyramidal: nitrogen carries one lone pair, the N–H bond is 1.012 Å and the H–N–H angle is about 106.7° (not planar). It is made industrially from N₂ and H₂ by the Haber–Bosch process.",
+    description: "NH₃ — Üçgen piramit geometrisindedir: azot üzerinde bir ortaklanmamış elektron çifti vardır, N–H bağı 1,012 Å ve H–N–H açısı yaklaşık 106,7°'dir (düzlemsel değildir). Haber–Bosch süreciyle N₂ ve H₂'den endüstriyel ölçekte üretilir.",
+    descriptionEn: "NH₃ — Trigonal pyramidal: nitrogen carries one lone pair, the N–H bond is 1.012 Å and the H–N–H angle is about 106.7° (not planar). It is made industrially from N₂ and H₂ by the Haber–Bosch process.",
     atoms: [
       ['N',0,0,-0.2861], ['H',0.9373,0,0.0954], ['H',-0.4687,0.8118,0.0954], ['H',-0.4687,-0.8118,0.0954],
     ],
@@ -99,7 +117,7 @@ const RAW: RawEntry[] = [
     description: "CO₂ — Doğrusal bir moleküldür (O=C=O açısı 180°). Katı hali olan kuru buz, atmosfer basıncında sıvılaşmadan doğrudan gaza dönüşür (−78,5 °C'de süblimleşir).",
     descriptionEn: "CO₂ — A linear molecule (O=C=O angle 180°). Its solid form, dry ice, sublimes directly to gas at atmospheric pressure (−78.5 °C).",
     atoms: [
-      ['O',-1.16,0,0], ['O',1.16,0,0], ['C',0,0,0],
+      ['O',-1.1621,0,0], ['O',1.1621,0,0], ['C',0,0,0],
     ],
     bonds: [
       [1,3,2], [2,3,2],
@@ -124,8 +142,8 @@ const RAW: RawEntry[] = [
     category: 'Temel Moleküller',
     name: "Kükürt dioksit",
     nameEn: "Sulfur dioxide",
-    description: "O₂S — Bükülmüş bir moleküldür (O=S=O açısı yaklaşık 119°). Fosil yakıtların yanmasıyla ve volkanik gazlarla atmosfere karışır ve asit yağmuruna katkıda bulunur.",
-    descriptionEn: "O₂S — A bent molecule (O=S=O angle about 119°). It enters the atmosphere from fossil-fuel combustion and volcanic gases, and contributes to acid rain.",
+    description: "SO₂ — Bükülmüş bir moleküldür (O=S=O açısı yaklaşık 119°). Fosil yakıtların yanmasıyla ve volkanik gazlarla atmosfere karışır ve asit yağmuruna katkıda bulunur.",
+    descriptionEn: "SO₂ — A bent molecule (O=S=O angle about 119°). It enters the atmosphere from fossil-fuel combustion and volcanic gases, and contributes to acid rain.",
     atoms: [
       ['S',0,0.482,0], ['O',1.2349,-0.241,0], ['O',-1.2349,-0.241,0],
     ],
@@ -152,8 +170,8 @@ const RAW: RawEntry[] = [
     category: 'Özel Geometriler',
     name: "Kükürt heksaflorür",
     nameEn: "Sulfur hexafluoride",
-    description: "F₆S — Düzgün sekizyüzlü geometridedir: altı S–F bağı birbirine 90° ile diktir ve kükürt oktetten fazla (12) elektronla çevrilidir. Kimyasal olarak çok kararlıdır; yüksek gerilim şalt cihazlarında yalıtkan gaz olarak kullanılır.",
-    descriptionEn: "F₆S — Regular octahedral geometry: the six S–F bonds are at 90° to each other and sulfur is surrounded by more than an octet (12 electrons). Chemically very stable, it is used as an insulating gas in high-voltage switchgear.",
+    description: "SF₆ — Düzgün sekizyüzlü geometridedir: altı S–F bağı birbirine 90° ile diktir ve kükürt oktetten fazla (12) elektronla çevrilidir. Kimyasal olarak çok kararlıdır; yüksek gerilim şalt cihazlarında yalıtkan gaz olarak kullanılır.",
+    descriptionEn: "SF₆ — Regular octahedral geometry: the six S–F bonds are at 90° to each other and sulfur is surrounded by more than an octet (12 electrons). Chemically very stable, it is used as an insulating gas in high-voltage switchgear.",
     atoms: [
       ['S',0,0,0], ['F',1.56,0,0], ['F',-1.56,0,0], ['F',0,1.56,0],
       ['F',0,-1.56,0], ['F',0,0,1.56], ['F',0,0,-1.56],
@@ -167,8 +185,8 @@ const RAW: RawEntry[] = [
     category: 'Özel Geometriler',
     name: "Sülfürik asit",
     nameEn: "Sulfuric acid",
-    description: "H₂O₄S — Dünyada en çok üretilen endüstriyel kimyasallardan biridir ve kurşun-asit akülerde elektrolit olarak kullanılır. Kükürt atomu dörtyüzlü bir çevrede iki S=O ve iki S–OH bağı taşır.",
-    descriptionEn: "H₂O₄S — One of the most widely produced industrial chemicals, used as the electrolyte in lead-acid batteries. The sulfur atom sits in a tetrahedral environment with two S=O and two S–OH bonds.",
+    description: "H₂SO₄ — Dünyada en çok üretilen endüstriyel kimyasallardan biridir ve kurşun-asit akülerde elektrolit olarak kullanılır. Kükürt atomu dörtyüzlü bir çevrede iki S=O ve iki S–OH bağı taşır.",
+    descriptionEn: "H₂SO₄ — One of the most widely produced industrial chemicals, used as the electrolyte in lead-acid batteries. The sulfur atom sits in a tetrahedral environment with two S=O and two S–OH bonds.",
     atoms: [
       ['S',-0.0002,0.5841,0], ['O',-1.1313,-0.4304,0.5898], ['O',1.1315,-0.43,-0.5898], ['O',-0.5818,1.3028,-1.1174],
       ['O',0.5811,1.3034,1.1172], ['H',-1.3944,-1.1653,-0.0126], ['H',1.395,-1.1646,0.0128],
@@ -182,8 +200,8 @@ const RAW: RawEntry[] = [
     category: 'Özel Geometriler',
     name: "Fosforik asit",
     nameEn: "Phosphoric acid",
-    description: "H₃O₄P — Gıdalarda asitlik düzenleyici olarak (E338) kullanılır, örneğin kola içeceklerinde. Fosfor atomu dörtyüzlü bir çevrede bir P=O ve üç P–OH grubu taşır.",
-    descriptionEn: "H₃O₄P — Used in foods as an acidity regulator (E338), for example in cola drinks. The phosphorus atom sits in a tetrahedral environment with one P=O and three P–OH groups.",
+    description: "H₃PO₄ — Gıdalarda asitlik düzenleyici olarak (E338) kullanılır, örneğin kola içeceklerinde. Fosfor atomu dörtyüzlü bir çevrede bir P=O ve üç P–OH grubu taşır.",
+    descriptionEn: "H₃PO₄ — Used in foods as an acidity regulator (E338), for example in cola drinks. The phosphorus atom sits in a tetrahedral environment with one P=O and three P–OH groups.",
     atoms: [
       ['P',0.1644,-0.2825,-0.3966], ['O',-0.403,1.1904,-0.7393], ['O',-1.1372,-1.0916,0.1162], ['O',1.0729,-0.086,0.9235],
       ['O',0.8776,-0.9499,-1.5376], ['H',-0.8958,1.6827,-0.0486], ['H',-1.6647,-0.7226,0.8564], ['H',1.9857,0.2595,0.8259],
@@ -229,11 +247,11 @@ const RAW: RawEntry[] = [
     category: 'Hidrokarbonlar',
     name: "Etilen (eten)",
     nameEn: "Ethylene (ethene)",
-    description: "C₂H₄ — Düzlemsel bir moleküldür ve C=C çift bağı yaklaşık 1,34 Å uzunluğundadır. Bitkilerde meyve olgunlaşmasını düzenleyen bir hormondur ve polietilenin hammaddesidir.",
-    descriptionEn: "C₂H₄ — A planar molecule with a C=C double bond about 1.34 Å long. It is a plant hormone that regulates fruit ripening and the feedstock for polyethylene.",
+    description: "C₂H₄ — Düzlemsel bir moleküldür; C=C çift bağı 1,339 Å, H–C–H açısı yaklaşık 117,6°'dir (deneysel, NIST CCCBDB). Bitkilerde meyve olgunlaşmasını düzenleyen bir hormondur ve polietilenin hammaddesidir.",
+    descriptionEn: "C₂H₄ — A planar molecule with a 1.339 Å C=C double bond and an H–C–H angle of about 117.6° (experimental, NIST CCCBDB). It is a plant hormone that regulates fruit ripening and the feedstock for polyethylene.",
     atoms: [
-      ['C',-0.6672,0,0], ['C',0.6672,0,0], ['H',-1.2213,0.9317,0], ['H',-1.2212,-0.9317,0],
-      ['H',1.2213,-0.9317,0], ['H',1.2213,0.9317,0],
+      ['C',-0.6695,0,0], ['C',0.6695,0,0], ['H',-1.2321,0.9289,0], ['H',-1.2321,-0.9289,0],
+      ['H',1.2321,-0.9289,0], ['H',1.2321,0.9289,0],
     ],
     bonds: [
       [1,2,2], [1,3,1], [1,4,1], [2,5,1], [2,6,1],
@@ -247,7 +265,7 @@ const RAW: RawEntry[] = [
     description: "C₂H₂ — Doğrusal H–C≡C–H yapısındadır ve C≡C üçlü bağı yaklaşık 1,20 Å uzunluğundadır. Oksi-asetilen kaynağında alev sıcaklığı 3000 °C'nin üzerine çıkar.",
     descriptionEn: "C₂H₂ — Linear H–C≡C–H with a C≡C triple bond about 1.20 Å long. The flame in oxy-acetylene welding exceeds 3000 °C.",
     atoms: [
-      ['C',-0.6,0,0], ['C',0.6,0,0], ['H',-1.665,0,0], ['H',1.665,0,0],
+      ['C',-0.6015,0,0], ['C',0.6015,0,0], ['H',-1.6645,0,0], ['H',1.6645,0,0],
     ],
     bonds: [
       [1,2,3], [1,3,1], [2,4,1],
@@ -304,9 +322,9 @@ const RAW: RawEntry[] = [
     description: "C₆H₆ — Düzlemsel altılı halkadır ve tüm C–C bağları yaklaşık 1,39 Å ile eşit uzunluktadır (tek ve çift bağ arasında). Kekulé halka yapısını 1865'te önermiştir; burada Kekulé gösterimi çizilir, halka aromatik olarak işaretlidir.",
     descriptionEn: "C₆H₆ — A planar six-membered ring whose C–C bonds are all equal at about 1.39 Å (between single and double). Kekulé proposed the ring structure in 1865; the Kekulé drawing is shown and the ring is flagged aromatic.",
     atoms: [
-      ['C',-0.9949,0.9776,0], ['C',-1.3442,-0.3728,-0.0001], ['C',0.3492,1.3504,0], ['C',-0.3492,-1.3504,0.0001],
-      ['C',1.3441,0.3727,0], ['C',0.9949,-0.9776,0], ['H',-1.7696,1.7388,0], ['H',-2.3907,-0.6631,-0.0001],
-      ['H',0.6211,2.402,0.0001], ['H',-0.6211,-2.4018,0], ['H',2.3908,0.663,-0.0001], ['H',1.7696,-1.7388,0],
+      ['C',-0.9965,0.9791,0], ['C',-1.3462,-0.3734,0], ['C',0.3497,1.3525,0], ['C',-0.3497,-1.3525,0],
+      ['C',1.3462,0.3733,0], ['C',0.9965,-0.9791,0], ['H',-1.7697,1.7389,0], ['H',-2.3907,-0.6631,0],
+      ['H',0.6211,2.402,0], ['H',-0.6211,-2.402,0], ['H',2.3908,0.663,0], ['H',1.7697,-1.7389,0],
     ],
     bonds: [
       [1,2,2,1], [1,3,1,1], [1,7,1], [2,4,1,1], [2,8,1], [3,5,2,1], [3,9,1], [4,6,2,1],
@@ -1001,15 +1019,43 @@ function build(r: RawEntry): Molecule {
   return m
 }
 
-export const LIBRARY: LibraryEntry[] = RAW.map((r) => ({
-  id: r.id,
-  name: r.name,
-  nameEn: r.nameEn,
-  category: r.category,
-  description: r.description,
-  descriptionEn: r.descriptionEn,
-  molecule: build(r),
-}))
+const ACCESS = '2026-10-10'
+
+/** [kind, TR line, EN line] for the entries that are not plain PubChem 3D conformers. */
+const SOURCES: Record<string, [CoordSourceKind, string, string]> = {
+  metan: ['cccbdb', 'NIST CCCBDB deneysel geometri (re): C–H 1,087 Å, H–C–H 109,471°', 'NIST CCCBDB experimental geometry (re): C–H 1.087 Å, H–C–H 109.471°'],
+  su: ['cccbdb', 'NIST CCCBDB deneysel geometri (re): O–H 0,958 Å, H–O–H 104,478°', 'NIST CCCBDB experimental geometry (re): O–H 0.958 Å, H–O–H 104.478°'],
+  amonyak: ['cccbdb', 'NIST CCCBDB deneysel geometri (yapı türü belirtilmemiş): N–H 1,012 Å, H–N–H 106,67°', 'NIST CCCBDB experimental geometry (structure type not stated): N–H 1.012 Å, H–N–H 106.67°'],
+  karbondioksit: ['cccbdb', 'NIST CCCBDB deneysel geometri (yapı türü belirtilmemiş): C=O 1,162 Å, O=C=O 180°', 'NIST CCCBDB experimental geometry (structure type not stated): C=O 1.162 Å, O=C=O 180°'],
+  etilen: ['cccbdb', 'NIST CCCBDB deneysel geometri (yapı türü belirtilmemiş): C=C 1,339 Å, C–H 1,086 Å, H–C–H 117,6°', 'NIST CCCBDB experimental geometry (structure type not stated): C=C 1.339 Å, C–H 1.086 Å, H–C–H 117.6°'],
+  asetilen: ['cccbdb', 'NIST CCCBDB deneysel geometri (rm yapısı): C≡C 1,203 Å, C–H 1,063 Å, 180°', 'NIST CCCBDB experimental geometry (rm structure): C≡C 1.203 Å, C–H 1.063 Å, 180°'],
+  benzen: ['cccbdb', 'NIST CCCBDB deneysel geometri (yapı türü belirtilmemiş): C–C 1,397 Å, C–H 1,084 Å, 120°', 'NIST CCCBDB experimental geometry (structure type not stated): C–C 1.397 Å, C–H 1.084 Å, 120°'],
+  'bor-triflorur': ['experimental', 'Deneysel gaz fazı geometrisi: B–F 1,313 Å, düzlem üçgen (D3h)', 'Experimental gas-phase geometry: B–F 1.313 Å, trigonal planar (D3h)'],
+  'kukurt-heksaflorur': ['experimental', 'Deneysel gaz fazı geometrisi: S–F 1,56 Å, düzgün sekizyüzlü (Oh)', 'Experimental gas-phase geometry: S–F 1.56 Å, regular octahedron (Oh)'],
+  'kukurt-dioksit': ['experimental', 'Deneysel gaz fazı geometrisi: S=O 1,431 Å, O=S=O 119,3°', 'Experimental gas-phase geometry: S=O 1.431 Å, O=S=O 119.3°'],
+  tristearin: ['rcsb', 'RCSB Chemical Component Dictionary ideal koordinatları (TGL); hesaplanmış uzamış konformer', 'RCSB Chemical Component Dictionary ideal coordinates (TGL); a computed extended conformer'],
+}
+
+export const LIBRARY: LibraryEntry[] = RAW.map((r) => {
+  const src = SOURCES[r.id]
+  const cc = src !== undefined && src[0] === 'cccbdb'
+  return {
+    id: r.id,
+    name: r.name,
+    nameEn: r.nameEn,
+    category: r.category,
+    description: r.description,
+    descriptionEn: r.descriptionEn,
+    coordSource: src ? src[0] : 'pubchem',
+    coordSourceText: src
+      ? 'Koordinatlar: ' + src[1] + (cc ? ' (erişim ' + ACCESS + ')' : '')
+      : 'Koordinatlar: PubChem 3B konformer (hesaplanmış)',
+    coordSourceTextEn: src
+      ? 'Coordinates: ' + src[2] + (cc ? ' (accessed ' + ACCESS + ')' : '')
+      : 'Coordinates: PubChem 3D conformer (computed)',
+    molecule: build(r),
+  }
+})
 
 const BY_ID = new Map(LIBRARY.map((e) => [e.id, e]))
 

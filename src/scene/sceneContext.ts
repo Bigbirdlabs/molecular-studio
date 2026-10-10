@@ -14,6 +14,11 @@ export interface SceneContext {
   controls: { current: OrbitControls | null }
   /** Set by anything that changed the overlay (rubber band...) so the rig rewrites its buffers on the next frame. */
   dirty: { current: boolean }
+  /**
+   * Set when only the overlays (rubber band, hover / selection shells, measurement) changed: the rig then leaves the atom
+   * and bond instance buffers alone (SPEC C4 render isolation).
+   */
+  shellDirty: { current: boolean }
   /** Adopt the store's molecule / style / toggles into the model. Idempotent; call before reading the model. */
   sync(): void
 }
@@ -56,7 +61,7 @@ export function createSceneContext(): SceneContext {
     }
   }
 
-  return { model, controls: { current: null }, dirty: { current: true }, sync }
+  return { model, controls: { current: null }, dirty: { current: true }, shellDirty: { current: true }, sync }
 }
 
 export const SceneCtx = createContext<SceneContext | null>(null)

@@ -5,7 +5,7 @@ import { X } from 'lucide-react'
 import { useStudio } from '../store'
 import { useViewportHeight } from './layout'
 import { useT } from './i18n'
-import type { SheetSnap } from './uiStore'
+import { useUI, type SheetSnap } from './uiStore'
 
 interface Props {
   open: boolean
@@ -25,6 +25,7 @@ interface Props {
 
 const FRACTION: Record<SheetSnap, number> = { peek: 0, half: 0.5, full: 0.9 }
 const PEEK_PX = 132
+const FOCUSABLE = 'a[href],button:not([disabled]):not([aria-disabled="true"]),input:not([disabled]),select,textarea,[tabindex]:not([tabindex="-1"])'
 
 /**
  * Draggable bottom sheet (peek / half / full). Dragging starts from the handle area only, so the
@@ -34,8 +35,12 @@ export function BottomSheet({ open, onClose, title, ariaLabel, snap, onSnapChang
   const t = useT()
   const reduced = useStudio((s) => s.reducedMotion)
   const vh = useViewportHeight()
-  const sheetH = Math.round(vh * FRACTION.full)
-  const heightOf = (s: SheetSnap) => (s === 'peek' ? PEEK_PX : Math.round(vh * FRACTION[s]))
+  // Non-modal sheets rest on top of the bottom chrome (tool options, status bar, dock) so the tools stay reachable.
+  const chrome = useUI((s) => s.chromeBottom)
+  const bottomInset = modal ? 0 : Math.min(chrome, Math.round(vh * 0.4))
+  const base = vh - bottomInset
+  const sheetH = Math.round(base * FRACTION.full)
+  const heightOf = (s: SheetSnap) => (s === 'peek' ? PEEK_PX : Math.round(base * FRACTION[s]))
   const yOf = (s: SheetSnap) => sheetH - heightOf(s)
   const closedY = sheetH + 24
 
@@ -65,13 +70,33 @@ export function BottomSheet({ open, onClose, title, ariaLabel, snap, onSnapChang
     if (!open) return
     returnFocus.current = document.activeElement
     panel.current?.focus({ preventScroll: true })
-    const onKey = (e: KeyboardEvent) => { if (e.key === 'Escape') onClose() }
-    window.addEventListener('keydown', onKey)
+    // On document (before the window-level shortcuts): preventDefault so one Esc does exactly one thing.
+    const onKey = (e: KeyboardEvent) => {
+      if (e.key === 'Escape') {
+        if (!modal && useUI.getState().dialog) return // a dialog above this sheet owns Esc
+        e.preventDefault()
+        onClose()
+        return
+      }
+      if (e.key !== 'Tab' || !modal) return
+      // Modal sheets trap focus like the desktop dialog.
+      const node = panel.current
+      if (!node) return
+      const items = Array.from(node.querySelectorAll<HTMLElement>(FOCUSABLE)).filter((n) => n.offsetParent !== null)
+      if (!items.length) { e.preventDefault(); node.focus(); return }
+      const first = items[0]
+      const last = items[items.length - 1]
+      const active = document.activeElement
+      if (!node.contains(active) || (active === node && !e.shiftKey)) { e.preventDefault(); (e.shiftKey ? last : first).focus() }
+      else if (e.shiftKey && (active === first || active === node)) { e.preventDefault(); last.focus() }
+      else if (!e.shiftKey && active === last) { e.preventDefault(); first.focus() }
+    }
+    document.addEventListener('keydown', onKey)
     return () => {
-      window.removeEventListener('keydown', onKey)
+      document.removeEventListener('keydown', onKey)
       if (returnFocus.current instanceof HTMLElement) returnFocus.current.focus({ preventScroll: true })
     }
-  }, [open, onClose])
+  }, [open, onClose, modal])
 
   if (!mounted) return null
 
@@ -95,11 +120,12 @@ export function BottomSheet({ open, onClose, title, ariaLabel, snap, onSnapChang
     <>
       {modal && (
         <div
-          className="fixed inset-0 z-[70] bg-black/55 transition-opacity duration-200"
+          className="fixed inset-0 z-[84] bg-black/55 transition-opacity duration-200"
           onPointerDown={onClose}
           aria-hidden="true"
         />
       )}
+      <div className={`pointer-events-none fixed inset-x-0 top-0 overflow-hidden ${modal ? 'z-[85]' : 'z-[75]'}`} style={{ bottom: bottomInset }}>
       <motion.div
         ref={panel}
         tabIndex={-1}
@@ -114,7 +140,7 @@ export function BottomSheet({ open, onClose, title, ariaLabel, snap, onSnapChang
         dragMomentum={false}
         onDragEnd={onDragEnd}
         style={{ y, height: sheetH }}
-        className="fixed inset-x-0 bottom-0 z-[75] flex flex-col rounded-t-[14px] border-x border-t border-line-strong bg-surface-1 shadow-[0_-8px_24px_rgba(0,0,0,0.45)] outline-none"
+        className="pointer-events-auto absolute inset-x-0 bottom-0 flex flex-col rounded-t-[14px] border-x border-t border-line-strong bg-surface-1 shadow-[0_-8px_24px_rgba(0,0,0,0.45)] outline-none"
       >
         <div
           className="flex shrink-0 touch-none flex-col items-stretch px-4 pb-2 pt-2"
@@ -141,6 +167,7 @@ export function BottomSheet({ open, onClose, title, ariaLabel, snap, onSnapChang
           {children}
         </div>
       </motion.div>
+      </div>
     </>
   )
   return createPortal(sheet, document.body)

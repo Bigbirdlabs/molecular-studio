@@ -2,10 +2,10 @@ import { create } from 'zustand'
 import {
   type Atom, type BondOrder, type Molecule, type Vec3,
   add, atomById, bondBetween, bondById, centroid, cloneMolecule, emptyMolecule, methane, neighbours, scale, sub, norm,
-  missingHydrogens, valenceState, reserveMoleculeId,
+  missingHydrogens, valenceState, reserveMoleculeId, conventionalFormula,
 } from './chem/molecule'
 import { adjustHydrogens, idealizeAround, bondTargetLength, addAllHydrogens, removeAllHydrogens, placeNewAtom, relaxStep, centerMolecule } from './chem/geometry'
-import { el } from './chem/elements'
+import { getElement, isKnownElement, supportedElementsText } from './chem/elements'
 
 /**
  * 'select'  – click to select atoms/bonds; dragging an atom moves it (beginDrag / dragAtom / endDrag).
@@ -28,8 +28,13 @@ export interface CameraStatus { distance: number; mode: CameraMode }
  *   valenceExceeded    – params.symbol: valence exceeded
  *   geometryOptimized  – clean-up (relaxation) finished
  *   saveFailed         – autosave to localStorage failed
+ *   unsupportedElement – params.symbol / params.supported: an element the app does not model was rejected (SPEC A1.1)
+ *   invalidMolecule    – params.reason: a molecule failed structural validation and was rejected
+ *   autoHydrogenKeeps  – the delete tool cannot remove a hydrogen while auto-hydrogen is on (it would be re-added)
  */
-export type ToastCode = 'hydrogenSingleBond' | 'noFreeValence' | 'valenceExceeded' | 'geometryOptimized' | 'saveFailed'
+export type ToastCode =
+  | 'hydrogenSingleBond' | 'noFreeValence' | 'valenceExceeded' | 'geometryOptimized' | 'saveFailed'
+  | 'unsupportedElement' | 'invalidMolecule' | 'autoHydrogenKeeps'
 export interface Toast {
   id: number
   text: string
@@ -156,21 +161,42 @@ function writeJSON(key: string, value: unknown): boolean {
 const isVec3 = (v: unknown): v is Vec3 =>
   Array.isArray(v) && v.length === 3 && v.every((x) => typeof x === 'number' && Number.isFinite(x))
 
-/** Defensive structural validation of a molecule read back from storage. */
-function parseStoredMolecule(raw: unknown): Molecule | null {
-  if (!raw || typeof raw !== 'object') return null
+export type MoleculeValidation =
+  | { ok: true; mol: Molecule }
+  | { ok: false; code: 'unsupportedElement'; symbol: string }
+  | { ok: false; code: 'invalidMolecule'; reason: string }
+type Rejected = Exclude<MoleculeValidation, { ok: true }>
+
+/**
+ * Defensive structural validation of a molecule that comes from outside (storage, library, import, URL):
+ * every element must be modelled (isKnownElement, SPEC A1.1), atom ids and bond ids unique, bonds must reference
+ * existing atoms, coordinates finite. `nextId` is repaired to exceed every id so the next edit can never collide.
+ * Returns a clone on success; the input is never mutated.
+ */
+export function validateMolecule(raw: unknown): MoleculeValidation {
+  const bad = (reason: string): MoleculeValidation => ({ ok: false, code: 'invalidMolecule', reason })
+  if (!raw || typeof raw !== 'object') return bad('not an object')
   const m = raw as Partial<Molecule>
-  if (!Array.isArray(m.atoms) || !Array.isArray(m.bonds) || typeof m.nextId !== 'number' || typeof m.name !== 'string') return null
-  const ids = new Set<number>()
+  if (!Array.isArray(m.atoms) || !Array.isArray(m.bonds) || typeof m.nextId !== 'number' || !Number.isFinite(m.nextId) || typeof m.name !== 'string') return bad('missing fields')
+  const atomIds = new Set<number>()
+  let maxId = 0
   for (const a of m.atoms) {
-    if (!a || typeof a.id !== 'number' || typeof a.symbol !== 'string' || !isVec3(a.pos) || typeof a.charge !== 'number') return null
-    if (el(a.symbol).symbol !== a.symbol) return null // unknown element
-    ids.add(a.id)
+    if (!a || typeof a.id !== 'number' || !Number.isInteger(a.id) || typeof a.symbol !== 'string' || !isVec3(a.pos) || typeof a.charge !== 'number' || !Number.isFinite(a.charge)) return bad('invalid atom')
+    if (!isKnownElement(a.symbol)) return { ok: false, code: 'unsupportedElement', symbol: a.symbol }
+    if (atomIds.has(a.id)) return bad(`duplicate atom id ${a.id}`)
+    atomIds.add(a.id)
+    maxId = Math.max(maxId, a.id)
   }
+  const bondIds = new Set<number>()
   for (const b of m.bonds) {
-    if (!b || typeof b.id !== 'number' || !ids.has(b.a) || !ids.has(b.b) || ![1, 2, 3].includes(b.order)) return null
+    if (!b || typeof b.id !== 'number' || !Number.isInteger(b.id) || !atomIds.has(b.a) || !atomIds.has(b.b) || b.a === b.b || ![1, 2, 3].includes(b.order)) return bad('invalid bond')
+    if (bondIds.has(b.id)) return bad(`duplicate bond id ${b.id}`)
+    bondIds.add(b.id)
+    maxId = Math.max(maxId, b.id)
   }
-  return cloneMolecule(m as Molecule) // cloneMolecule assigns an id if the stored record had none
+  const mol = cloneMolecule(m as Molecule) // cloneMolecule assigns an id if the record had none
+  mol.nextId = Math.max(Math.floor(m.nextId), maxId + 1)
+  return { ok: true, mol }
 }
 
 interface StoredSettings { language?: unknown; reducedMotionOverride?: unknown; showHydrogens?: unknown }
@@ -198,15 +224,25 @@ const reducedMotionQuery = (): MediaQueryList | null => {
   }
 }
 
-function restoreProject(): { mol: Molecule; projectName: string; savedAt: number | null } | null {
+type Restored =
+  | { kind: 'ok'; mol: Molecule; projectName: string; savedAt: number | null }
+  | { kind: 'rejected'; validation: Rejected }
+
+function restoreProject(): Restored | null {
   if (urlSpecifiesMolecule) return null
   const raw = readJSON(PROJECT_KEY) as { mol?: unknown; projectName?: unknown; savedAt?: unknown } | null
   if (!raw || typeof raw !== 'object') return null
-  const mol = parseStoredMolecule(raw.mol)
-  if (!mol || mol.atoms.length === 0) return null // never restore a blank canvas over the launch molecule
-  reserveMoleculeId(mol.id)
+  const v = validateMolecule(raw.mol)
+  if (!v.ok) {
+    // keep the rejected record so the next autosave does not destroy the user's data
+    writeJSON(`${PROJECT_KEY}:rejected`, raw)
+    return { kind: 'rejected', validation: v }
+  }
+  if (v.mol.atoms.length === 0) return null // never restore a blank canvas over the launch molecule
+  reserveMoleculeId(v.mol.id)
   return {
-    mol,
+    kind: 'ok',
+    mol: v.mol,
     projectName: typeof raw.projectName === 'string' && raw.projectName.trim() ? raw.projectName : DEFAULT_PROJECT_NAME,
     savedAt: typeof raw.savedAt === 'number' ? raw.savedAt : null,
   }
@@ -217,6 +253,7 @@ let toastId = 0
 let relaxToken = 0
 let dragBase: Molecule | null = null // molecule at drag start; a history entry is created only if something moved
 let dragMoved = false
+let relaxBase: Molecule | null = null // molecule when the running clean-up started (undo / load restore it; edits are locked out meanwhile)
 
 /** Replace one hydrogen on `parentId` (if any) and return its position, removing it from `m`. */
 function takeHydrogen(m: Molecule, parentId: number): Vec3 | null {
@@ -233,9 +270,27 @@ function freeValence(m: Molecule, a: Atom) {
 }
 
 export const useStudio = create<StudioState>((set, get) => {
-  const restored = restoreProject()
+  const restoredRaw = restoreProject()
+  const restored = restoredRaw?.kind === 'ok' ? restoredRaw : null
   const settings = storedSettings()
   const language: Language = settings.language === 'en' ? 'en' : 'tr'
+  /** Fallback text in the active language (the UI translates by code; this is only shown when it has no translation). */
+  const tx = (tr: string, en: string) => (get().language === 'en' ? en : tr)
+  const rejectionToast = (v: Rejected, lang: Language): Toast => {
+    if (v.code === 'unsupportedElement') {
+      const supported = supportedElementsText()
+      return {
+        id: ++toastId, kind: 'error', code: 'unsupportedElement', params: { symbol: v.symbol, supported },
+        text: lang === 'en' ? `Unsupported element: ${v.symbol}. Supported: ${supported}` : `Desteklenmeyen element: ${v.symbol}. Desteklenen: ${supported}`,
+      }
+    }
+    return {
+      id: ++toastId, kind: 'error', code: 'invalidMolecule', params: { reason: v.reason },
+      text: lang === 'en' ? `Invalid molecule structure (${v.reason}); nothing was changed.` : `Geçersiz molekül yapısı (${v.reason}); hiçbir şey değiştirilmedi.`,
+    }
+  }
+  /** Reject an external molecule: the current molecule stays untouched and the reason is shown. */
+  const reject = (v: Rejected) => set({ toast: rejectionToast(v, get().language) })
   const reducedMotionOverride = typeof settings.reducedMotionOverride === 'boolean' ? settings.reducedMotionOverride : null
   const mq = reducedMotionQuery()
 
@@ -266,13 +321,37 @@ export const useStudio = create<StudioState>((set, get) => {
   const warnValence = (m: Molecule, ids: number[]) => {
     for (const x of ids) {
       const at = atomById(m, x)
-      if (at && valenceState(m, at) === 'over')
-        get().notify(`${el(at.symbol).name}: değerlik aşıldı`, 'warn', 'valenceExceeded', { symbol: at.symbol })
+      if (at && valenceState(m, at) === 'over') {
+        const e = getElement(at.symbol)
+        get().notify(tx(`${e?.name ?? at.symbol}: değerlik aşıldı`, `${e?.nameEn ?? at.symbol}: valence exceeded`), 'warn', 'valenceExceeded', { symbol: at.symbol })
+      }
     }
+  }
+
+  /** While a clean-up runs every editing action is ignored (the relax would overwrite it and corrupt the undo history). */
+  const locked = () => get().relaxing
+  /** Cancel a running clean-up and put the molecule it started from back, so history never sees a mid-relax snapshot. */
+  const cancelRelax = () => {
+    if (!get().relaxing) return
+    relaxToken++
+    const base = relaxBase
+    relaxBase = null
+    set(base ? { mol: base, relaxing: false } : { relaxing: false })
+  }
+  /** Molecule name chosen by the user (setName) is never replaced automatically. */
+  let userNamed = false
+  const PLACEHOLDER_NAMES = new Set(['Yeni molekül', 'New molecule'])
+
+  /** Reject an unsupported / unknown element symbol with the standard message. Returns true when rejected. */
+  const rejectElement = (symbol: string): boolean => {
+    if (isKnownElement(symbol)) return false
+    reject({ ok: false, code: 'unsupportedElement', symbol })
+    return true
   }
 
   /** Add a new atom of `symbol` bonded to `parentId` with `order`. */
   const growFrom = (parentId: number, symbol: string, order: BondOrder) => {
+    if (locked() || !isKnownElement(symbol)) return
     const m = cloneMolecule(get().mol)
     const parent = atomById(m, parentId)
     if (!parent) return
@@ -283,7 +362,7 @@ export const useStudio = create<StudioState>((set, get) => {
       pos = add(parent.pos, scale(dir, bondTargetLength(parent.symbol, symbol, order)))
     } else {
       if (parent.symbol === 'H' && neighbours(m, parentId).length > 0) {
-        get().notify('Hidrojen yalnızca bir bağ yapabilir.', 'warn', 'hydrogenSingleBond')
+        get().notify(tx('Hidrojen yalnızca bir bağ yapabilir.', 'Hydrogen can form only one bond.'), 'warn', 'hydrogenSingleBond')
         return
       }
       pos = placeNewAtom(m, parentId, symbol, order)
@@ -299,17 +378,22 @@ export const useStudio = create<StudioState>((set, get) => {
   // ---------- autosave: debounced, status reflects what really happened ----------
   let saveTimer: ReturnType<typeof setTimeout> | null = null
   let suppressSave = false
+  let saveFailureShown = false // one toast per failure streak; scheduleSave resets saveStatus, so it cannot carry this
   const writeProject = () => {
     if (saveTimer) { clearTimeout(saveTimer); saveTimer = null }
     set({ saveStatus: 'saving' })
     const { mol, projectName } = get()
     const savedAt = Date.now()
     const ok = writeJSON(PROJECT_KEY, { v: 1, mol, projectName, savedAt })
-    if (ok) set({ saveStatus: 'saved', lastSavedAt: savedAt })
-    else {
-      const wasError = get().saveStatus === 'error'
+    if (ok) {
+      saveFailureShown = false
+      set({ saveStatus: 'saved', lastSavedAt: savedAt })
+    } else {
       set({ saveStatus: 'error' })
-      if (!wasError) get().notify('Otomatik kayıt başarısız oldu (tarayıcı depolaması kullanılamıyor).', 'error', 'saveFailed')
+      if (!saveFailureShown) {
+        saveFailureShown = true
+        get().notify(tx('Otomatik kayıt başarısız oldu (tarayıcı depolaması kullanılamıyor).', 'Autosave failed (browser storage is unavailable).'), 'error', 'saveFailed')
+      }
     }
   }
   const scheduleSave = () => {
@@ -365,7 +449,7 @@ export const useStudio = create<StudioState>((set, get) => {
     relaxing: false,
     fitNonce: 0,
     loadNonce: 0,
-    toast: null,
+    toast: restoredRaw?.kind === 'rejected' ? rejectionToast(restoredRaw.validation, language) : null,
 
     cameraResetNonce: 0,
     zoomNonce: 0,
@@ -382,7 +466,10 @@ export const useStudio = create<StudioState>((set, get) => {
     inspectorOpen: false,
 
     setTool: (tool) => set({ tool, pendingBondFrom: null, measure: tool === 'measure' ? get().measure : [] }),
-    setElement: (element) => set({ element, tool: 'atom' }),
+    setElement: (element) => {
+      if (rejectElement(element)) return
+      set({ element, tool: 'atom' })
+    },
     setBondOrder: (bondOrder) => set({ bondOrder }),
     setStyle: (style) => set({ style }),
     toggle: (key) => {
@@ -441,6 +528,7 @@ export const useStudio = create<StudioState>((set, get) => {
       const st = get()
       const atom = atomById(st.mol, id)
       if (!atom) return
+      if (st.relaxing && (st.tool === 'atom' || st.tool === 'bond' || st.tool === 'erase')) return // editing is locked during clean-up
       switch (st.tool) {
         case 'select':
           set({
@@ -456,7 +544,10 @@ export const useStudio = create<StudioState>((set, get) => {
           if (atom.symbol === 'H' && st.element !== 'H') {
             st.changeElement(id, st.element) // replace hydrogen with the chosen element
           } else if (freeValence(st.mol, atom) === 0 && !neighbours(st.mol, id).some((n) => n.atom.symbol === 'H')) {
-            get().notify(`${el(atom.symbol).name} atomunun boş değerliği yok.`, 'warn', 'noFreeValence', { symbol: atom.symbol })
+            {
+            const e = getElement(atom.symbol)
+            get().notify(tx(`${e?.name ?? atom.symbol} atomunun boş değerliği yok.`, `${e?.nameEn ?? atom.symbol} has no free valence.`), 'warn', 'noFreeValence', { symbol: atom.symbol })
+          }
           } else {
             growFrom(id, st.element, st.bondOrder)
           }
@@ -469,7 +560,18 @@ export const useStudio = create<StudioState>((set, get) => {
           const a = st.pendingBondFrom
           const m = cloneMolecule(st.mol)
           const existing = bondBetween(m, a, id)
-          if (existing) existing.order = st.bondOrder
+          // hydrogen forms exactly one bond: refuse a second bond on a bonded H, and any multiple bond to H
+          const hydrogens = [a, id].map((x) => atomById(m, x)).filter((x): x is Atom => !!x && x.symbol === 'H')
+          if (hydrogens.some((h) => st.bondOrder > 1 || (!existing && neighbours(m, h.id).length > 0))) {
+            get().notify(tx('Hidrojen yalnızca bir bağ yapabilir.', 'Hydrogen can form only one bond.'), 'warn', 'hydrogenSingleBond')
+            set({ pendingBondFrom: null, selection: [] })
+            return
+          }
+          if (existing && existing.order === st.bondOrder && !existing.aromatic) {
+            set({ pendingBondFrom: null, selection: [] }) // same bond, same order: nothing to do, no undo entry
+            return
+          }
+          if (existing) { existing.order = st.bondOrder; existing.aromatic = false }
           else m.bonds.push({ id: m.nextId++, a, b: id, order: st.bondOrder })
           const fixed = fixH(m, [a, id])
           warnValence(fixed, [a, id])
@@ -491,6 +593,7 @@ export const useStudio = create<StudioState>((set, get) => {
       const st = get()
       const b = bondById(st.mol, id)
       if (!b) return
+      if (st.relaxing && (st.tool === 'bond' || st.tool === 'atom' || st.tool === 'erase')) return
       if (st.tool === 'rotate' || st.tool === 'pan' || st.tool === 'zoom' || st.tool === 'measure') return
       if (st.tool === 'erase') return st.deleteBond(id)
       if (st.tool === 'bond' || st.tool === 'atom') {
@@ -503,6 +606,7 @@ export const useStudio = create<StudioState>((set, get) => {
     clickEmpty: (point) => {
       const st = get()
       if (st.tool === 'atom') {
+        if (locked() || !isKnownElement(st.element)) return
         const m = cloneMolecule(st.mol)
         const id = m.nextId++
         m.atoms.push({ id, symbol: st.element, pos: m.atoms.length ? point : [0, 0, 0], charge: 0 })
@@ -515,10 +619,12 @@ export const useStudio = create<StudioState>((set, get) => {
     },
 
     beginDrag: () => {
+      if (locked()) { dragBase = null; return }
       dragBase = get().mol
       dragMoved = false
     },
     dragAtom: (id, pos) => {
+      if (locked()) return
       const m = cloneMolecule(get().mol)
       const a = atomById(m, id)
       if (!a) return
@@ -539,8 +645,13 @@ export const useStudio = create<StudioState>((set, get) => {
     },
 
     loadMolecule: (m) => {
+      const v = validateMolecule(m)
+      if (!v.ok) return reject(v) // unknown element / broken structure: the current molecule stays untouched
+      cancelRelax() // history must receive the molecule the clean-up started from, not a mid-relax snapshot
       relaxToken++
-      const next = centerMolecule(cloneMolecule(m))
+      dragBase = null
+      userNamed = false
+      const next = centerMolecule(v.mol)
       reserveMoleculeId(next.id)
       commit(next, {
         selection: [], selectedBond: null, measure: [], pendingBondFrom: null, hovered: null, hoveredBond: null,
@@ -548,8 +659,13 @@ export const useStudio = create<StudioState>((set, get) => {
       })
     },
     replaceMolecule: (m) => {
+      const v = validateMolecule(m)
+      if (!v.ok) return reject(v)
       relaxToken++
-      const next = centerMolecule(cloneMolecule(m))
+      relaxBase = null
+      dragBase = null
+      userNamed = false
+      const next = centerMolecule(v.mol)
       reserveMoleculeId(next.id)
       suppressSave = true
       set({
@@ -558,10 +674,16 @@ export const useStudio = create<StudioState>((set, get) => {
         relaxing: false, fitNonce: get().fitNonce + 1, loadNonce: get().loadNonce + 1,
       })
     },
-    newMolecule: () => get().loadMolecule(emptyMolecule()),
-    setName: (name) => commit({ ...cloneMolecule(get().mol), name }),
+    newMolecule: () => get().loadMolecule(emptyMolecule(tx('Yeni molekül', 'New molecule'))),
+    setName: (name) => {
+      const cur = get().mol
+      if (name === cur.name) return // no-op: no undo entry, no autosave
+      userNamed = true
+      commit({ ...cloneMolecule(cur), name })
+    },
 
     changeElement: (id, symbol) => {
+      if (locked() || rejectElement(symbol)) return
       const m = cloneMolecule(get().mol)
       const a = atomById(m, id)
       if (!a || a.symbol === symbol) return
@@ -574,22 +696,34 @@ export const useStudio = create<StudioState>((set, get) => {
         a.pos = add(p.pos, scale(norm(sub(a.pos, p.pos)), bondTargetLength(p.symbol, symbol, nb[0].bond.order)))
       }
       const ids = [id, ...nb.map((n) => n.atom.id)]
-      commit(idealizeAround(fixH(m, ids), ids), prune(m))
+      const fixed = idealizeAround(fixH(m, ids), ids)
+      // an automatic / library name no longer describes the changed structure: name it after its formula
+      if (!userNamed && !PLACEHOLDER_NAMES.has(fixed.name)) fixed.name = conventionalFormula(fixed)
+      commit(fixed, prune(fixed))
     },
 
     setCharge: (id, charge) => {
+      if (locked() || !Number.isFinite(charge)) return
       const m = cloneMolecule(get().mol)
       const a = atomById(m, id)
       if (!a) return
-      a.charge = Math.max(-3, Math.min(3, Math.round(charge)))
+      const next = Math.max(-2, Math.min(2, Math.round(charge))) // SPEC B.12: formal charge −2…+2
+      if (next === a.charge) return // no-op: no undo entry, no autosave
+      a.charge = next
       const fixed = fixH(m, [id])
       commit(fixed, prune(fixed))
     },
 
     setBondOrderOf: (bondId, order) => {
+      if (locked()) return
       const m = cloneMolecule(get().mol)
       const b = bondById(m, bondId)
       if (!b) return
+      if (order > 1 && (atomById(m, b.a)?.symbol === 'H' || atomById(m, b.b)?.symbol === 'H')) {
+        get().notify(tx('Hidrojen yalnızca bir bağ yapabilir.', 'Hydrogen can form only one bond.'), 'warn', 'hydrogenSingleBond')
+        return
+      }
+      if (b.order === order && !b.aromatic) return // no-op: no undo entry, no autosave
       b.order = order
       b.aromatic = false
       const fixed = idealizeAround(fixH(m, [b.a, b.b]), [b.a, b.b])
@@ -598,10 +732,27 @@ export const useStudio = create<StudioState>((set, get) => {
     },
 
     deleteAtoms: (ids) => {
+      if (locked()) return
+      let targets = ids
+      if (get().autoH) {
+        // with auto-hydrogen a terminal H is re-added immediately: deleting it alone would be a visible no-op
+        const m0 = get().mol
+        const asked = new Set(ids)
+        targets = ids.filter((id) => {
+          const a = atomById(m0, id)
+          if (!a || a.symbol !== 'H') return true
+          const nb = neighbours(m0, id)
+          return nb.length !== 1 || nb[0].atom.symbol === 'H' || asked.has(nb[0].atom.id)
+        })
+        if (targets.length === 0 && ids.length > 0) {
+          get().notify(tx('Oto-H açıkken hidrojen silinemez (hemen yeniden eklenir). Önce Oto-H\'yi kapatın.', 'A hydrogen cannot be deleted while Auto-H is on (it is re-added at once). Turn Auto-H off first.'), 'info', 'autoHydrogenKeeps')
+          return
+        }
+      }
       const m = cloneMolecule(get().mol)
-      const kill = new Set(ids)
+      const kill = new Set(targets)
       // take terminal hydrogens of deleted heavy atoms with them
-      for (const id of ids) {
+      for (const id of targets) {
         const a = atomById(m, id)
         if (a && a.symbol !== 'H')
           for (const n of neighbours(m, id)) if (n.atom.symbol === 'H' && neighbours(m, n.atom.id).length === 1) kill.add(n.atom.id)
@@ -610,11 +761,13 @@ export const useStudio = create<StudioState>((set, get) => {
       for (const id of kill) for (const n of neighbours(m, id)) if (!kill.has(n.atom.id)) touched.add(n.atom.id)
       m.atoms = m.atoms.filter((a) => !kill.has(a.id))
       m.bonds = m.bonds.filter((b) => !kill.has(b.a) && !kill.has(b.b))
+      if (m.atoms.length === get().mol.atoms.length) return // nothing matched
       const fixed = fixH(m, [...touched])
       commit(fixed, prune(fixed))
     },
 
     deleteBond: (id) => {
+      if (locked()) return
       const m = cloneMolecule(get().mol)
       const b = bondById(m, id)
       if (!b) return
@@ -630,11 +783,17 @@ export const useStudio = create<StudioState>((set, get) => {
     },
 
     addHydrogens: () => {
-      const next = addAllHydrogens(cloneMolecule(get().mol))
+      if (locked()) return
+      const cur = get().mol
+      const next = addAllHydrogens(cloneMolecule(cur))
+      if (next.atoms.length === cur.atoms.length) return // nothing to add: no undo entry
       commit(next, prune(next))
     },
     removeHydrogens: () => {
-      const next = removeAllHydrogens(cloneMolecule(get().mol))
+      if (locked()) return
+      const cur = get().mol
+      const next = removeAllHydrogens(cloneMolecule(cur))
+      if (next.atoms.length === cur.atoms.length) return // nothing to remove: no undo entry
       commit(next, prune(next, { autoH: false }))
     },
 
@@ -642,47 +801,75 @@ export const useStudio = create<StudioState>((set, get) => {
       const st = get()
       if (st.relaxing || st.mol.atoms.length < 2) return
       const token = ++relaxToken
-      if (st.reducedMotion) {
-        let cur = st.mol
-        for (let f = 0; f < 240; f++) {
+      const base = st.mol
+      relaxBase = base
+      const reduced = st.reducedMotion
+      const SLICE_MS = 10 // reduced motion: work in time slices so the main thread is never blocked for long
+      let cur = base
+      let frames = 0
+      const schedule = (fn: () => void) => {
+        if (reduced || typeof requestAnimationFrame !== 'function') setTimeout(fn, 0)
+        else requestAnimationFrame(fn)
+      }
+      const finish = () => {
+        if (token !== relaxToken) return
+        relaxBase = null
+        let moved = 0
+        cur.atoms.forEach((a, i) => { moved = Math.max(moved, Math.hypot(a.pos[0] - base.atoms[i].pos[0], a.pos[1] - base.atoms[i].pos[1], a.pos[2] - base.atoms[i].pos[2])) })
+        if (moved < 1e-3) {
+          set({ relaxing: false, mol: base }) // already converged: no history entry, no autosave
+        } else {
+          const { past } = get()
+          set({ relaxing: false, mol: centerMolecule(cur), past: [...past, base].slice(-HISTORY_LIMIT), future: [], fitNonce: get().fitNonce + 1 })
+        }
+        get().notify(tx('Geometri düzenlendi (basit kuvvet alanı, yaklaşık)', 'Geometry tidied (simple force field, approximate)'), 'success', 'geometryOptimized')
+      }
+      const step = () => {
+        if (token !== relaxToken) return
+        const t0 = performance.now()
+        let done = false
+        do {
           const r = relaxStep(cur, 6)
           cur = r.mol
-          if (!(r.maxForce > 0.01 && Number.isFinite(r.energy))) break
-        }
-        commit(centerMolecule(cur), { fitNonce: st.fitNonce + 1 })
-        get().notify('Geometri düzenlendi (basit kuvvet alanı, yaklaşık)', 'success', 'geometryOptimized')
-        return
+          frames++
+          done = frames >= 240 || !(r.maxForce > 0.01 && Number.isFinite(r.energy))
+        } while (reduced && !done && performance.now() - t0 < SLICE_MS)
+        if (!reduced && !done) set({ mol: cur }) // animated: show progress every frame
+        if (done) finish()
+        else schedule(step)
       }
-      commit(cloneMolecule(st.mol), { relaxing: true })
-      let frame = 0
-      const tick = () => {
-        if (token !== relaxToken) return
-        const { mol, energy, maxForce } = relaxStep(get().mol, 6)
-        frame++
-        set({ mol })
-        if (frame < 240 && maxForce > 0.01 && Number.isFinite(energy)) requestAnimationFrame(tick)
-        else {
-          set({ relaxing: false, mol: centerMolecule(get().mol), fitNonce: get().fitNonce + 1 })
-          get().notify('Geometri düzenlendi (basit kuvvet alanı, yaklaşık)', 'success', 'geometryOptimized')
-        }
-      }
-      requestAnimationFrame(tick)
+      set({ relaxing: true })
+      if (reduced) step() // small molecules finish synchronously; large ones continue in slices
+      else schedule(step)
     },
 
-    recenter: () => set({ mol: centerMolecule(cloneMolecule(get().mol)), fitNonce: get().fitNonce + 1 }),
+    recenter: () => {
+      if (locked()) return
+      set({ mol: centerMolecule(cloneMolecule(get().mol)), fitNonce: get().fitNonce + 1 })
+    },
     clearMeasure: () => set({ measure: [] }),
 
     undo: () => {
+      if (get().relaxing) { cancelRelax(); return } // undo while tidying cancels the tidy and restores its starting molecule
+      if (dragBase && dragMoved) {
+        // Ctrl+Z with the mouse still held on a dragged atom: revert the drag in progress, keep history untouched
+        set({ mol: dragBase })
+        dragMoved = false
+        return
+      }
       const { past, mol, future } = get()
       if (!past.length) return
-      relaxToken++
       const prev = past[past.length - 1]
-      set({ mol: prev, past: past.slice(0, -1), future: [mol, ...future], relaxing: false, ...prune(prev) })
+      if (dragBase) dragBase = prev // a drag still in progress continues from the restored molecule
+      set({ mol: prev, past: past.slice(0, -1), future: [mol, ...future], ...prune(prev) })
     },
     redo: () => {
+      cancelRelax()
+      if (dragBase && dragMoved) return // redo is meaningless while a drag has uncommitted movement
       const { past, mol, future } = get()
       if (!future.length) return
       const next = future[0]
+      if (dragBase) dragBase = next
       set({ mol: next, past: [...past, mol], future: future.slice(1), ...prune(next) })
     },
   }

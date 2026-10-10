@@ -7,6 +7,8 @@ export const DANGER = '#e5605a'
 export const WARN = '#d9a441'
 export const DASH_COLOR = '#d5dae0'
 export const LABEL_COLOR = '#f1f3f5'
+/** Mirrors the surface-0 token: the inner rim of the two-tone selection shell. */
+export const SURFACE_0 = '#0a0b0d'
 
 /** Very subtle vignette: lighter centre, near-black edge (matches --color-surface-0). */
 export const BG_CENTER = '#121419'
@@ -17,15 +19,32 @@ export const FOV = 26
 /** 3/4 view: shows tetrahedral / planar geometry at first glance instead of an axis-aligned projection. */
 export const DEFAULT_VIEW_DIR: Vec3 = [0.36, 0.3, 1]
 /** Fraction of the limiting viewport dimension the molecule should occupy after a fit (leaves a 10-20 % margin). */
-export const FIT_FILL = 0.88
-export const ZOOM_IN_FACTOR = 3 // wheel / pinch range: fitted distance / 3 ... fitted distance * 3
+export const FIT_FILL = 0.7
+/** Absolute closest camera distance from the orbit target (Å), SPEC B.1 / E13. */
+export const MIN_CAMERA_DISTANCE = 1.5
+/** Farthest camera distance as a multiple of the fit radius (bounding-sphere radius incl. atom radii). */
+export const MAX_DISTANCE_RADII = 12
 export const CAMERA_TWEEN_MS = 560
 
 // ---------- picking / highlight ----------
 export const PICK_MIN_ATOM_RADIUS = 0.2
 export const PICK_MIN_BOND_RADIUS = 0.1
 export const CLICK_SLOP_PX = 5
-export const SHELL_THICKNESS = 0.04
+/** Touch pointers jitter more than a mouse (SPEC B.1 SHOULD, E22). */
+export const CLICK_SLOP_TOUCH_PX = 10
+
+/** On-screen floors for picking (CSS px radius, SPEC B.1). */
+export const PICK_FLOOR_ATOM_FINE_PX = 12
+export const PICK_FLOOR_ATOM_COARSE_PX = 22
+export const PICK_FLOOR_BOND_PX = 4
+
+/** Screen-constant overlay widths (CSS px). Selected = 1 px surface-0 rim + 2 px accent; hover = 1.5 px accent. */
+export const SHELL_RIM_PX = 1
+export const SHELL_SELECT_PX = 3
+export const SHELL_HOVER_PX = 1.5
+export const SHELL_HOVER_OPACITY = 0.45
+export const MEASURE_LINE_PX = 1.5
+export const MEASURE_ARC_PX = 2
 
 // ---------- motion ----------
 export const POS_STIFFNESS = 220

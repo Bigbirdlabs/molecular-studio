@@ -7,6 +7,7 @@ import { PrimaryButton, Segmented, Switch } from './controls'
 import { useUI } from './uiStore'
 import { searchPubChem } from './actions'
 import { MOD, TOOL_KEYS } from './shortcuts'
+import { useOnline } from './layout'
 
 const LibraryBody = lazy(() => import('./LibraryBody'))
 
@@ -155,6 +156,7 @@ export function PubChemDialog() {
   const [busy, setBusy] = useState(false)
   const [error, setError] = useState<TrKey | null>(null)
   const token = useRef(0)
+  const online = useOnline()
 
   // A closed dialog abandons any in-flight request (its result is ignored).
   useEffect(() => {
@@ -163,7 +165,7 @@ export function PubChemDialog() {
 
   const submit = async (e: FormEvent) => {
     e.preventDefault()
-    if (busy) return
+    if (busy || !online) return
     const mine = ++token.current
     setBusy(true)
     setError(null)
@@ -193,12 +195,14 @@ export function PubChemDialog() {
             autoComplete="off"
             spellCheck={false}
             aria-invalid={error ? true : undefined}
-            className="h-(--hit) w-full rounded-ctl border border-line bg-surface-0 pl-8 pr-3 text-ui text-ink placeholder:text-ink-faint hover:border-line-strong focus:border-accent-dim"
+            className="h-(--hit) w-full rounded-ctl border border-line-ctl bg-surface-0 pl-8 pr-3 text-ui text-ink placeholder:text-ink-faint hover:border-line-strong focus:border-accent-dim"
           />
         </label>
+        {!online && <p role="alert" className="m-0 text-ui text-warn">{t('pc.offline')}</p>}
         {error && <p role="alert" className="m-0 text-ui text-danger">{t(error)}</p>}
-        <div className="flex justify-end">
-          <PrimaryButton type="submit" busy={busy} icon={busy ? <Loader2 size={15} aria-hidden className="animate-spin" /> : <Search size={15} aria-hidden />}>
+        <div className="flex items-center justify-between gap-3">
+          <span className="text-label text-ink-dim">{t('pc.source')}</span>
+          <PrimaryButton type="submit" busy={busy} disabled={!online} icon={busy ? <Loader2 size={15} aria-hidden className="animate-spin" /> : <Search size={15} aria-hidden />}>
             {busy ? t('pc.searching') : t('pc.search')}
           </PrimaryButton>
         </div>

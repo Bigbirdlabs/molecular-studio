@@ -1,0 +1,388 @@
+{
+ "results": [
+  {
+   "name": "G-m390en",
+   "setEn": 1,
+   "info": [
+    316,
+    26,
+    "Molecule info",
+    44,
+    44
+   ],
+   "dragUp": 712,
+   "sheetTop": 84,
+   "m-full": {
+    "iw": 390,
+    "ih": 844,
+    "sw": 390,
+    "sh": 844,
+    "bodySw": 390,
+    "layout": "mobile",
+    "rm": "true",
+    "lang": "en",
+    "hit": "44px",
+    "nCtrls": 25,
+    "small": [],
+    "small24": [],
+    "offscreen": [],
+    "noName": [],
+    "sheet": {
+     "top": 84,
+     "h": 760,
+     "label": "Molecule"
+    },
+    "canvas": {
+     "tabIndex": -1,
+     "w": 390,
+     "h": 706
+    },
+    "viewport": [
+     0,
+     53,
+     390,
+     706
+    ],
+    "inspector": null,
+    "trTexts": [],
+    "trAttrs": [],
+    "toolbars": 0,
+    "live": [
+     "flex min-h-(--hit) shrink-0 it",
+     "flex items-center gap-2 pb-1 t",
+     "min-w-8 text-center text-ui ta"
+    ],
+    "dockBtns": [
+     "Select [44x44 @8,794]",
+     "Rotate [44x44 @54,794]",
+     "Pan [44x44 @100,794]",
+     "Zoom [44x44 @146,794]",
+     "Add Atom [44x44 @192,794]",
+     "Add Bond [44x44 @238,794]",
+     "Delete [44x44 @284,794]",
+     "Measure [44x44 @330,794]",
+     "Actions [44x44 @340,794]"
+    ]
+   },
+   "shot-1-full": "D:\\molecular-studio\\gauntlet\\critiques\\r1ux-resp\\run4\\G-m390en-1-full.png",
+   "more": [
+    364,
+    26
+   ],
+   "settings": [
+    258,
+    591.375,
+    "Settings",
+    246,
+    44
+   ],
+   "shot-2-settings": "D:\\molecular-studio\\gauntlet\\critiques\\r1ux-resp\\run4\\G-m390en-2-settings.png",
+   "m-set": {
+    "iw": 390,
+    "ih": 844,
+    "sw": 390,
+    "sh": 844,
+    "bodySw": 390,
+    "layout": "mobile",
+    "rm": "true",
+    "lang": "en",
+    "hit": "44px",
+    "nCtrls": 33,
+    "small": [
+     "Türkçe [58x38 @20,537]",
+     "English [61x38 @78,537]",
+     "Follow system [101x38 @20,623]",
+     "Reduced [70x38 @121,623]",
+     "Full [40x38 @190,623]",
+     "BUTTON [36x20 @337,725]"
+    ],
+    "small24": [
+     "BUTTON [36x20 @337,725]"
+    ],
+    "offscreen": [],
+    "noName": [],
+    "sheet": {
+     "top": 84,
+     "h": 760,
+     "label": "Molecule"
+    },
+    "canvas": {
+     "tabIndex": -1,
+     "w": 390,
+     "h": 706
+    },
+    "viewport": [
+     0,
+     53,
+     390,
+     706
+    ],
+    "inspector": null,
+    "trTexts": [
+     "Türkçe"
+    ],
+    "trAttrs": [],
+    "toolbars": 0,
+    "live": [
+     "flex min-h-(--hit) shrink-0 it",
+     "flex items-center gap-2 pb-1 t",
+     "min-w-8 text-center text-ui ta"
+    ],
+    "dockBtns": [
+     "Select [44x44 @8,794]",
+     "Rotate [44x44 @54,794]",
+     "Pan [44x44 @100,794]",
+     "Zoom [44x44 @146,794]",
+     "Add Atom [44x44 @192,794]",
+     "Add Bond [44x44 @238,794]",
+     "Delete [44x44 @284,794]",
+     "Measure [44x44 @330,794]",
+     "Actions [44x44 @340,794]"
+    ]
+   },
+   "setCtrls": [
+    "Close panel 44x44",
+    "Türkçe 58x38",
+    "English 61x38",
+    "Follow system 101x38",
+    "Reduced 70x38",
+    "Full 40x38",
+    "switch 36x20",
+    "Show shortcuts 114x44"
+   ]
+  },
+  {
+   "name": "H-m390lib",
+   "setTr": 1,
+   "more": [
+    364,
+    26
+   ],
+   "lib": [
+    258,
+    81,
+    "Kütüphane",
+    246,
+    44
+   ],
+   "shot-1-library": "D:\\molecular-studio\\gauntlet\\critiques\\r1ux-resp\\run4\\H-m390lib-1-library.png",
+   "m-lib": {
+    "iw": 390,
+    "ih": 844,
+    "sw": 390,
+    "sh": 844,
+    "bodySw": 390,
+    "layout": "mobile",
+    "rm": "true",
+    "lang": "tr",
+    "hit": "44px",
+    "nCtrls": 70,
+    "small": [],
+    "small24": [],
+    "offscreen": [],
+    "noName": [],
+    "sheet": null,
+    "canvas": {
+     "tabIndex": -1,
+     "w": 390,
+     "h": 706
+    },
+    "viewport": [
+     0,
+     53,
+     390,
+     706
+    ],
+    "inspector": null,
+    "trTexts": [
+     "Otomatik kayıt açık",
+     "Seç",
+     "4 bağ",
+     "Seçim yok",
+     "Molekül kütüphanesi",
+     "Molekül ara…",
+     "Tümü",
+     "Temel Moleküller",
+     "Özel Geometriler",
+     "Aromatik Bileşikler",
+     "Biyomoleküller",
+     "İlaçlar ve Alkaloitler",
+     "46 molekül",
+     "CH₄ — Doğal gazın ana bileşenidir; dört C–H bağı düzgün bir ",
+     "H₂O — Bükülmüş bir moleküldür (H–O–H açısı gaz fazında yakla",
+     "H₃N — Üçgen piramit geometrisindedir: azot üzerinde bir orta",
+     "CO₂ — Doğrusal bir moleküldür (O=C=O açısı 180°). Katı hali ",
+     "H₂O₂ — Tek bir O–O bağı içerir; H–O–O–H burulma açısı gaz fa",
+     "Kükürt dioksit",
+     "O₂S — Bükülmüş bir moleküldür (O=S=O açısı yaklaşık 119°). F",
+     "Bor triflorür",
+     "BF₃ — Düzlemsel üçgen geometridedir (F–B–F açısı 120°). Bor ",
+     "Kükürt heksaflorür",
+     "F₆S — Düzgün sekizyüzlü geometridedir: altı S–F bağı birbiri",
+     "Sülfürik asit",
+     "H₂O₄S — Dünyada en çok üretilen endüstriyel kimyasallardan b",
+     "H₃O₄P — Gıdalarda asitlik düzenleyici olarak (E338) kullanıl",
+     "C₂H₆ — İki karbonlu en basit alkandır ve doğal gazın bir bil",
+     "C₃H₈ — Üç karbonlu bir alkandır ve sıvılaştırılmış petrol ga",
+     "C₂H₄ — Düzlemsel bir moleküldür ve C=C çift bağı yaklaşık 1,",
+     "C₂H₂ — Doğrusal H–C≡C–H yapısındadır ve C≡C üçlü bağı yaklaş",
+     "C₆H₁₂ — Sandalye konformasyonunda C–C–C açıları yaklaşık 111",
+     "C₁₀H₁₆ — Karbon iskeleti elmas kristal örgüsünün en küçük ka",
+     "C₆H₆ — Düzlemsel altılı halkadır ve tüm C–C bağları yaklaşık",
+     "C₁₀H₈ — İki kaynaşmış benzen halkasından oluşan düzlemsel bi",
+     "C₇H₈ — Benzen halkasına bir metil grubu bağlıdır. Kaynama no",
+     "C₆H₆O — Benzen halkasına doğrudan bir hidroksil grubu bağlıd",
+     "C₆H₇N — Benzen halkasına bir NH₂ grubu bağlı en basit aromat",
+     "C₅H₅N — Benzendeki bir CH grubunun azotla değiştiği altılı a",
+     "CH₄O — En basit alkoldür ve odun alkolü olarak da bilinir; z"
+    ],
+    "trAttrs": [
+     "Proje adı",
+     "Adsız proje",
+     "Otomatik kayıt açık",
+     "Molekül bilgisi",
+     "Diğer seçenekler",
+     "3B molekül görünümü",
+     "Araçlar",
+     "Seç",
+     "Döndür",
+     "Kaydır",
+     "Yakınlaştır",
+     "Bağ Ekle",
+     "Ölç",
+     "Molekül kütüphanesi",
+     "Molekül ara…"
+    ],
+    "toolbars": 0,
+    "live": [
+     "flex min-h-(--hit) shrink-0 it",
+     "text-label text-ink-faint"
+    ],
+    "dockBtns": [
+     "Seç [44x44 @8,794]",
+     "Döndür [44x44 @54,794]",
+     "Kaydır [44x44 @100,794]",
+     "Yakınlaştır [44x44 @146,794]",
+     "Atom Ekle [44x44 @192,794]",
+     "Bağ Ekle [44x44 @238,794]",
+     "Sil [44x44 @284,794]",
+     "Ölç [44x44 @330,794]",
+     "Eylemler [44x44 @340,794]"
+    ]
+   },
+   "tab": [
+    "Paneli kapat inDialog=true",
+    "INPUT inDialog=true",
+    "Tümü inDialog=true",
+    "Hidrokarbonlar inDialog=true",
+    "Temel Moleküller inDialog=true",
+    "Özel Geometriler inDialog=true"
+   ]
+  },
+  {
+   "name": "I-m360dock",
+   "dock": {
+    "scrollW": 382,
+    "clientW": 303,
+    "overflowX": "auto"
+   }
+  },
+  {
+   "name": "J-l844x390",
+   "m": {
+    "iw": 844,
+    "ih": 390,
+    "sw": 844,
+    "sh": 390,
+    "bodySw": 844,
+    "layout": "tablet",
+    "rm": "true",
+    "lang": "tr",
+    "hit": "44px",
+    "nCtrls": 23,
+    "small": [],
+    "small24": [],
+    "offscreen": [],
+    "noName": [],
+    "sheet": null,
+    "canvas": {
+     "tabIndex": -1,
+     "w": 784,
+     "h": 312
+    },
+    "viewport": [
+     60,
+     52,
+     784,
+     312
+    ],
+    "inspector": null,
+    "trTexts": [
+     "Otomatik kayıt açık",
+     "Top-Çubuk",
+     "4 bağ",
+     "Seçim yok",
+     "Seç",
+     "Atom veya bağa tıklayarak seçin; atomu sürükleyerek taşıyın"
+    ],
+    "trAttrs": [
+     "Proje adı",
+     "Adsız proje",
+     "Otomatik kayıt açık",
+     "Kütüphane",
+     "Görünüm",
+     "Molekül bilgisi",
+     "Araçlar",
+     "Seç",
+     "Döndür",
+     "Kaydır",
+     "Yakınlaştır",
+     "Bağ Ekle",
+     "Ölç",
+     "Geometriyi düzenle (basit kuvvet alanı, yaklaşık)",
+     "Hidrojenleri kaldır",
+     "Yeni molekül",
+     "Kamerayı sıfırla",
+     "Yakınlaş",
+     "Uzaklaş",
+     "3B molekül görünümü"
+    ],
+    "toolbars": 0,
+    "live": [
+     "flex min-h-(--hit) shrink-0 it"
+    ],
+    "dockBtns": [
+     "Seç [44x44 @8,60]",
+     "Döndür [44x44 @8,108]",
+     "Kaydır [44x44 @8,156]",
+     "Yakınlaştır [44x44 @8,204]",
+     "Atom Ekle [44x44 @8,252]",
+     "Bağ Ekle [44x44 @8,300]",
+     "Sil [44x44 @8,348]",
+     "Ölç [44x44 @8,396]",
+     "Geometriyi düzenle (basit kuvvet alanı,  [44x44 @8,456]",
+     "Hidrojen ekle [44x44 @8,504]",
+     "Hidrojenleri kaldır [44x44 @8,552]",
+     "Yeni molekül [44x44 @8,600]",
+     "Kamerayı sıfırla [44x44 @8,648]",
+     "Yakınlaş [44x44 @8,696]",
+     "Uzaklaş [44x44 @8,744]"
+    ]
+   },
+   "shot-land": "D:\\molecular-studio\\gauntlet\\critiques\\r1ux-resp\\run4\\J-l844x390-land.png",
+   "rail": {
+    "scrollH": 744,
+    "clientH": 312,
+    "header": 52
+   }
+  },
+  {
+   "name": "K-d1366noRM",
+   "rm": [
+    "false",
+    "0.15s"
+   ]
+  }
+ ],
+ "logs": []
+}

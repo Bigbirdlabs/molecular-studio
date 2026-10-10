@@ -3,6 +3,7 @@ import { AnimatePresence, motion } from 'motion/react'
 import { AlertTriangle, CheckCircle2, Info, X, XCircle } from 'lucide-react'
 import { useStudio, type ToastKind } from '../store'
 import { hasKey, useT } from './i18n'
+import { useUI } from './uiStore'
 import type { Layout } from './layout'
 
 const ICONS: Record<ToastKind, typeof Info> = { info: Info, success: CheckCircle2, warn: AlertTriangle, error: XCircle }
@@ -13,6 +14,7 @@ export function ToastHost({ layout }: { layout: Layout }) {
   const t = useT()
   const toast = useStudio((s) => s.toast)
   const reduced = useStudio((s) => s.reducedMotion)
+  const chromeBottom = useUI((s) => s.chromeBottom)
 
   useEffect(() => {
     if (!toast) return
@@ -28,7 +30,8 @@ export function ToastHost({ layout }: { layout: Layout }) {
 
   return (
     <div
-      className={`pointer-events-none fixed inset-x-0 z-[95] flex justify-center px-3 ${layout === 'mobile' ? 'bottom-[calc(132px+env(safe-area-inset-bottom))]' : 'bottom-10'}`}
+      className={`pointer-events-none fixed inset-x-0 z-[95] flex justify-center px-3 ${layout === 'mobile' ? '' : 'bottom-10'}`}
+      style={layout === 'mobile' ? { bottom: chromeBottom + 140 } : undefined}
     >
       <AnimatePresence>
         {toast && (

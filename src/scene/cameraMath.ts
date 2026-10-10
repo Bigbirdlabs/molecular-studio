@@ -54,6 +54,18 @@ export function computeFit(spheres: number[], dir: Vec3, vfovDeg: number, aspect
   return { center: [cx, cy, cz], distance: dist }
 }
 
+/** Radius of a sphere around the centroid of the flat [x, y, z, r, ...] spheres that contains all of them. */
+export function boundingRadius(spheres: number[]): number {
+  const n = Math.floor(spheres.length / 4)
+  if (n === 0) return 0
+  let cx = 0, cy = 0, cz = 0
+  for (let i = 0; i < n; i++) { cx += spheres[i * 4]; cy += spheres[i * 4 + 1]; cz += spheres[i * 4 + 2] }
+  cx /= n; cy /= n; cz /= n
+  let r = 0
+  for (let i = 0; i < n; i++) r = Math.max(r, Math.hypot(spheres[i * 4] - cx, spheres[i * 4 + 1] - cy, spheres[i * 4 + 2] - cz) + spheres[i * 4 + 3])
+  return r
+}
+
 export const easeInOutCubic = (t: number) => (t < 0.5 ? 4 * t * t * t : 1 - Math.pow(-2 * t + 2, 3) / 2)
 
 export const clamp = (v: number, lo: number, hi: number) => (v < lo ? lo : v > hi ? hi : v)

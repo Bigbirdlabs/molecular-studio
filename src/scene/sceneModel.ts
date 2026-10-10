@@ -38,6 +38,13 @@ export interface BondEntry {
   dying: boolean
 }
 
+/** On-screen pick floors (SPEC B.1): `kPx` = CSS pixels per world unit at depth 1 (canvas height x projection[1][1] / 2). */
+export interface PickFloors {
+  kPx: number
+  atomPx: number
+  bondPx: number
+}
+
 export type Pick = { kind: 'atom'; id: number; t: number } | { kind: 'bond'; id: number; t: number } | null
 
 const v3 = (p: Vec3): Vec3 => [p[0], p[1], p[2]]
@@ -290,28 +297,45 @@ export class SceneModel {
     }
   }
 
-  /** Nearest atom (sphere) or bond (tube) hit by a ray, using the displayed positions. Atoms win over bonds. */
-  pick(ox: number, oy: number, oz: number, dx: number, dy: number, dz: number): Pick {
+  /**
+   * Nearest atom (sphere) or bond (tube) hit by a ray, using the displayed positions. Atoms win over bonds. Anything whose
+   * centre / closest point lies behind the ray origin is ignored. With `floors`, targets that are smaller than the
+   * on-screen minimum on screen (SPEC B.1: 12 / 22 px atoms, 4 px bonds) are still hit: a true hit on the visible sphere
+   * wins, otherwise the atom nearest the cursor inside its floor radius.
+   */
+  pick(ox: number, oy: number, oz: number, dx: number, dy: number, dz: number, floors?: PickFloors): Pick {
     let bestAtom: AtomEntry | null = null
     let bestT = Infinity
+    let nearAtom: AtomEntry | null = null
+    let nearPx = Infinity
+    let nearT = 0
     for (const e of this.atoms) {
       if (e.dying || e.hidden || e.s < 0.5) continue
       const r = Math.max(atomRadius(this.params, e.symbol) * e.s, PICK_MIN_ATOM_RADIUS)
       const cx = e.p[0] - ox, cy = e.p[1] - oy, cz = e.p[2] - oz
       const tca = cx * dx + cy * dy + cz * dz
+      if (tca <= 0) continue // centre behind the eye: never beats what is in front
       const d2 = cx * cx + cy * cy + cz * cz - tca * tca
-      if (d2 > r * r) continue
-      const t = tca - Math.sqrt(r * r - d2)
-      if (t < bestT) { bestT = t; bestAtom = e }
+      if (d2 <= r * r) {
+        const t = Math.max(0, tca - Math.sqrt(r * r - d2))
+        if (t < bestT) { bestT = t; bestAtom = e }
+      } else if (floors) {
+        const rf = (floors.atomPx * tca) / floors.kPx
+        if (d2 <= rf * rf) {
+          const px = (Math.sqrt(d2) * floors.kPx) / tca
+          if (px < nearPx) { nearPx = px; nearAtom = e; nearT = tca }
+        }
+      }
     }
     if (bestAtom) return { kind: 'atom', id: bestAtom.id, t: bestT }
+    if (nearAtom) return { kind: 'atom', id: nearAtom.id, t: nearT }
 
     if (this.params.bondR < 0.02 && this.params.wire < 0.5) return null // bonds are not drawn (space filling)
     let bestBond: BondEntry | null = null
     let bestS = Infinity
     for (const b of this.bonds) {
       if (b.dying || b.st === 0 || b.s < 0.5) continue
-      const thr = Math.max(bondOuterRadius(this.params, b.order, b.aromatic) * b.s, PICK_MIN_BOND_RADIUS)
+      const vis = Math.max(bondOuterRadius(this.params, b.order, b.aromatic) * b.s, PICK_MIN_BOND_RADIUS)
       const ax = b.a.p[0], ay = b.a.p[1], az = b.a.p[2]
       const ux = b.b.p[0] - ax, uy = b.b.p[1] - ay, uz = b.b.p[2] - az
       const wx = ox - ax, wy = oy - ay, wz = oz - az
@@ -323,8 +347,9 @@ export class SceneModel {
       const den = cc - bb * bb
       let tq = den < 1e-9 ? ee / cc : (ee - bb * dd) / den
       tq = tq < 0 ? 0 : tq > 1 ? 1 : tq
-      let sq = bb * tq - dd
-      if (sq < 0) sq = 0
+      const sq = bb * tq - dd
+      if (sq <= 0) continue // closest point is behind the eye
+      const thr = floors ? Math.max(vis, (floors.bondPx * sq) / floors.kPx) : vis
       const px = ox + dx * sq - (ax + ux * tq)
       const py = oy + dy * sq - (ay + uy * tq)
       const pz = oz + dz * sq - (az + uz * tq)

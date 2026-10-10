@@ -36,19 +36,19 @@ export function HydrogenIcon({ size = 18, className, mode }: IconProps & { mode:
   )
 }
 
-/** Product mark: a methane-like tetrahedral cluster, simple and monochrome except one accent atom. */
+/** Product mark: a methane-like tetrahedral cluster, monochrome except one accent atom (colours come from the theme tokens). */
 export function LogoMark({ size = 22 }: { size?: number }) {
   return (
     <svg width={size} height={size} viewBox="0 0 24 24" aria-hidden="true" fill="none">
-      <g stroke="#9aa1ab" strokeWidth="1.6" strokeLinecap="round">
+      <g className="stroke-ink-dim" strokeWidth="1.75" strokeLinecap="round">
         <path d="M12 12 12 3.5" />
         <path d="M12 12 4.6 16.4" />
         <path d="M12 12 19.4 16.4" />
       </g>
-      <circle cx="12" cy="3.5" r="2.2" fill="#e6e8eb" />
-      <circle cx="4.6" cy="16.4" r="2.2" fill="#e6e8eb" />
-      <circle cx="19.4" cy="16.4" r="2.2" fill="#e6e8eb" />
-      <circle cx="12" cy="12" r="3.6" fill="#5ec8e5" />
+      <circle cx="12" cy="3.5" r="2.2" className="fill-ink" />
+      <circle cx="4.6" cy="16.4" r="2.2" className="fill-ink" />
+      <circle cx="19.4" cy="16.4" r="2.2" className="fill-ink" />
+      <circle cx="12" cy="12" r="3.6" className="fill-accent" />
     </svg>
   )
 }

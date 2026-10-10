@@ -63,7 +63,7 @@ export default function LibraryBody() {
             placeholder={t('lib.search')}
             autoComplete="off"
             spellCheck={false}
-            className="h-(--hit) w-full rounded-ctl border border-line bg-surface-0 pl-8 pr-3 text-ui text-ink placeholder:text-ink-faint hover:border-line-strong focus:border-accent-dim"
+            className="h-(--hit) w-full rounded-ctl border border-line-ctl bg-surface-0 pl-8 pr-3 text-ui text-ink placeholder:text-ink-faint hover:border-line-strong focus:border-accent-dim"
           />
         </label>
         <div role="group" aria-label={t('lib.categories')} className="no-scrollbar -mx-4 flex gap-1.5 overflow-x-auto px-4">

@@ -37,3 +37,39 @@ export function useViewportHeight(): number {
     () => 800,
   )
 }
+
+/** Reactive media query (false on the server / without matchMedia). */
+export function useMediaQuery(query: string): boolean {
+  return useSyncExternalStore(
+    (cb) => {
+      if (typeof window === 'undefined' || typeof window.matchMedia !== 'function') return () => {}
+      const m = window.matchMedia(query)
+      m.addEventListener('change', cb)
+      return () => m.removeEventListener('change', cb)
+    },
+    () => typeof window !== 'undefined' && typeof window.matchMedia === 'function' && window.matchMedia(query).matches,
+    () => false,
+  )
+}
+
+/** Viewport height < 500 px (phone landscape): compact chrome. */
+export const useShortScreen = (): boolean => useMediaQuery('(max-height: 499px)')
+
+/** Primary pointer is coarse (touch). */
+export const useCoarsePointer = (): boolean => useMediaQuery('(pointer: coarse)')
+
+/** navigator.onLine, reactive. */
+export function useOnline(): boolean {
+  return useSyncExternalStore(
+    (cb) => {
+      window.addEventListener('online', cb)
+      window.addEventListener('offline', cb)
+      return () => {
+        window.removeEventListener('online', cb)
+        window.removeEventListener('offline', cb)
+      }
+    },
+    () => (typeof navigator === 'undefined' ? true : navigator.onLine),
+    () => true,
+  )
+}

@@ -6,7 +6,7 @@ import * as THREE from 'three'
  * regardless of the number of labels (atom symbols, measurement values, measurement markers).
  */
 
-const CHARS = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789.,-+:=°Å'
+const CHARS = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789.,-+:=°Å '
 const CELL = 64
 const FONT_PX = 40 // em size inside a cell
 const COLS = 12
@@ -147,7 +147,7 @@ export class GlyphLabels {
     this.mesh = new THREE.Mesh(this.geo, this.material)
     this.mesh.frustumCulled = false
     this.mesh.renderOrder = renderOrder
-    this.mesh.visible = false
+    this.mesh.visible = true // instanceCount 0 draws nothing but registers geometry + texture on the first frame
     this.mesh.onBeforeRender = (renderer) => {
       renderer.getSize(this.size)
       this.material.uniforms.uHeight.value = Math.max(1, this.size.y)
@@ -219,7 +219,6 @@ export class GlyphLabels {
     const buf = (this.geo.getAttribute('iOrigin') as THREE.InterleavedBufferAttribute).data
     buf.needsUpdate = true
     this.geo.instanceCount = this.count
-    this.mesh.visible = this.count > 0
   }
 
   dispose(): void {

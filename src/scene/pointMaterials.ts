@@ -1,31 +1,37 @@
 import * as THREE from 'three'
 
 /** What a point sprite draws. */
-export type PointMode = 'disc' | 'ring' | 'badge'
+export type PointMode = 'disc' | 'ring' | 'valence'
 
-const MODE_VALUE: Record<PointMode, number> = { disc: 0, ring: 1, badge: 2 }
+const MODE_VALUE: Record<PointMode, number> = { disc: 0, ring: 1, valence: 2 }
 
 const VERT = /* glsl */ `
 attribute vec3 aColor;
 attribute float aSize;
 uniform float uK;     // device pixels per (world unit / depth)
 uniform float uDpr;
-uniform float uMode;  // 0 disc (aSize = world diameter), 1 ring (aSize = CSS px), 2 badge (aSize = sphere radius)
+uniform float uMode;  // 0 disc (aSize = world diameter), 1 ring (aSize = CSS px), 2 valence ring (|aSize| = sphere radius, < 0 dashed)
 varying vec3 vColor;
+varying float vSize;
+varying float vDash;
 void main() {
   vColor = aColor;
   vec4 mv = modelViewMatrix * vec4(position, 1.0);
-  if (uMode > 1.5) mv.xy += vec2(aSize * 0.78); // sits on the upper-right silhouette of the atom
   gl_Position = projectionMatrix * mv;
   float depth = max(-mv.z, 1e-3);
+  vDash = aSize < 0.0 ? 1.0 : 0.0;
   if (uMode < 0.5) gl_PointSize = max(aSize * uK / depth, 3.0 * uDpr);
   else if (uMode < 1.5) gl_PointSize = aSize * uDpr;
-  else gl_PointSize = 18.0 * uDpr;
+  else gl_PointSize = 2.0 * abs(aSize) * uK / depth + 11.0 * uDpr; // the atom's silhouette plus a margin
+  vSize = gl_PointSize;
 }`
 
 const FRAG = /* glsl */ `
 uniform float uMode;
+uniform float uDpr;
 varying vec3 vColor;
+varying float vSize;
+varying float vDash;
 void main() {
   vec2 p = gl_PointCoord * 2.0 - 1.0;
   float d = length(p);
@@ -38,13 +44,16 @@ void main() {
     a = smoothstep(0.66, 0.76, d) * (1.0 - smoothstep(0.9, 1.0, d));
     if (a < 0.02) discard;
   } else {
-    // valence badge: coloured disc, light rim, exclamation mark (colour is never the only carrier)
-    vec2 q = vec2(p.x, -p.y);
-    float bar = step(abs(q.x), 0.13) * step(-0.12, q.y) * step(q.y, 0.58);
-    float period = step(length(q - vec2(0.0, -0.46)), 0.16);
-    col = mix(col, vec3(1.0), max(bar, period));
-    col = mix(col, vec3(0.96, 0.97, 0.98), smoothstep(0.78, 0.86, d));
-    a = 1.0 - smoothstep(0.9, 1.0, d);
+    // valence ring: thin (about 1.5 px) circle just outside the atom; dashed when the atom is merely under-valent
+    float px = d * vSize * 0.5;
+    float centre = vSize * 0.5 - 2.5 * uDpr;
+    float hw = 0.75 * uDpr;
+    a = 1.0 - smoothstep(hw - 0.6, hw + 0.6, abs(px - centre));
+    if (vDash > 0.5) {
+      float t = fract(atan(p.y, p.x) / 6.2831853 * 16.0);
+      a *= step(t, 0.55);
+    }
+    if (a < 0.02) discard;
   }
   gl_FragColor = vec4(col, a);
   #include <colorspace_fragment>
