@@ -8,7 +8,7 @@ import { Formula } from './Formula'
 import { useUI } from './uiStore'
 
 /** Case-, diacritic- and Turkish-dotless-i-insensitive text for searching. */
-const fold = (s: string): string => s.toLowerCase().replace(/ı/g, 'i').normalize('NFD').replace(/\p{M}/gu, '')
+const fold = (s: string): string => s.toLowerCase().replace(/\u0131/g, 'i').normalize('NFD').replace(/\p{M}/gu, '')
 
 interface Indexed { entry: LibraryEntry; pretty: string; haystack: string }
 
@@ -37,6 +37,11 @@ export default function LibraryBody() {
     const q = fold(deferred.trim())
     return INDEX.filter((r) => (category === null || r.entry.category === category) && (q === '' || r.haystack.includes(q)))
   }, [deferred, category])
+
+  const groups = useMemo(
+    () => CATEGORIES.map((c): [string, Indexed[]] => [c, rows.filter((r) => r.entry.category === c)]).filter(([, list]) => list.length > 0),
+    [rows],
+  )
 
   const catLabel = (c: string) => (lang === 'en' ? CATEGORY_EN[c] ?? c : c)
   const open = (e: LibraryEntry) => {
@@ -78,28 +83,32 @@ export default function LibraryBody() {
       {rows.length === 0 ? (
         <p className="m-0 p-6 text-center text-ui text-ink-dim">{t('lib.empty')}</p>
       ) : (
-        <ul className="m-0 list-none p-0">
-          {rows.map(({ entry, pretty }) => (
-            <li key={entry.id} className="border-b border-line last:border-b-0">
-              <button
-                type="button"
-                onClick={() => open(entry)}
-                className="flex min-h-14 w-full flex-col gap-0.5 px-4 py-2.5 text-left transition-colors duration-100 hover:bg-surface-2 focus-visible:bg-surface-2"
-              >
-                <span className="flex items-baseline gap-3">
-                  <span className="min-w-0 flex-1 truncate text-ui font-medium text-ink">{lang === 'en' ? entry.nameEn : entry.name}</span>
-                  <span className="shrink-0 text-ui text-ink"><Formula text={pretty} /></span>
-                </span>
-                <span className="line-clamp-2 text-label text-ink-dim">{lang === 'en' ? entry.descriptionEn : entry.description}</span>
-                <span className="flex gap-2 text-label text-ink-faint">
-                  <span>{catLabel(entry.category)}</span>
-                  <span aria-hidden="true">·</span>
-                  <span className="tabular-nums">{t('lib.atoms', { n: entry.molecule.atoms.length })}</span>
-                </span>
-              </button>
-            </li>
-          ))}
-        </ul>
+        groups.map(([cat, list]) => (
+          <section key={cat} aria-label={catLabel(cat)}>
+            <h3 className="m-0 border-b border-line bg-surface-0 px-4 py-1.5 text-label font-medium text-ink-dim">
+              {catLabel(cat)} <span className="font-normal tabular-nums text-ink-faint">· {list.length}</span>
+            </h3>
+            <ul className="m-0 list-none p-0">
+              {list.map(({ entry, pretty }) => (
+                <li key={entry.id} className="border-b border-line last:border-b-0">
+                  <button
+                    type="button"
+                    onClick={() => open(entry)}
+                    className="flex min-h-14 w-full flex-col gap-0.5 px-4 py-2.5 text-left transition-colors duration-100 hover:bg-surface-2 focus-visible:bg-surface-2"
+                  >
+                    <span className="flex items-baseline gap-3">
+                      <span className="min-w-0 flex-1 truncate text-ui font-medium text-ink">{lang === 'en' ? entry.nameEn : entry.name}</span>
+                      <span className="shrink-0 text-ui text-ink"><Formula text={pretty} /></span>
+                    </span>
+                    <span className="line-clamp-2 text-label text-ink-dim">{lang === 'en' ? entry.descriptionEn : entry.description}</span>
+                    <span className="line-clamp-2 text-label text-ink-faint">{lang === 'en' ? entry.coordSourceTextEn : entry.coordSourceText}</span>
+                    <span className="tabular-nums text-label text-ink-faint">{t('lib.atoms', { n: entry.molecule.atoms.length })}</span>
+                  </button>
+                </li>
+              ))}
+            </ul>
+          </section>
+        ))
       )}
     </div>
   )

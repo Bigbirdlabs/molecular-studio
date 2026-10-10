@@ -4,20 +4,22 @@ import { AlertTriangle, Check, CircleAlert, Library, Minus, Plus, Ruler, Trash2,
 import { useStudio } from '../store'
 import { el } from '../chem/elements'
 import {
-  angleDeg, atomById, bondById, conventionalFormula, dihedralDeg, dist, formula, missingHydrogens, molarMass,
+  angleDeg, atomById, bondById, bondLengthSource, conventionalFormula, dihedralDeg, dist, formula, missingHydrogens, molarMass,
   type Molecule, type BondOrder,
 } from '../chem/molecule'
 import { atomInfo, bondInfo, molProperties, type AtomInfo, type BondInfo, type MolProperties } from '../chem/properties'
 import {
   elementCategory, elementName, groupLabel, hybridLabel, translate, useT, type TFn, type TrKey,
 } from './i18n'
-import { Badge, PrimaryButton, Prov, Row, Section, Segmented } from './controls'
+import { Badge, PrimaryButton, Section, Segmented } from './controls'
 import { ElementPicker } from './ElementPicker'
 import { Formula } from './Formula'
 import { useUI } from './uiStore'
 import { AtomPlusIcon } from './icons'
 import { idealAngle, signedInt, tabulatedDecimals, useNum, vseprNotation } from './inspector/format'
 import { InspectorBoundary } from './inspector/InspectorBoundary'
+import { IRow as Row, LockNote, LockableGroup, ProvTag as Prov, useEditLocked } from './inspector/parts'
+import { useCoordSource } from './inspector/source'
 
 // ---------- localised molecule title ----------
 let englishNames: Map<string, string> | null = null
@@ -120,13 +122,14 @@ function MoleculeSummary({ mol, layout }: { mol: Molecule; layout: 'panel' | 'sh
   const conventional = useMemo(() => conventionalFormula(mol, true), [mol])
   const hill = useMemo(() => formula(mol, true), [mol])
   const missingTotal = useMemo(() => mol.atoms.reduce((s, a) => s + missingHydrogens(mol, a), 0), [mol])
+  const source = useCoordSource(mol)
 
   if (!props) {
     return (
       <div className="flex flex-col items-start gap-3 p-4">
-        <h2 className="m-0 text-title font-medium text-ink">{t('mol.empty.title')}</h2>
+        <h2 className="m-0 text-title font-medium text-ink">{t('insp.empty.title')}</h2>
         <p className="m-0 text-ui text-ink-dim">{t('mol.empty.body')}</p>
-        <p className="m-0 text-label tabular-nums text-ink-faint">{t('st.atoms', { n: 0 })} · {t('st.bonds', { n: 0 })}</p>
+        <p className="m-0 text-label tabular-nums text-ink-dim">{t('st.atoms', { n: 0 })} · {t('st.bonds', { n: 0 })}</p>
         <div className="flex flex-wrap gap-2">
           <PrimaryButton variant="solid" icon={<AtomPlusIcon size={16} />} onClick={() => useStudio.getState().setTool('atom')}>{t('mol.empty.add')}</PrimaryButton>
           <PrimaryButton variant="quiet" icon={<Library size={16} aria-hidden />} onClick={() => openDialog('library')}>{t('mol.empty.library')}</PrimaryButton>
@@ -153,6 +156,13 @@ function MoleculeSummary({ mol, layout }: { mol: Molecule; layout: 'panel' | 'sh
         <div className="mt-0.5 break-words text-formula font-medium text-ink" title={t('mol.formulaHillTip', { hill })}>
           <Formula text={conventional} />
         </div>
+        {source && (
+          <div className="mt-2 flex flex-col gap-0.5 text-label text-ink-dim">
+            <span>{source.entry ? (lang === 'en' ? source.entry.coordSourceTextEn : source.entry.coordSourceText) : t('mol.src.pubchemCoords')}</span>
+            {source.pubchem && <span>{t('mol.src.pubchem')}</span>}
+            {source.edited && <span>{t('mol.src.edited')}</span>}
+          </div>
+        )}
         {(missingTotal > 0 || overValent.length > 0) && (
           <div role="status" className="mt-3 flex flex-col items-start gap-2 rounded-ctl border border-warn/40 p-2.5 text-ui text-ink">
             {missingTotal > 0 && (
@@ -202,7 +212,7 @@ function MoleculeSummary({ mol, layout }: { mol: Molecule; layout: 'panel' | 'sh
           <Row label={<>{t('mol.donors')}<Prov kind="est" /></>} hint={t('mol.hbondNote')}>{props.hDonors}</Row>
           <Row label={<>{t('mol.acceptors')}<Prov kind="est" /></>} hint={t('mol.hbondNote')}>{props.hAcceptors}</Row>
         </dl>
-        <p className="mb-0 mt-2 text-label text-ink-faint">{t('mol.hbondNote')}</p>
+        <p className="mb-0 mt-2 text-label text-ink-dim">{t('mol.hbondNote')}</p>
       </Sec>
 
       <Sec id="mol.composition" title={t('mol.sectionCompositionM')}>
@@ -269,7 +279,7 @@ function ParsedChip({ token }: { token: string }) {
     >
       <span aria-hidden="true" className="inline-block size-2 rounded-full" style={{ background: el(symbol).color }} />
       {symbol}
-      {id !== null && <span className="text-label text-ink-faint tabular-nums">#{id}</span>}
+      {id !== null && <span className="text-label text-ink-dim tabular-nums">#{id}</span>}
     </button>
   )
 }
@@ -278,7 +288,7 @@ function ElementTile({ symbol }: { symbol: string }) {
   return (
     <div
       aria-hidden="true"
-      className="flex size-10 shrink-0 items-center justify-center rounded-ctl border border-line-strong bg-surface-2 text-[18px] font-semibold"
+      className="flex size-10 shrink-0 items-center justify-center rounded-ctl border border-line-strong bg-surface-2 text-title font-semibold"
       style={{ color: el(symbol).color }}
     >
       {symbol}
@@ -289,12 +299,13 @@ function ElementTile({ symbol }: { symbol: string }) {
 function ChargeStepper({ id, charge }: { id: number; charge: number }) {
   const t = useT()
   const setCharge = useStudio((s) => s.setCharge)
+  const locked = useEditLocked()
   const btn = 'inline-flex size-(--hit) items-center justify-center rounded-ctl border border-line text-ink-dim hover:border-line-strong hover:bg-surface-3 hover:text-ink aria-disabled:opacity-40'
   return (
     <div className="flex items-center gap-1.5">
-      <button type="button" aria-label={t('atom.chargeDown')} aria-disabled={charge <= -2} onClick={() => charge > -2 && setCharge(id, charge - 1)} className={btn}><Minus size={14} aria-hidden /></button>
+      <button type="button" aria-label={t('atom.chargeDown')} aria-disabled={charge <= -2 || locked} onClick={() => charge > -2 && !locked && setCharge(id, charge - 1)} className={btn}><Minus size={14} aria-hidden /></button>
       <span className="min-w-8 text-center text-ui tabular-nums" aria-live="polite">{signed(charge)}</span>
-      <button type="button" aria-label={t('atom.chargeUp')} aria-disabled={charge >= 2} onClick={() => charge < 2 && setCharge(id, charge + 1)} className={btn}><Plus size={14} aria-hidden /></button>
+      <button type="button" aria-label={t('atom.chargeUp')} aria-disabled={charge >= 2 || locked} onClick={() => charge < 2 && !locked && setCharge(id, charge + 1)} className={btn}><Plus size={14} aria-hidden /></button>
     </div>
   )
 }
@@ -312,6 +323,7 @@ function AtomPanel({ info, mol }: { info: AtomInfo; mol: Molecule }) {
   const lang = useStudio((s) => s.language)
   const changeElement = useStudio((s) => s.changeElement)
   const deleteAtoms = useStudio((s) => s.deleteAtoms)
+  const locked = useEditLocked()
   const atom = atomById(mol, info.id)
   // Only real missing hydrogens count (A1.3): a 3-bonded S or 4-bonded P is "not computable", not "1 H missing".
   const missingH = atom ? missingHydrogens(mol, atom) : 0
@@ -322,9 +334,11 @@ function AtomPanel({ info, mol }: { info: AtomInfo; mol: Molecule }) {
   // The Turkish name carries an English gloss in parentheses; the Turkish UI shows only the Turkish part.
   const geometry = lang === 'en' ? info.geometryEn : info.geometry.replace(/\s*\([^)]*\)\s*$/, '')
   const showHybrid = vsepr === 'ok' && ['C', 'N', 'O', 'B'].includes(info.symbol) && /^sp[23]?$/.test(info.hybridization)
-  const ideal = vsepr === 'ok' ? idealAngle(sn, info.lonePairs) : null
+  // A bond angle only exists at an atom with at least two bonds: terminal atoms (F in CH3F, carbonyl O) get no ideal angle / AXE notation.
+  const central = vsepr === 'ok' && info.showVsepr
+  const ideal = central ? idealAngle(sn, info.lonePairs) : null
   const measured = useMemo(() => {
-    if (vsepr !== 'ok' || !atom) return null
+    if (!central || !atom) return null
     const pts = info.neighbours
       .map((tok) => /^[A-Za-z]+(\d+)$/.exec(tok))
       .map((m) => (m ? atomById(mol, Number(m[1]))?.pos : undefined))
@@ -333,7 +347,7 @@ function AtomPanel({ info, mol }: { info: AtomInfo; mol: Molecule }) {
     for (let i = 0; i < pts.length; i++) for (let j = i + 1; j < pts.length; j++) angles.push(angleDeg(pts[i], atom.pos, pts[j]))
     if (!angles.length) return null
     return { mean: angles.reduce((s, x) => s + x, 0) / angles.length, min: Math.min(...angles), max: Math.max(...angles) }
-  }, [vsepr, atom, info.neighbours, mol])
+  }, [central, atom, info.neighbours, mol])
   const naText = vsepr === 'missingH' ? t('calc.incomplete') : t('calc.failed')
   return (
     <div>
@@ -352,16 +366,13 @@ function AtomPanel({ info, mol }: { info: AtomInfo; mol: Molecule }) {
           <Row label={t('atom.en')} hint={t('prov.tipEn')}>{fix(info.en, 2)}</Row>
           <Row label={t('atom.radius')} hint={t('prov.tipRadius')}>{fix(info.covalentRadius, 2)} Å</Row>
         </dl>
-        <div className="mt-2.5" title={t('prov.tipMeas')}>
-          <div className="mb-1 text-label text-ink-dim">{t('atom.position')} (Å)</div>
-          <div className="grid grid-cols-3 gap-1.5">
-            {(['x', 'y', 'z'] as const).map((axis, i) => (
-              <div key={axis} className="rounded-ctl border border-line bg-surface-0 px-2 py-1">
-                <div className="text-micro text-ink-faint">{axis}</div>
-                <div className="text-ui tabular-nums text-ink">{fix(info.position[i], 3)}</div>
-              </div>
+        <div className="flex min-h-7 items-baseline justify-between gap-3 py-1" title={t('prov.tipMeas')}>
+          <span className="text-label text-ink-dim">{t('atom.position')} (Å)</span>
+          <span className="flex gap-3 text-ui tabular-nums text-ink">
+            {(['X', 'Y', 'Z'] as const).map((axis, i) => (
+              <span key={axis}><span className="mr-1 text-label text-ink-dim">{axis}</span>{fix(info.position[i], 3)}</span>
             ))}
-          </div>
+          </span>
         </div>
       </Sec>
 
@@ -372,16 +383,20 @@ function AtomPanel({ info, mol }: { info: AtomInfo; mol: Molecule }) {
           </Row>
           {vsepr !== 'hidden' && (
             <>
-              {showHybrid && <Row label={<>{t('atom.hybrid')}<Prov kind="est" /></>} hint={t('prov.tipHybrid')} mono={false}>{hybridLabel(info.hybridization)}</Row>}
-              <Row label={<>{t('atom.geometry')}<Prov kind="est" /></>} hint={t('prov.tipVsepr')} mono={false}>{vsepr === 'ok' ? geometry : naText}</Row>
-              {vsepr === 'ok' && <Row label={<>{t('atom.vsepr')}<Prov kind="est" /></>} hint={t('prov.tipVsepr')} mono={false}>{vseprNotation(sn - info.lonePairs, info.lonePairs)}</Row>}
-              <Row label={<>{t('atom.steric')}<Prov kind="est" /></>} hint={t('prov.tipVsepr')}>{vsepr === 'ok' ? sn : naText}</Row>
-              <Row label={<>{t('atom.lonePairs')}<Prov kind="est" /></>} hint={t('prov.tipVsepr')}>{vsepr === 'ok' ? info.lonePairs : naText}</Row>
-              {ideal && <Row label={<>{t('atom.idealAngle')}<Prov kind="est" /></>} hint={t('prov.tipVsepr')}>{ideal.lessThan ? '< ' : ''}{fix(ideal.value, ideal.value === 109.5 ? 1 : 0)}°</Row>}
+              <div className="mt-1 flex min-h-7 items-center justify-between gap-2 text-label font-medium text-ink-dim">
+                <span>{t('atom.vseprGroup')}</span>
+                <Prov kind="est" />
+              </div>
+              {showHybrid && <Row label={t('atom.hybrid')} hint={t('prov.tipHybrid')} mono={false}>{hybridLabel(info.hybridization)}</Row>}
+              <Row label={t('atom.geometryShort')} hint={t('prov.tipVsepr')} mono={false}>{vsepr === 'ok' ? geometry : naText}</Row>
+              {central && <Row label={t('atom.vsepr')} hint={t('prov.tipVsepr')} mono={false}>{vseprNotation(sn - info.lonePairs, info.lonePairs)}</Row>}
+              <Row label={t('atom.steric')} hint={t('prov.tipVsepr')}>{vsepr === 'ok' ? sn : naText}</Row>
+              <Row label={t('atom.lonePairs')} hint={t('prov.tipVsepr')}>{vsepr === 'ok' ? info.lonePairs : naText}</Row>
+              {ideal && <Row label={t('atom.idealAngle')} hint={t('prov.tipVsepr')}>{ideal.lessThan ? '< ' : ''}{fix(ideal.value, ideal.value === 109.5 ? 1 : 0)}°</Row>}
               {measured && (
                 <Row label={t('atom.measAngle')} hint={t('prov.tipMeas')}>
                   {fix(measured.mean, 1)}°
-                  {measured.max - measured.min > 0.5 && <span className="text-label text-ink-faint"> ({fix(measured.min, 1)}–{fix(measured.max, 1)}°)</span>}
+                  {measured.max - measured.min > 0.5 && <span className="text-label text-ink-dim"> ({fix(measured.min, 1)}–{fix(measured.max, 1)}°)</span>}
                 </Row>
               )}
             </>
@@ -406,11 +421,14 @@ function AtomPanel({ info, mol }: { info: AtomInfo; mol: Molecule }) {
       </Sec>
 
       <Sec id="atom.change" title={t('atom.section.change')} initial={false}>
-        <ElementPicker value={info.symbol} onPick={(s) => changeElement(info.id, s)} ariaLabel={t('atom.section.change')} columns={7} />
+        <LockableGroup locked={locked}>
+          <ElementPicker value={info.symbol} onPick={(s) => changeElement(info.id, s)} ariaLabel={t('atom.section.change')} columns={7} />
+        </LockableGroup>
       </Sec>
 
+      {locked && <LockNote />}
       <div className="border-t border-line p-4">
-        <PrimaryButton variant="danger" icon={<Trash2 size={15} aria-hidden />} onClick={() => deleteAtoms([info.id])} className="w-full">{t('atom.delete')}</PrimaryButton>
+        <PrimaryButton variant="danger" icon={<Trash2 size={15} aria-hidden />} onClick={() => deleteAtoms([info.id])} disabled={locked} className="w-full">{t('atom.delete')}</PrimaryButton>
       </div>
     </div>
   )
@@ -419,6 +437,7 @@ function AtomPanel({ info, mol }: { info: AtomInfo; mol: Molecule }) {
 function MultiPanel({ mol, ids }: { mol: Molecule; ids: number[] }) {
   const t = useT()
   const lang = useStudio((s) => s.language)
+  const locked = useEditLocked()
   const atoms = ids.map((i) => atomById(mol, i)).filter((a): a is NonNullable<typeof a> => !!a)
   return (
     <div>
@@ -436,13 +455,14 @@ function MultiPanel({ mol, ids }: { mol: Molecule; ids: number[] }) {
             >
               <span aria-hidden="true" className="inline-block size-2.5 rounded-full" style={{ background: el(a.symbol).color }} />
               <span className="flex-1">{elementName(a.symbol, lang)} ({a.symbol})</span>
-              <span className="text-label text-ink-faint tabular-nums">#{a.id}</span>
+              <span className="text-label text-ink-dim tabular-nums">#{a.id}</span>
             </button>
           </li>
         ))}
       </ul>
+      {locked && <LockNote />}
       <div className="border-t border-line p-4">
-        <PrimaryButton variant="danger" icon={<Trash2 size={15} aria-hidden />} onClick={() => useStudio.getState().deleteAtoms(ids)} className="w-full">{t('atom.deleteMany')}</PrimaryButton>
+        <PrimaryButton variant="danger" icon={<Trash2 size={15} aria-hidden />} onClick={() => useStudio.getState().deleteAtoms(ids)} disabled={locked} className="w-full">{t('atom.deleteMany')}</PrimaryButton>
       </div>
     </div>
   )
@@ -455,16 +475,24 @@ function BondPanel({ info, mol }: { info: BondInfo; mol: Molecule }) {
   const lang = useStudio((s) => s.language)
   const setBondOrderOf = useStudio((s) => s.setBondOrderOf)
   const deleteBond = useStudio((s) => s.deleteBond)
+  const locked = useEditLocked()
   const bond = bondById(mol, info.id)
   const A = bond ? atomById(mol, bond.a) : undefined
   const B = bond ? atomById(mol, bond.b) : undefined
   const polarity = t(`bond.polClass.${info.polarity}` as TrKey)
+  const rowSource = A && B ? bondLengthSource(A.symbol, B.symbol, info.order, info.aromatic) : null
+  const refSource = rowSource === null
+    ? t('bond.refSrc.fallback')
+    : rowSource.startsWith('typical') ? t('bond.refSrc.typical') : rowSource
   const tone = info.polarity === 'ionic' ? 'warn' : info.polarity === 'polar' ? 'accent' : 'neutral'
   return (
     <div>
       <div className="px-4 pb-3 pt-3">
-        <h2 className="m-0 text-title font-medium text-ink">{info.label}</h2>
-        <div className="text-label text-ink-dim">{lang === 'en' ? info.orderNameEn : info.orderName}</div>
+        <h2 className="m-0 text-title font-medium text-ink">{info.label.replace(/-/g, '–')}</h2>
+        <div className="text-label text-ink-dim">
+          {lang === 'en' ? info.orderNameEn : info.orderName}
+          {info.aromatic && <Prov kind="est" />}
+        </div>
       </div>
       <Sec id="bond.main" title={t('bond.type')}>
         <dl className="m-0">
@@ -472,38 +500,41 @@ function BondPanel({ info, mol }: { info: BondInfo; mol: Molecule }) {
             <span className="inline-flex gap-1.5">
               {[A, B].map((a) => a && (
                 <button key={a.id} type="button" onClick={() => useStudio.getState().setSelection([a.id])} className="inline-flex items-center gap-1 rounded-ctl border border-line px-1.5 text-ui hover:bg-surface-3">
-                  <span aria-hidden="true" className="inline-block size-2 rounded-full" style={{ background: el(a.symbol).color }} />{a.symbol}<span className="text-label text-ink-faint">#{a.id}</span>
+                  <span aria-hidden="true" className="inline-block size-2 rounded-full" style={{ background: el(a.symbol).color }} />{a.symbol}<span className="text-label text-ink-dim">#{a.id}</span>
                 </button>
               ))}
             </span>
           </Row>
           <Row label={t('bond.lengthM')} hint={t('prov.tipMeas')}>{fix(info.length, 3)} Å</Row>
-          <Row label={t('bond.refLength')} hint={t('bond.refTip')}>{fix(info.idealLength, 3)} Å</Row>
+          <Row label={t('bond.refLength')} hint={`${t('bond.refTip')} ${t('bond.refSrc.label')}: ${refSource}`} sub={refSource}>{fix(info.idealLength, 3)} Å</Row>
           <Row label={t('bond.deltaEN')} hint={t('prov.tipEn')}>{fix(info.deltaEN, 2)}</Row>
           <Row label={t('bond.polarity')} hint={t('bond.polTip')} mono={false}>
             <span className="inline-flex flex-wrap items-center justify-end gap-1.5">
               <Badge tone={tone}>{polarity}</Badge>
-              <span className="text-label text-ink-faint">{t('bond.rule')}</span>
+              <Prov kind="est" />
             </span>
           </Row>
           <Row label={t('bond.sigma')} hint={t('prov.tipCalc')}>{info.sigma}</Row>
-          <Row label={t('bond.pi')} hint={t('prov.tipCalc')}>{info.pi}</Row>
+          <Row label={t('bond.pi')} hint={t('prov.tipCalc')}>{Number.isInteger(info.pi) ? info.pi : fix(info.pi, 1)}</Row>
           <Row label={t('bond.ring')} mono={false}>{info.inRing ? t('bond.yes') : t('bond.no')}</Row>
-          <Row label={t('bond.aromatic')} mono={false}>{info.aromatic ? t('bond.yes') : t('bond.no')}</Row>
+          <Row label={<>{t('bond.aromatic')}<Prov kind="est" /></>} mono={false}>{info.aromatic ? t('bond.yes') : t('bond.no')}</Row>
         </dl>
       </Sec>
       <div className="border-t border-line p-4">
         <div className="mb-1.5 text-label text-ink-dim">{t('bond.order')}</div>
-        <Segmented<number>
-          ariaLabel={t('bond.order')}
-          fill
-          value={info.aromatic ? 0 : info.order}
-          onChange={(o) => setBondOrderOf(info.id, o as BondOrder)}
-          options={[1, 2, 3].map((o) => ({ value: o, label: t(`opt.order.${o}` as TrKey) }))}
-        />
+        <LockableGroup locked={locked}>
+          <Segmented<number>
+            ariaLabel={t('bond.order')}
+            fill
+            value={info.aromatic ? 0 : info.order}
+            onChange={(o) => setBondOrderOf(info.id, o as BondOrder)}
+            options={[1, 2, 3].map((o) => ({ value: o, label: t(`opt.order.${o}` as TrKey) }))}
+          />
+        </LockableGroup>
       </div>
+      {locked && <LockNote />}
       <div className="border-t border-line p-4">
-        <PrimaryButton variant="danger" icon={<Trash2 size={15} aria-hidden />} onClick={() => deleteBond(info.id)} className="w-full">{t('bond.delete')}</PrimaryButton>
+        <PrimaryButton variant="danger" icon={<Trash2 size={15} aria-hidden />} onClick={() => deleteBond(info.id)} disabled={locked} className="w-full">{t('bond.delete')}</PrimaryButton>
       </div>
     </div>
   )
@@ -530,14 +561,14 @@ function MeasurePanel({ mol }: { mol: Molecule }) {
         <span className="tabular-nums" role="status">{t('meas.progress', { n: atoms.length })}</span>
       </div>
       {atoms.length === 0 ? (
-        <p className="m-0 text-ui text-ink-faint">{t('meas.none')}</p>
+        <p className="m-0 text-ui text-ink-dim">{t('meas.none')}</p>
       ) : (
         <ol className="m-0 flex list-none flex-wrap gap-1.5 p-0">
           {atoms.map((a, i) => (
             <li key={a.id} className="inline-flex items-center gap-1.5 rounded-ctl border border-line bg-surface-2 px-2 py-1 text-ui">
-              <span className="text-label text-ink-faint">{i + 1}</span>
+              <span className="text-label text-ink-dim">{i + 1}</span>
               <span aria-hidden="true" className="inline-block size-2 rounded-full" style={{ background: el(a.symbol).color }} />
-              {a.symbol}<span className="text-label text-ink-faint tabular-nums">#{a.id}</span>
+              {a.symbol}<span className="text-label text-ink-dim tabular-nums">#{a.id}</span>
             </li>
           ))}
         </ol>
@@ -553,7 +584,7 @@ function MeasurePanel({ mol }: { mol: Molecule }) {
           ))}
         </div>
       )}
-      <p className="mb-0 mt-2 text-label text-ink-faint">{t('meas.footnote')}</p>
+      <p className="mb-0 mt-2 text-label text-ink-dim">{t('meas.footnote')}</p>
       <PrimaryButton variant="quiet" icon={<X size={15} aria-hidden />} onClick={clear} disabled={ids.length === 0} className="mt-3 w-full">{t('meas.clear')}</PrimaryButton>
     </div>
   )
@@ -583,9 +614,9 @@ function InspectorBodyInner({ sheet }: { sheet?: boolean }) {
   return (
     <motion.div
       key={key}
-      initial={reduced ? false : { opacity: 0, y: 4 }}
-      animate={{ opacity: 1, y: 0 }}
-      transition={{ duration: reduced ? 0 : 0.18, ease: [0.2, 0, 0, 1] }}
+      initial={reduced ? false : { opacity: 0 }}
+      animate={{ opacity: 1 }}
+      transition={{ duration: reduced ? 0 : 0.12, ease: [0.2, 0, 0, 1] }}
     >
       {content}
     </motion.div>
@@ -614,8 +645,16 @@ function InspectorSummaryLineInner() {
   const mass = useMemo(() => (atoms ? molarMass(mol) : 0), [mol, atoms])
   const sel = selection.length === 1 ? atomById(mol, selection[0]) : undefined
   const bond = selectedBond !== null ? bondById(mol, selectedBond) : undefined
+  const massText = pretty ? (
+    <>
+      <span aria-hidden="true">·</span>
+      <span className="text-ink"><Formula text={pretty} /></span>
+      <span aria-hidden="true">·</span>
+      <span className="tabular-nums">{fix(mass, 2)} g/mol</span>
+    </>
+  ) : null
   return (
-    <div className="flex items-center gap-2 pb-1 text-ui text-ink-dim" aria-live="polite">
+    <div className="flex flex-wrap items-center gap-x-2 gap-y-0.5 pb-1 text-ui text-ink-dim" aria-live="polite">
       {sel ? (
         <span className="text-ink">{elementName(sel.symbol, lang)} #{sel.id}</span>
       ) : bond ? (
@@ -627,8 +666,9 @@ function InspectorSummaryLineInner() {
           <span className="tabular-nums">{fix(mass, 2)} g/mol</span>
         </>
       ) : (
-        <span>{t('mol.empty.title')}</span>
+        <span>{t('insp.empty.title')}</span>
       )}
+      {(sel || bond) && massText}
       <span aria-hidden="true">·</span>
       <span className="tabular-nums">{t('st.atoms', { n: atoms })}</span>
       <span aria-hidden="true">·</span>

@@ -1,7 +1,7 @@
 import { useStudio, DEFAULT_PROJECT_NAME } from '../store'
 import { methane, type Molecule } from '../chem/molecule'
 import { BG_CENTER } from '../scene/theme'
-import { t, type TrKey } from './i18n'
+import { t, type Params, type TrKey } from './i18n'
 
 /**
  * UI-level actions that are not pure store operations: file import / export, screenshot, PubChem.
@@ -68,7 +68,8 @@ export async function importFile(file: File): Promise<void> {
     const code = (e as { code?: string; params?: Record<string, string | number> } | null)?.code
     const params = (e as { params?: Record<string, string | number> } | null)?.params
     if (code === 'v3000Unsupported') notify(t('toast.importV3000'), 'error')
-    else if (code === 'unsupportedElement') notify(t('toast.importElement', { symbol: String(params?.symbol ?? '?') }), 'error')
+    else if (code === 'unsupportedElement') notify(t('toast.importElement', { symbol: String(params?.symbol ?? '?'), supported: String(params?.supported ?? '') }), 'error')
+    else if (code === 'unsupportedIsotope') notify(t('toast.importIsotope', { symbol: String(params?.symbol ?? '?') }), 'error')
     else if (code === 'tooLarge') notify(t('toast.importAtoms'), 'error')
     else if (code === 'noAtoms') notify(t('toast.importEmpty'), 'warn')
     else notify(t('toast.importFailed'), 'error')
@@ -144,19 +145,29 @@ export function exportPng(): void {
 }
 
 // ---------- PubChem ----------
-export function pubchemErrorKey(e: unknown): TrKey {
-  switch ((e as { code?: string } | null)?.code) {
-    case 'emptyInput': return 'pc.err.empty'
-    case 'pubchemNotFound': return 'pc.err.notFound'
-    case 'pubchemNo3D': return 'pc.err.no3d'
-    case 'pubchemNetwork': return 'pc.err.network'
-    case 'pubchemTimeout': return 'pc.err.timeout'
-    case 'pubchemBusy': return 'pc.err.busy'
-    default: return 'pc.err.generic'
+export interface PubChemFailure { key: TrKey; params?: Params }
+
+/** Localised failure for a PubChem lookup, including the parameters some messages need (unsupported element / isotope). */
+export function pubchemFailure(e: unknown): PubChemFailure {
+  const err = e as { code?: string; params?: Params } | null
+  switch (err?.code) {
+    case 'emptyInput': return { key: 'pc.err.empty' }
+    case 'pubchemNotFound': return { key: 'pc.err.notFound' }
+    case 'pubchemNo3D': return { key: 'pc.err.no3d' }
+    case 'pubchemNetwork': return { key: 'pc.err.network' }
+    case 'pubchemTimeout': return { key: 'pc.err.timeout' }
+    case 'pubchemBusy': return { key: 'pc.err.busy' }
+    case 'unsupportedElement': return { key: 'pc.err.element', params: { symbol: String(err.params?.symbol ?? '?'), supported: String(err.params?.supported ?? '') } }
+    case 'unsupportedIsotope': return { key: 'pc.err.isotope', params: { symbol: String(err.params?.symbol ?? '?') } }
+    default: return { key: 'pc.err.generic' }
   }
 }
 
-export type PubChemResult = { ok: true; mol: Molecule } | { ok: false; error: TrKey }
+export function pubchemErrorKey(e: unknown): TrKey {
+  return pubchemFailure(e).key
+}
+
+export type PubChemResult = { ok: true; mol: Molecule } | { ok: false; error: TrKey; params?: Params }
 
 /** Fetches a 3D structure; the caller decides whether to load it (the user may have closed the dialog meanwhile). */
 export async function searchPubChem(query: string): Promise<PubChemResult> {
@@ -168,7 +179,8 @@ export async function searchPubChem(query: string): Promise<PubChemResult> {
     if (!mol.atoms.length) return { ok: false, error: 'pc.err.notFound' }
     return { ok: true, mol: { ...mol, name: mol.name?.trim() ? mol.name : q } }
   } catch (e) {
-    return { ok: false, error: pubchemErrorKey(e) }
+    const f = pubchemFailure(e)
+    return { ok: false, error: f.key, params: f.params }
   }
 }
 

@@ -47,6 +47,12 @@
   --text-formula--line-height: 1.25;
 
   --ease-ui: cubic-bezier(0.2, 0, 0, 1);
+
+  /* motion duration tokens (SPEC D.7) */
+  --dur-instant: 80ms; /* hover / press */
+  --dur-fast: 120ms; /* tooltips, toggles, selection shell */
+  --dur-base: 200ms; /* panel collapse, popovers, segment slide, style morph */
+  --dur-slow: 320ms; /* sheet settle */
 }
 
 @layer base {
@@ -103,7 +109,7 @@
   }
 }
 
-/* touch-target size per layout model; set on <html> so portaled menus, dialogs and sheets inherit it */
+/* touch-target size per layout model (and for coarse pointers); set on <html> so portaled menus, dialogs and sheets inherit it */
 :root {
   --hit: 32px;
 }
@@ -111,12 +117,21 @@
 :root[data-layout="mobile"] {
   --hit: 44px;
 }
+@media (pointer: coarse) {
+  :root {
+    --hit: 44px;
+  }
+}
 /* phone landscape: slightly tighter targets so the 40 px top bar and the two-column rail fit */
 @media (max-height: 499px) {
   :root[data-layout="tablet"],
   :root[data-layout="mobile"] {
     --hit: 40px;
   }
+}
+/* compact HUD controls (phone landscape): the on-canvas HUD keeps its own, smaller hit size */
+.hud-compact {
+  --hit: 32px;
 }
 
 /* Reduced motion: the store resolves system preference + user override into this attribute. */
@@ -140,6 +155,13 @@
   touch-action: none;
   cursor: inherit;
   outline: none;
+}
+/* Keyboard focus ring for the canvas (SPEC B.4): 2 px accent, inset, keyboard focus only.
+   The id selector must also win over the scene's own injected rule, so it is declared here with the same weight. */
+#viewport canvas:focus-visible {
+  outline: 2px solid var(--color-accent);
+  outline-offset: -2px;
+  border-radius: 0;
 }
 #viewport[data-tool="select"] { cursor: default; }
 #viewport[data-tool="rotate"] { cursor: grab; }
@@ -179,7 +201,7 @@
   to { opacity: 1; }
 }
 .tip-in {
-  animation: tip-in 120ms var(--ease-ui);
+  animation: tip-in var(--dur-fast) var(--ease-ui);
 }
 
 @keyframes menu-in {
@@ -187,5 +209,5 @@
   to { opacity: 1; transform: translateY(0); }
 }
 .menu-in {
-  animation: menu-in 140ms var(--ease-ui);
+  animation: menu-in var(--dur-fast) var(--ease-ui);
 }

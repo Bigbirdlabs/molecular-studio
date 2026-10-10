@@ -169,8 +169,9 @@ type Rejected = Exclude<MoleculeValidation, { ok: true }>
 
 /**
  * Defensive structural validation of a molecule that comes from outside (storage, library, import, URL):
- * every element must be modelled (isKnownElement, SPEC A1.1), atom ids and bond ids unique, bonds must reference
- * existing atoms, coordinates finite. `nextId` is repaired to exceed every id so the next edit can never collide.
+ * every element must be modelled (isKnownElement, SPEC A1.1), atom ids and bond ids unique, formal charges
+ * integers in −2…+2 (SPEC B.12), bonds must reference existing atoms with at most one bond per unordered atom pair,
+ * coordinates finite. `nextId` is repaired to exceed every id so the next edit can never collide.
  * Returns a clone on success; the input is never mutated.
  */
 export function validateMolecule(raw: unknown): MoleculeValidation {
@@ -181,16 +182,20 @@ export function validateMolecule(raw: unknown): MoleculeValidation {
   const atomIds = new Set<number>()
   let maxId = 0
   for (const a of m.atoms) {
-    if (!a || typeof a.id !== 'number' || !Number.isInteger(a.id) || typeof a.symbol !== 'string' || !isVec3(a.pos) || typeof a.charge !== 'number' || !Number.isFinite(a.charge)) return bad('invalid atom')
+    if (!a || typeof a.id !== 'number' || !Number.isInteger(a.id) || typeof a.symbol !== 'string' || !isVec3(a.pos) || typeof a.charge !== 'number' || !Number.isInteger(a.charge) || a.charge < -2 || a.charge > 2) return bad('invalid atom')
     if (!isKnownElement(a.symbol)) return { ok: false, code: 'unsupportedElement', symbol: a.symbol }
     if (atomIds.has(a.id)) return bad(`duplicate atom id ${a.id}`)
     atomIds.add(a.id)
     maxId = Math.max(maxId, a.id)
   }
   const bondIds = new Set<number>()
+  const bondPairs = new Set<string>() // unordered atom pair: at most one bond per pair
   for (const b of m.bonds) {
     if (!b || typeof b.id !== 'number' || !Number.isInteger(b.id) || !atomIds.has(b.a) || !atomIds.has(b.b) || b.a === b.b || ![1, 2, 3].includes(b.order)) return bad('invalid bond')
     if (bondIds.has(b.id)) return bad(`duplicate bond id ${b.id}`)
+    const pair = b.a < b.b ? `${b.a}|${b.b}` : `${b.b}|${b.a}`
+    if (bondPairs.has(pair)) return bad(`duplicate bond between atoms ${b.a} and ${b.b}`)
+    bondPairs.add(pair)
     bondIds.add(b.id)
     maxId = Math.max(maxId, b.id)
   }
@@ -207,7 +212,7 @@ const storedSettings = (): StoredSettings => {
 
 const hasWindow = typeof window !== 'undefined'
 
-/** Did the user ask for a specific molecule via ?m=<library id>? Then the stored project must not override it. */
+/** Did the user ask for a specific molecule via ?m=<library id>? */
 const urlSpecifiesMolecule = (() => {
   try {
     return hasWindow && new URLSearchParams(window.location.search).has('m')
@@ -228,8 +233,17 @@ type Restored =
   | { kind: 'ok'; mol: Molecule; projectName: string; savedAt: number | null }
   | { kind: 'rejected'; validation: Rejected }
 
+/**
+ * ?m=<id> never hides the stored project any more: it is restored like on any other start, so an unknown id (which
+ * loadFromUrl ignores) leaves the user's work on screen instead of silently overwriting it on the first edit. A known
+ * id replaces it through replaceMolecule; the stored record is then copied to `${PROJECT_KEY}:backup` right before the
+ * first autosave overwrites it.
+ */
+let backupRaw: unknown = null
+let deepLinkPending = urlSpecifiesMolecule // true until the first replaceMolecule (the ?m= library molecule) has happened
+let deepLinkReplaced = false
+
 function restoreProject(): Restored | null {
-  if (urlSpecifiesMolecule) return null
   const raw = readJSON(PROJECT_KEY) as { mol?: unknown; projectName?: unknown; savedAt?: unknown } | null
   if (!raw || typeof raw !== 'object') return null
   const v = validateMolecule(raw.mol)
@@ -239,6 +253,7 @@ function restoreProject(): Restored | null {
     return { kind: 'rejected', validation: v }
   }
   if (v.mol.atoms.length === 0) return null // never restore a blank canvas over the launch molecule
+  if (urlSpecifiesMolecule) backupRaw = raw
   reserveMoleculeId(v.mol.id)
   return {
     kind: 'ok',
@@ -382,8 +397,14 @@ export const useStudio = create<StudioState>((set, get) => {
   const writeProject = () => {
     if (saveTimer) { clearTimeout(saveTimer); saveTimer = null }
     set({ saveStatus: 'saving' })
-    const { mol, projectName } = get()
+    const { projectName } = get()
+    // a flush (pagehide / tab hidden) during a running clean-up must persist the molecule the clean-up started from, not a half-relaxed frame
+    const mol = get().relaxing && relaxBase ? relaxBase : get().mol
     const savedAt = Date.now()
+    if (backupRaw !== null) {
+      if (deepLinkReplaced) writeJSON(`${PROJECT_KEY}:backup`, backupRaw) // the previous project is about to be overwritten
+      backupRaw = null
+    }
     const ok = writeJSON(PROJECT_KEY, { v: 1, mol, projectName, savedAt })
     if (ok) {
       saveFailureShown = false
@@ -668,7 +689,10 @@ export const useStudio = create<StudioState>((set, get) => {
       const next = centerMolecule(v.mol)
       reserveMoleculeId(next.id)
       suppressSave = true
+      const deepLink = deepLinkPending
+      if (deepLink) { deepLinkPending = false; deepLinkReplaced = true }
       set({
+        ...(deepLink ? { projectName: DEFAULT_PROJECT_NAME } : {}), // the ?m= molecule is a new document, not the stored project
         mol: next, past: [], future: [],
         selection: [], selectedBond: null, measure: [], pendingBondFrom: null, hovered: null, hoveredBond: null,
         relaxing: false, fitNonce: get().fitNonce + 1, loadNonce: get().loadNonce + 1,
@@ -710,7 +734,8 @@ export const useStudio = create<StudioState>((set, get) => {
       const next = Math.max(-2, Math.min(2, Math.round(charge))) // SPEC B.12: formal charge −2…+2
       if (next === a.charge) return // no-op: no undo entry, no autosave
       a.charge = next
-      const fixed = fixH(m, [id])
+      // the charge changes the electron-domain count (H2O -> H3O+, CH4 -> CH3+): re-idealise the centre as well
+      const fixed = idealizeAround(fixH(m, [id]), [id])
       commit(fixed, prune(fixed))
     },
 
@@ -817,7 +842,9 @@ export const useStudio = create<StudioState>((set, get) => {
         let moved = 0
         cur.atoms.forEach((a, i) => { moved = Math.max(moved, Math.hypot(a.pos[0] - base.atoms[i].pos[0], a.pos[1] - base.atoms[i].pos[1], a.pos[2] - base.atoms[i].pos[2])) })
         if (moved < 1e-3) {
-          set({ relaxing: false, mol: base }) // already converged: no history entry, no autosave
+          set({ relaxing: false, mol: base }) // already converged: no history entry, no autosave, and no "tidied" claim
+          get().notify(tx('Geometri zaten düzenli.', 'Geometry is already tidy.'), 'info')
+          return
         } else {
           const { past } = get()
           set({ relaxing: false, mol: centerMolecule(cur), past: [...past, base].slice(-HISTORY_LIMIT), future: [], fitNonce: get().fitNonce + 1 })

@@ -367,7 +367,10 @@ const tr = {
   'fg.nitro': 'Nitro',
   'pc.err.busy': 'PubChem şu anda meşgul. Biraz sonra yeniden deneyin.',
   'toast.importV3000': 'V3000 biçimi desteklenmiyor; V2000 MOL/SDF dosyası kullanın.',
-  'toast.importElement': 'Dosyada desteklenmeyen element var: {symbol}.',
+  'toast.importElement': 'Desteklenmeyen element: {symbol}. Desteklenen: {supported}',
+  'toast.importIsotope': 'Desteklenmeyen izotop: {symbol}',
+  'pc.err.element': 'Desteklenmeyen element: {symbol}. Desteklenen: {supported}',
+  'pc.err.isotope': 'Desteklenmeyen izotop: {symbol}',
   'toast.importAtoms': 'Molekül çok büyük (en fazla 5000 atom).',
 
   // ----- sheets -----
@@ -418,6 +421,15 @@ const tr = {
   'meas.footnote': 'Model koordinatlarından ölçülmüştür',
   'insp.error.title': 'Bilgi paneli açılamadı',
   'insp.error.body': 'Panel bir hata nedeniyle durdu; çizim ve araçlar kullanılabilir durumda.',
+  'insp.empty.title': 'Çalışma alanı boş',
+  'atom.geometryShort': 'Geometri',
+  'atom.vseprGroup': 'Elektron grupları (VSEPR)',
+  'bond.refSrc.label': 'Satır kaynağı',
+  'bond.refSrc.typical': 'tipik değer (satır kaynağı doğrulanmadı)',
+  'bond.refSrc.fallback': 'tipik değer (kovalent yarıçaplar toplamı)',
+  'mol.src.edited': 'Molekül sonradan düzenlendi; koordinatlar değişmiş olabilir.',
+  'mol.src.pubchem': 'Kaynak: PubChem',
+  'mol.src.pubchemCoords': 'Koordinatlar: PubChem 3B konformer (hesaplanmış)',
 } as const
 
 export type TrKey = keyof typeof tr
@@ -762,7 +774,10 @@ const en: Record<TrKey, string> = {
   'fg.nitro': 'Nitro',
   'pc.err.busy': 'PubChem is busy right now. Try again shortly.',
   'toast.importV3000': 'The V3000 format is not supported; use a V2000 MOL/SDF file.',
-  'toast.importElement': 'The file contains an unsupported element: {symbol}.',
+  'toast.importElement': 'Unsupported element: {symbol}. Supported: {supported}',
+  'toast.importIsotope': 'Unsupported isotope: {symbol}',
+  'pc.err.element': 'Unsupported element: {symbol}. Supported: {supported}',
+  'pc.err.isotope': 'Unsupported isotope: {symbol}',
   'toast.importAtoms': 'The molecule is too large (5000 atoms maximum).',
 
   'sheet.handle': 'Drag panel',
@@ -812,6 +827,15 @@ const en: Record<TrKey, string> = {
   'meas.footnote': 'Measured from the model coordinates',
   'insp.error.title': 'The info panel could not open',
   'insp.error.body': 'The panel stopped because of an error; drawing and tools remain available.',
+  'insp.empty.title': 'Workspace is empty',
+  'atom.geometryShort': 'Geometry',
+  'atom.vseprGroup': 'Electron groups (VSEPR)',
+  'bond.refSrc.label': 'Row source',
+  'bond.refSrc.typical': 'typical value (row source not verified)',
+  'bond.refSrc.fallback': 'typical value (sum of covalent radii)',
+  'mol.src.edited': 'The molecule was edited afterwards; coordinates may have changed.',
+  'mol.src.pubchem': 'Source: PubChem',
+  'mol.src.pubchemCoords': 'Coordinates: PubChem 3D conformer (computed)',
 }
 
 const DICT: Record<Language, Record<TrKey, string>> = { tr: tr as unknown as Record<TrKey, string>, en }

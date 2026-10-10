@@ -2,8 +2,8 @@ import { useSyncExternalStore } from 'react'
 
 export type Layout = 'desktop' | 'tablet' | 'mobile'
 
-/** desktop >= 1200, tablet 768-1199, mobile < 768 (px of viewport width). */
-const QUERIES = ['(min-width: 1200px)', '(min-width: 768px)'] as const
+/** SPEC D.8: desktop >= 1024, tablet 640-1023, mobile < 640 (px of viewport width). */
+const QUERIES = ['(min-width: 1024px)', '(min-width: 640px)'] as const
 
 function current(): Layout {
   if (typeof window === 'undefined' || typeof window.matchMedia !== 'function') return 'desktop'

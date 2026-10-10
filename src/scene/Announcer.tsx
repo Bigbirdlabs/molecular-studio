@@ -37,6 +37,42 @@ const MSG = {
 } satisfies Record<Language, unknown>
 
 /**
+ * What did this edit do? Derived from the atom / bond id sets and element changes, not from the atom-count delta: a click
+ * with auto-hydrogen on adds the chosen atom plus its hydrogens (count +3), and replacing an H by O keeps the id (O) and adds
+ * an H (count +1). The announced atom is the one the user chose: a hydrogen replaced by another element, else the selected
+ * new atom, else the first new non-hydrogen, else the first new atom.
+ */
+function describeEdit(prev: Molecule, next: Molecule, selection: readonly number[], language: Language): string | null {
+  const m = MSG[language]
+  const before = new Map(prev.atoms.map((a) => [a.id, a]))
+  const after = new Map(next.atoms.map((a) => [a.id, a]))
+  const added = next.atoms.filter((a) => !before.has(a.id))
+  const removed = prev.atoms.filter((a) => !after.has(a.id))
+  const retyped = next.atoms.filter((a) => {
+    const was = before.get(a.id)
+    return was !== undefined && was.symbol !== a.symbol
+  })
+
+  // a hydrogen replaced by the chosen element reads as "<element> atom added" (it took the hydrogen's slot)
+  const filled = retyped.find((a) => before.get(a.id)!.symbol === 'H' && a.symbol !== 'H')
+  if (filled) return m.added(filled.symbol)
+  if (added.length > 0) {
+    const chosen = added.find((a) => selection.includes(a.id)) ?? added.find((a) => a.symbol !== 'H') ?? added[0]
+    return m.added(chosen.symbol)
+  }
+  if (removed.length > 0) return m.removed
+  if (retyped.length > 0) {
+    const a = retyped.find((x) => selection.includes(x.id)) ?? retyped[0]
+    const e = el(a.symbol)
+    return m.changed(a.symbol, language === 'en' ? e.nameEn : e.name)
+  }
+  const dBonds = next.bonds.length - prev.bonds.length
+  if (dBonds > 0) return m.bondAdded
+  if (dBonds < 0) return m.bondRemoved
+  return null
+}
+
+/**
  * Polite live region for the 3D workspace (SPEC B.4): announces selection and edits, since the canvas itself is opaque
  * to a screen reader. Subscribes to the store; only this tiny component re-renders, never the scene.
  */
@@ -49,25 +85,7 @@ export function Announcer() {
       if (s.loadNonce !== p.loadNonce) { setText(''); return }
       const m = MSG[s.language]
       let msg: string | null = null
-      if (s.mol !== p.mol) {
-        const dAtoms = s.mol.atoms.length - p.mol.atoms.length
-        const dBonds = s.mol.bonds.length - p.mol.bonds.length
-        if (dAtoms === 1) {
-          const prevIds = new Set(p.mol.atoms.map((a) => a.id))
-          const added = s.mol.atoms.find((a) => !prevIds.has(a.id))
-          if (added) msg = m.added(added.symbol)
-        } else if (dAtoms < 0) msg = m.removed
-        else if (dBonds > 0 && dAtoms === 0) msg = m.bondAdded
-        else if (dBonds < 0 && dAtoms === 0) msg = m.bondRemoved
-        else if (dAtoms === 0 && dBonds === 0 && s.selection.length === 1 && s.selection === p.selection) {
-          const now = s.mol.atoms.find((a) => a.id === s.selection[0])
-          const was = p.mol.atoms.find((a) => a.id === s.selection[0])
-          if (now && was && now.symbol !== was.symbol) {
-            const e = el(now.symbol)
-            msg = m.changed(now.symbol, s.language === 'en' ? e.nameEn : e.name)
-          }
-        }
-      }
+      if (s.mol !== p.mol) msg = describeEdit(p.mol, s.mol, s.selection, s.language)
       if (msg === null && (s.selection !== p.selection || s.selectedBond !== p.selectedBond)) {
         if (s.selectedBond !== null) {
           const b = s.mol.bonds.find((x) => x.id === s.selectedBond)

@@ -17,16 +17,19 @@ export function chargeTopologyKey(m: Molecule): number {
   return h
 }
 
-/** Approximate (Gasteiger) partial charge per atom id, from the properties module. Never throws. */
-export function computePartialCharges(m: Molecule): Map<number, number> {
-  const out = new Map<number, number>()
+/**
+ * Approximate (Gasteiger) partial charge per atom id, from the properties module. `null` means "not computable" (the
+ * Inspector says so too): it is never turned into a fabricated 0. Never throws.
+ */
+export function computePartialCharges(m: Molecule): Map<number, number | null> {
+  const out = new Map<number, number | null>()
   for (const a of m.atoms) {
-    let q = 0
+    let q: number | null = null
     try {
       const info = atomInfo(m, a.id)
       if (info && info.partialCharge !== null && Number.isFinite(info.partialCharge)) q = info.partialCharge
     } catch {
-      q = 0
+      q = null
     }
     out.set(a.id, q)
   }

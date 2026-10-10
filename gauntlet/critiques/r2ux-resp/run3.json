@@ -1,0 +1,1026 @@
+{
+ "peek": {
+  "top": 627,
+  "wrapBottom": 759,
+  "visibleH": 132,
+  "text": "Molekül | CH4 | · | 16,04 g/mol | · | 5 atom | · | 4 bağ | Metan | Molekül formülü (kapalı formül) | CH4 | Genel | Mol kütlesi | 16,04 g/mol | Monoizotopik kütle (en bol izotoplar) | 16,0313",
+  "grabber": {
+   "ariaHidden": "true",
+   "role": null
+  }
+ },
+ "afterDragUp": {
+  "top": 76,
+  "wrapBottom": 759,
+  "visibleH": 683,
+  "text": "Molekül | CH4 | · | 16,04 g/mol | · | 5 atom | · | 4 bağ | Metan | Molekül formülü (kapalı formül) | CH4 | Genel | Mol kütlesi | 16,04 g/mol | Monoizotopik kütle (en bol izotoplar) | 16,0313",
+  "grabber": {
+   "ariaHidden": "true",
+   "role": null
+  }
+ },
+ "afterDragFull": {
+  "sheet": {
+   "top": 76,
+   "wrapBottom": 759,
+   "visibleH": 683,
+   "text": "Molekül | CH4 | · | 16,04 g/mol | · | 5 atom | · | 4 bağ | Metan | Molekül formülü (kapalı formül) | CH4 | Genel | Mol kütlesi | 16,04 g/mol | Monoizotopik kütle (en bol izotoplar) | 16,0313",
+   "grabber": {
+    "ariaHidden": "true",
+    "role": null
+   }
+  },
+  "scrim": 0
+ },
+ "escFromFull": null,
+ "swipeDownFromPeek": null,
+ "more": [
+  {
+   "n": "Kütüphane",
+   "h": 44,
+   "y": 59,
+   "bottom": 103,
+   "kbd": false
+  },
+  {
+   "n": "Ayarlar",
+   "h": 44,
+   "y": 103,
+   "bottom": 147,
+   "kbd": false
+  },
+  {
+   "n": "Şimdi kaydetCtrl+S",
+   "h": 44,
+   "y": 156,
+   "bottom": 200,
+   "kbd": true
+  },
+  {
+   "n": "Dosya aç (MOL, SDF, XYZ)",
+   "h": 44,
+   "y": 200,
+   "bottom": 244,
+   "kbd": false
+  },
+  {
+   "n": "PubChem’de ara",
+   "h": 44,
+   "y": 244,
+   "bottom": 288,
+   "kbd": false
+  },
+  {
+   "n": "MOL olarak indir",
+   "h": 44,
+   "y": 297,
+   "bottom": 341,
+   "kbd": false
+  },
+  {
+   "n": "XYZ olarak indir",
+   "h": 44,
+   "y": 341,
+   "bottom": 385,
+   "kbd": false
+  },
+  {
+   "n": "PNG ekran görüntüsü",
+   "h": 44,
+   "y": 385,
+   "bottom": 429,
+   "kbd": false
+  },
+  {
+   "n": "Hidrojenleri göster",
+   "h": 44,
+   "y": 466,
+   "bottom": 510,
+   "kbd": false
+  },
+  {
+   "n": "Etiketler",
+   "h": 44,
+   "y": 510,
+   "bottom": 554,
+   "kbd": false
+  },
+  {
+   "n": "Kısmi yükler (yaklaşık)",
+   "h": 44,
+   "y": 554,
+   "bottom": 598,
+   "kbd": false
+  },
+  {
+   "n": "Otomatik döndür",
+   "h": 44,
+   "y": 598,
+   "bottom": 642,
+   "kbd": false
+  }
+ ],
+ "moreMenuBox": {
+  "top": 54,
+  "bottom": 614,
+  "sh": 591,
+  "ch": 558
+ },
+ "settings": {
+  "probe": {
+   "layout": "mobile",
+   "reduced": "true",
+   "lang": "tr",
+   "W": 390,
+   "H": 844,
+   "scrollW": 390,
+   "bodyScrollW": 390,
+   "coarse": true,
+   "hit": "44px",
+   "header": {
+    "x": 0,
+    "y": 0,
+    "w": 390,
+    "h": 53
+   },
+   "toolbars": [
+    {
+     "label": "Araçlar",
+     "r": {
+      "x": 0,
+      "y": 788,
+      "w": 333,
+      "h": 56
+     },
+     "sw": 382,
+     "cw": 333,
+     "sh": 56,
+     "ch": 56,
+     "buttons": [
+      {
+       "n": "Seç",
+       "x": 8,
+       "y": 794,
+       "w": 44,
+       "h": 44,
+       "clipped": false
+      },
+      {
+       "n": "Döndür",
+       "x": 54,
+       "y": 794,
+       "w": 44,
+       "h": 44,
+       "clipped": false
+      },
+      {
+       "n": "Kaydır",
+       "x": 100,
+       "y": 794,
+       "w": 44,
+       "h": 44,
+       "clipped": false
+      },
+      {
+       "n": "Yakınlaştır",
+       "x": 146,
+       "y": 794,
+       "w": 44,
+       "h": 44,
+       "clipped": false
+      },
+      {
+       "n": "Atom Ekle",
+       "x": 192,
+       "y": 794,
+       "w": 44,
+       "h": 44,
+       "clipped": false
+      },
+      {
+       "n": "Bağ Ekle",
+       "x": 238,
+       "y": 794,
+       "w": 44,
+       "h": 44,
+       "clipped": false
+      },
+      {
+       "n": "Sil",
+       "x": 284,
+       "y": 794,
+       "w": 44,
+       "h": 44,
+       "clipped": false
+      },
+      {
+       "n": "Ölç",
+       "x": 330,
+       "y": 794,
+       "w": 44,
+       "h": 44,
+       "clipped": true
+      }
+     ]
+    }
+   ],
+   "sheet": null,
+   "aside": null,
+   "canvas": {
+    "x": 0,
+    "y": 53,
+    "w": 390,
+    "h": 706,
+    "tabIndex": 0
+   },
+   "small": [
+    {
+     "n": "Top-Çubuk",
+     "role": "radio",
+     "x": 11,
+     "y": 64,
+     "w": 92,
+     "h": 38,
+     "clipped": false
+    },
+    {
+     "n": "Uzay Dolgulu",
+     "role": "radio",
+     "x": 103,
+     "y": 64,
+     "w": 92,
+     "h": 38,
+     "clipped": false
+    },
+    {
+     "n": "Çubuk",
+     "role": "radio",
+     "x": 195,
+     "y": 64,
+     "w": 92,
+     "h": 38,
+     "clipped": false
+    },
+    {
+     "n": "Tel Kafes",
+     "role": "radio",
+     "x": 287,
+     "y": 64,
+     "w": 92,
+     "h": 38,
+     "clipped": false
+    },
+    {
+     "n": "Türkçe",
+     "role": "radio",
+     "x": 20,
+     "y": 537,
+     "w": 57,
+     "h": 38,
+     "clipped": false
+    },
+    {
+     "n": "English",
+     "role": "radio",
+     "x": 77,
+     "y": 537,
+     "w": 61,
+     "h": 38,
+     "clipped": false
+    },
+    {
+     "n": "Sistemi izle",
+     "role": "radio",
+     "x": 20,
+     "y": 623,
+     "w": 84,
+     "h": 38,
+     "clipped": false
+    },
+    {
+     "n": "Azalt",
+     "role": "radio",
+     "x": 104,
+     "y": 623,
+     "w": 48,
+     "h": 38,
+     "clipped": false
+    },
+    {
+     "n": "Tam",
+     "role": "radio",
+     "x": 152,
+     "y": 623,
+     "w": 43,
+     "h": 38,
+     "clipped": false
+    },
+    {
+     "n": "Otomatik hidrojen",
+     "role": "switch",
+     "x": 337,
+     "y": 725,
+     "w": 36,
+     "h": 20,
+     "clipped": false
+    }
+   ],
+   "tiny": [
+    {
+     "n": "Otomatik hidrojen",
+     "x": 337,
+     "y": 725,
+     "w": 36,
+     "h": 20
+    }
+   ],
+   "noName": [],
+   "offscreenCtrls": [],
+   "clippedCtrls": [
+    {
+     "n": "Ölç",
+     "x": 330,
+     "y": 794,
+     "w": 44,
+     "h": 44
+    }
+   ],
+   "announcer": "",
+   "anims": []
+  },
+  "dialogs": [
+   {
+    "label": "Ayarlar",
+    "modal": "true",
+    "top": 422
+   }
+  ]
+ },
+ "settingsCtrls": [
+  {
+   "n": "Paneli kapat",
+   "role": "BUTTON",
+   "w": 44,
+   "h": 44
+  },
+  {
+   "n": "Türkçe",
+   "role": "radio",
+   "w": 57,
+   "h": 38
+  },
+  {
+   "n": "English",
+   "role": "radio",
+   "w": 61,
+   "h": 38
+  },
+  {
+   "n": "Sistemi izle",
+   "role": "radio",
+   "w": 84,
+   "h": 38
+  },
+  {
+   "n": "Azalt",
+   "role": "radio",
+   "w": 48,
+   "h": 38
+  },
+  {
+   "n": "Tam",
+   "role": "radio",
+   "w": 43,
+   "h": 38
+  },
+  {
+   "n": "",
+   "role": "switch",
+   "w": 36,
+   "h": 20
+  },
+  {
+   "n": "Kısayolları göster",
+   "role": "BUTTON",
+   "w": 123,
+   "h": 44
+  }
+ ],
+ "langAfter": "en",
+ "enSheet": {
+  "top": 627,
+  "wrapBottom": 759,
+  "visibleH": 132,
+  "text": "Molecule | Carbon #1 | · | 5 atoms | · | 4 bonds | C | Carbon (C) | #1 · Nonmetal | Element | Atomic number | 6 | Atomic mass | 12.011 u | Electronegativity (Pauling) | 2.55 | Covalent radius | ",
+  "grabber": {
+   "ariaHidden": "true",
+   "role": null
+  }
+ },
+ "enTrHits": [
+  "aria-label:3B molekül görünümü"
+ ],
+ "stack": [
+  {
+   "role": "complementary",
+   "label": "Molecule",
+   "z": "75",
+   "top": 627
+  },
+  {
+   "role": "dialog",
+   "label": "Molecule library",
+   "z": "85",
+   "top": 84
+  }
+ ],
+ "libProbe": {
+  "layout": "mobile",
+  "reduced": "true",
+  "lang": "en",
+  "W": 390,
+  "H": 844,
+  "scrollW": 390,
+  "bodyScrollW": 390,
+  "coarse": true,
+  "hit": "44px",
+  "header": {
+   "x": 0,
+   "y": 0,
+   "w": 390,
+   "h": 53
+  },
+  "toolbars": [
+   {
+    "label": "Tools",
+    "r": {
+     "x": 0,
+     "y": 788,
+     "w": 333,
+     "h": 56
+    },
+    "sw": 382,
+    "cw": 333,
+    "sh": 56,
+    "ch": 56,
+    "buttons": [
+     {
+      "n": "Select",
+      "x": 8,
+      "y": 794,
+      "w": 44,
+      "h": 44,
+      "clipped": false
+     },
+     {
+      "n": "Rotate",
+      "x": 54,
+      "y": 794,
+      "w": 44,
+      "h": 44,
+      "clipped": false
+     },
+     {
+      "n": "Pan",
+      "x": 100,
+      "y": 794,
+      "w": 44,
+      "h": 44,
+      "clipped": false
+     },
+     {
+      "n": "Zoom",
+      "x": 146,
+      "y": 794,
+      "w": 44,
+      "h": 44,
+      "clipped": false
+     },
+     {
+      "n": "Add Atom",
+      "x": 192,
+      "y": 794,
+      "w": 44,
+      "h": 44,
+      "clipped": false
+     },
+     {
+      "n": "Add Bond",
+      "x": 238,
+      "y": 794,
+      "w": 44,
+      "h": 44,
+      "clipped": false
+     },
+     {
+      "n": "Delete",
+      "x": 284,
+      "y": 794,
+      "w": 44,
+      "h": 44,
+      "clipped": false
+     },
+     {
+      "n": "Measure",
+      "x": 330,
+      "y": 794,
+      "w": 44,
+      "h": 44,
+      "clipped": true
+     }
+    ]
+   }
+  ],
+  "sheet": {
+   "r": {
+    "x": 0,
+    "y": 627,
+    "w": 390,
+    "h": 683
+   },
+   "label": "Molecule"
+  },
+  "aside": null,
+  "canvas": {
+   "x": 0,
+   "y": 53,
+   "w": 390,
+   "h": 706,
+   "tabIndex": 0
+  },
+  "small": [
+   {
+    "n": "Ball & Stick",
+    "role": "radio",
+    "x": 11,
+    "y": 64,
+    "w": 92,
+    "h": 38,
+    "clipped": false
+   },
+   {
+    "n": "Space Filling",
+    "role": "radio",
+    "x": 103,
+    "y": 64,
+    "w": 92,
+    "h": 38,
+    "clipped": false
+   },
+   {
+    "n": "Stick",
+    "role": "radio",
+    "x": 195,
+    "y": 64,
+    "w": 92,
+    "h": 38,
+    "clipped": false
+   },
+   {
+    "n": "Wireframe",
+    "role": "radio",
+    "x": 287,
+    "y": 64,
+    "w": 92,
+    "h": 38,
+    "clipped": false
+   },
+   {
+    "n": "All",
+    "role": "button",
+    "x": 17,
+    "y": 222,
+    "w": 37,
+    "h": 44,
+    "clipped": false
+   }
+  ],
+  "tiny": [],
+  "noName": [
+   "<input data-autofocus=\"true\" placeholder=\"Search molecules…\" autocomplete=\"off\" spellcheck=\"false\" class=\"h-(--hit) w-full rounded-ctl borde"
+  ],
+  "offscreenCtrls": [],
+  "clippedCtrls": [
+   {
+    "n": "Measure",
+    "x": 330,
+    "y": 794,
+    "w": 44,
+    "h": 44
+   },
+   {
+    "n": "Element",
+    "x": 1,
+    "y": 788,
+    "w": 388,
+    "h": 44
+   },
+   {
+    "n": "Bonding",
+    "x": 1,
+    "y": 1015,
+    "w": 388,
+    "h": 44
+   },
+   {
+    "n": "Decrease charge",
+    "x": 241,
+    "y": 1287,
+    "w": 44,
+    "h": 44
+   },
+   {
+    "n": "Increase charge",
+    "x": 329,
+    "y": 1287,
+    "w": 44,
+    "h": 44
+   },
+   {
+    "n": "H#2",
+    "x": 17,
+    "y": 1363,
+    "w": 61,
+    "h": 44
+   },
+   {
+    "n": "H#3",
+    "x": 84,
+    "y": 1363,
+    "w": 61,
+    "h": 44
+   },
+   {
+    "n": "H#4",
+    "x": 151,
+    "y": 1363,
+    "w": 61,
+    "h": 44
+   },
+   {
+    "n": "H#5",
+    "x": 217,
+    "y": 1363,
+    "w": 61,
+    "h": 44
+   },
+   {
+    "n": "Change element",
+    "x": 1,
+    "y": 1420,
+    "w": 388,
+    "h": 44
+   },
+   {
+    "n": "Delete atom",
+    "x": 17,
+    "y": 1481,
+    "w": 356,
+    "h": 44
+   },
+   {
+    "n": "Special geometries",
+    "x": 286,
+    "y": 222,
+    "w": 130,
+    "h": 44
+   },
+   {
+    "n": "Aromatic compounds",
+    "x": 422,
+    "y": 222,
+    "w": 145,
+    "h": 44
+   },
+   {
+    "n": "Alcohols, ethers and carbonyls",
+    "x": 574,
+    "y": 222,
+    "w": 196,
+    "h": 44
+   },
+   {
+    "n": "Biomolecules",
+    "x": 776,
+    "y": 222,
+    "w": 98,
+    "h": 44
+   },
+   {
+    "n": "Drugs and alkaloids",
+    "x": 880,
+    "y": 222,
+    "w": 135,
+    "h": 44
+   },
+   {
+    "n": "Sulfur dioxideO2SSO₂ — A bent ",
+    "x": 1,
+    "y": 762,
+    "w": 388,
+    "h": 91
+   },
+   {
+    "n": "Boron trifluorideBF3BF₃ — Trig",
+    "x": 1,
+    "y": 854,
+    "w": 388,
+    "h": 91
+   },
+   {
+    "n": "Sulfur hexafluorideF6SSF₆ — Re",
+    "x": 1,
+    "y": 945,
+    "w": 388,
+    "h": 91
+   },
+   {
+    "n": "Sulfuric acidH2O4SH₂SO₄ — One ",
+    "x": 1,
+    "y": 1037,
+    "w": 388,
+    "h": 91
+   },
+   {
+    "n": "Phosphoric acidH3O4PH₃PO₄ — Us",
+    "x": 1,
+    "y": 1129,
+    "w": 388,
+    "h": 91
+   },
+   {
+    "n": "EthaneC2H6C₂H₆ — The simplest ",
+    "x": 1,
+    "y": 1221,
+    "w": 388,
+    "h": 91
+   },
+   {
+    "n": "PropaneC3H8C₃H₈ — A three-carb",
+    "x": 1,
+    "y": 1312,
+    "w": 388,
+    "h": 91
+   },
+   {
+    "n": "Ethylene (ethene)C2H4C₂H₄ — A ",
+    "x": 1,
+    "y": 1404,
+    "w": 388,
+    "h": 91
+   },
+   {
+    "n": "Acetylene (ethyne)C2H2C₂H₂ — L",
+    "x": 1,
+    "y": 1496,
+    "w": 388,
+    "h": 91
+   },
+   {
+    "n": "CyclohexaneC6H12C₆H₁₂ — In the",
+    "x": 1,
+    "y": 1588,
+    "w": 388,
+    "h": 91
+   },
+   {
+    "n": "AdamantaneC10H16C₁₀H₁₆ — A hyd",
+    "x": 1,
+    "y": 1679,
+    "w": 388,
+    "h": 91
+   },
+   {
+    "n": "BenzeneC6H6C₆H₆ — A planar six",
+    "x": 1,
+    "y": 1771,
+    "w": 388,
+    "h": 91
+   },
+   {
+    "n": "NaphthaleneC10H8C₁₀H₈ — A plan",
+    "x": 1,
+    "y": 1863,
+    "w": 388,
+    "h": 91
+   },
+   {
+    "n": "TolueneC7H8C₇H₈ — A methyl gro",
+    "x": 1,
+    "y": 1955,
+    "w": 388,
+    "h": 91
+   },
+   {
+    "n": "PhenolC6H6OC₆H₆O — A hydroxyl ",
+    "x": 1,
+    "y": 2046,
+    "w": 388,
+    "h": 91
+   },
+   {
+    "n": "AnilineC6H7NC₆H₇N — The simple",
+    "x": 1,
+    "y": 2138,
+    "w": 388,
+    "h": 91
+   },
+   {
+    "n": "PyridineC5H5NC₅H₅N — A six-mem",
+    "x": 1,
+    "y": 2230,
+    "w": 388,
+    "h": 91
+   },
+   {
+    "n": "MethanolCH4OCH₄O — The simples",
+    "x": 1,
+    "y": 2322,
+    "w": 388,
+    "h": 91
+   },
+   {
+    "n": "EthanolC2H6OC₂H₆O — The alcoho",
+    "x": 1,
+    "y": 2413,
+    "w": 388,
+    "h": 91
+   },
+   {
+    "n": "Glycerol (glycerin)C3H8O3C₃H₈O",
+    "x": 1,
+    "y": 2505,
+    "w": 388,
+    "h": 91
+   },
+   {
+    "n": "FormaldehydeCH2OCH₂O — The sim",
+    "x": 1,
+    "y": 2597,
+    "w": 388,
+    "h": 91
+   },
+   {
+    "n": "AcetoneC3H6OC₃H₆O — The simple",
+    "x": 1,
+    "y": 2689,
+    "w": 388,
+    "h": 91
+   },
+   {
+    "n": "Acetic acidC2H4O2C₂H₄O₂ — The ",
+    "x": 1,
+    "y": 2780,
+    "w": 388,
+    "h": 91
+   },
+   {
+    "n": "Diethyl etherC4H10OC₄H₁₀O — A ",
+    "x": 1,
+    "y": 2872,
+    "w": 388,
+    "h": 91
+   },
+   {
+    "n": "GlucoseC6H12O6C₆H₁₂O₆ — The ma",
+    "x": 1,
+    "y": 2964,
+    "w": 388,
+    "h": 91
+   },
+   {
+    "n": "Sucrose (table sugar)C12H22O11",
+    "x": 1,
+    "y": 3056,
+    "w": 388,
+    "h": 91
+   },
+   {
+    "n": "GlycineC2H5NO2C₂H₅NO₂ — The si",
+    "x": 1,
+    "y": 3147,
+    "w": 388,
+    "h": 91
+   },
+   {
+    "n": "L-AlanineC3H7NO2C₃H₇NO₂ — One ",
+    "x": 1,
+    "y": 3239,
+    "w": 388,
+    "h": 91
+   },
+   {
+    "n": "UreaCH4N2OCH₄N₂O — Contains tw",
+    "x": 1,
+    "y": 3331,
+    "w": 388,
+    "h": 91
+   },
+   {
+    "n": "AdenineC5H5N5C₅H₅N₅ — A purine",
+    "x": 1,
+    "y": 3423,
+    "w": 388,
+    "h": 91
+   },
+   {
+    "n": "Ascorbic acid (vitamin C)C6H8O",
+    "x": 1,
+    "y": 3514,
+    "w": 388,
+    "h": 91
+   },
+   {
+    "n": "CholesterolC27H46OC₂₇H₄₆O — Ha",
+    "x": 1,
+    "y": 3606,
+    "w": 388,
+    "h": 91
+   },
+   {
+    "n": "α-Tocopherol (vitamin E)C29H50",
+    "x": 1,
+    "y": 3698,
+    "w": 388,
+    "h": 91
+   },
+   {
+    "n": "TristearinC57H110O6C₅₇H₁₁₀O₆ —",
+    "x": 1,
+    "y": 3790,
+    "w": 388,
+    "h": 91
+   },
+   {
+    "n": "Aspirin (acetylsalicylic acid)",
+    "x": 1,
+    "y": 3881,
+    "w": 388,
+    "h": 91
+   },
+   {
+    "n": "Paracetamol (acetaminophen)C8H",
+    "x": 1,
+    "y": 3973,
+    "w": 388,
+    "h": 91
+   },
+   {
+    "n": "IbuprofenC13H18O2C₁₃H₁₈O₂ — A ",
+    "x": 1,
+    "y": 4065,
+    "w": 388,
+    "h": 91
+   },
+   {
+    "n": "CaffeineC8H10N4O2C₈H₁₀N₄O₂ — A",
+    "x": 1,
+    "y": 4157,
+    "w": 388,
+    "h": 91
+   },
+   {
+    "n": "NicotineC10H14N2C₁₀H₁₄N₂ — An ",
+    "x": 1,
+    "y": 4248,
+    "w": 388,
+    "h": 91
+   },
+   {
+    "n": "MorphineC17H19NO3C₁₇H₁₉NO₃ — A",
+    "x": 1,
+    "y": 4340,
+    "w": 388,
+    "h": 91
+   },
+   {
+    "n": "Penicillin G (benzylpenicillin",
+    "x": 1,
+    "y": 4432,
+    "w": 388,
+    "h": 91
+   }
+  ],
+  "announcer": "Selected: C, Carbon, 4 bonds",
+  "anims": []
+ },
+ "afterLibEsc": {
+  "top": 627,
+  "wrapBottom": 759,
+  "visibleH": 132,
+  "text": "Molecule | Carbon #1 | · | 5 atoms | · | 4 bonds | C | Carbon (C) | #1 · Nonmetal | Element | Atomic number | 6 | Atomic mass | 12.011 u | Electronegativity (Pauling) | 2.55 | Covalent radius | ",
+  "grabber": {
+   "ariaHidden": "true",
+   "role": null
+  }
+ },
+ "toast": [],
+ "toastSheet": null,
+ "canvasFocus": {
+  "tag": "CANVAS",
+  "fv": true,
+  "outline": "none 3px rgb(230, 232, 235)",
+  "offset": "-2px"
+ },
+ "logs": []
+}

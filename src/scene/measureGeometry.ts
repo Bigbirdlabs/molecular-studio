@@ -9,6 +9,8 @@ export interface MeasureViz {
   lines: [Vec3, Vec3][]
   /** Arc polyline (angle / dihedral), empty otherwise. */
   arc: Vec3[]
+  /** Dashed radial guides from the arc's centre to its two ends (dihedral), so the floating arc reads as an angle. */
+  radials: [Vec3, Vec3][]
   /** Value label and where to put it. */
   label: { text: string; pos: Vec3 } | null
   /** Per-pair distance labels at the midpoint of each guide line (angle / dihedral chains; a plain distance uses `label`). */
@@ -16,7 +18,7 @@ export interface MeasureViz {
   value: number | null
 }
 
-const NONE: MeasureViz = { kind: 'none', lines: [], arc: [], label: null, segLabels: [], value: null }
+const NONE: MeasureViz = { kind: 'none', lines: [], arc: [], radials: [], label: null, segLabels: [], value: null }
 
 const segLabelsOf = (lines: [Vec3, Vec3][]) =>
   lines.map(([a, b]) => ({ text: formatDistance(dist(a, b)), pos: scale(add(a, b), 0.5) }))
@@ -43,7 +45,7 @@ export function buildMeasureViz(pts: Vec3[], arcSegments = 28): MeasureViz {
   if (pts.length === 2) {
     const d = dist(pts[0], pts[1])
     const mid = scale(add(pts[0], pts[1]), 0.5)
-    return { kind: 'distance', lines: [[pts[0], pts[1]]], arc: [], label: { text: formatDistance(d), pos: mid }, segLabels: [], value: d }
+    return { kind: 'distance', lines: [[pts[0], pts[1]]], arc: [], radials: [], label: { text: formatDistance(d), pos: mid }, segLabels: [], value: d }
   }
 
   if (pts.length === 3) {
@@ -53,7 +55,7 @@ export function buildMeasureViz(pts: Vec3[], arcSegments = 28): MeasureViz {
     const theta = (angleDeg(a, b, c) * Math.PI) / 180
     const value = (theta * 180) / Math.PI
     const lines: [Vec3, Vec3][] = [[a, b], [b, c]]
-    if (lu < 1e-6 || lv < 1e-6) return { kind: 'angle', lines, arc: [], label: null, segLabels: segLabelsOf(lines), value }
+    if (lu < 1e-6 || lv < 1e-6) return { kind: 'angle', lines, arc: [], radials: [], label: null, segLabels: segLabelsOf(lines), value }
     const uh = norm(u), vh = norm(v)
     const rho = 0.35 * Math.min(lu, lv) // SPEC B.6: arc radius = 0.35 x the shorter arm
     const arc: Vec3[] = []
@@ -68,7 +70,7 @@ export function buildMeasureViz(pts: Vec3[], arcSegments = 28): MeasureViz {
       }
     }
     const bis = len(add(uh, vh)) > 1e-6 ? norm(add(uh, vh)) : norm(cross(uh, [0, 1, 0]))
-    return { kind: 'angle', lines, arc, label: { text: formatAngle(value), pos: add(b, scale(bis, rho + 0.32)) }, segLabels: segLabelsOf(lines), value }
+    return { kind: 'angle', lines, arc, radials: [], label: { text: formatAngle(value), pos: add(b, scale(bis, rho + 0.32)) }, segLabels: segLabelsOf(lines), value }
   }
 
   const [a, b, c, d] = pts.slice(0, 4)
@@ -76,12 +78,12 @@ export function buildMeasureViz(pts: Vec3[], arcSegments = 28): MeasureViz {
   const lines: [Vec3, Vec3][] = [[a, b], [b, c], [c, d]]
   const axis = sub(c, b)
   const segLabels = segLabelsOf(lines)
-  if (len(axis) < 1e-6) return { kind: 'dihedral', lines, arc: [], label: null, segLabels, value }
+  if (len(axis) < 1e-6) return { kind: 'dihedral', lines, arc: [], radials: [], label: null, segLabels, value }
   const k = norm(axis)
   const perp = (v: Vec3): Vec3 => sub(v, scale(k, dot(v, k)))
   const v1 = perp(sub(a, b))
   const mid = scale(add(b, c), 0.5)
-  if (len(v1) < 1e-4 || len(perp(sub(d, c))) < 1e-4) return { kind: 'dihedral', lines, arc: [], label: { text: formatAngle(value), pos: mid }, segLabels, value }
+  if (len(v1) < 1e-4 || len(perp(sub(d, c))) < 1e-4) return { kind: 'dihedral', lines, arc: [], radials: [], label: { text: formatAngle(value), pos: mid }, segLabels, value }
   const v1h = norm(v1)
   const kx = cross(k, v1h)
   const phi = (value * Math.PI) / 180
@@ -93,7 +95,8 @@ export function buildMeasureViz(pts: Vec3[], arcSegments = 28): MeasureViz {
   }
   const tm = phi / 2
   const out = add(scale(v1h, Math.cos(tm)), scale(kx, Math.sin(tm)))
-  return { kind: 'dihedral', lines, arc, label: { text: formatAngle(value), pos: add(mid, scale(out, rho + 0.3)) }, segLabels, value }
+  const radials: [Vec3, Vec3][] = [[mid, arc[0]], [mid, arc[arc.length - 1]]]
+  return { kind: 'dihedral', lines, arc, radials, label: { text: formatAngle(value), pos: add(mid, scale(out, rho + 0.3)) }, segLabels, value }
 }
 
 /** Break a segment into dashes [start, end] (world). */

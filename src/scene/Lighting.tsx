@@ -7,8 +7,12 @@ import type { Group } from 'three'
  * Restrained studio lighting. The key / fill / rim lights ride along with the camera, so the molecule keeps a
  * readable, consistent shading however it is rotated; the image-based light is built from local Lightformers
  * (no remote HDRI), rendered once.
+ *
+ * `epoch` is bumped when the WebGL context is restored: re-rendering (never remounting) makes the Environment bake its cube
+ * map again into the same render target. Remounting would dispose the pre-loss GPU objects after the restore, which logs
+ * "object does not belong to this context" warnings.
  */
-export function Lighting() {
+export function Lighting({ epoch = 0 }: { epoch?: number }) {
   const rig = useRef<Group>(null)
 
   useFrame(({ camera }) => {
@@ -29,7 +33,7 @@ export function Lighting() {
       </group>
       <Environment resolution={128} frames={1} environmentIntensity={0.55}>
         <color attach="background" args={['#15171b']} />
-        <Lightformer form="rect" intensity={2.4} position={[0, 6, -2]} rotation-x={Math.PI / 2} scale={[12, 5, 1]} />
+        <Lightformer name={`env-${epoch}`} form="rect" intensity={2.4} position={[0, 6, -2]} rotation-x={Math.PI / 2} scale={[12, 5, 1]} />
         <Lightformer form="rect" intensity={1.1} position={[-6, 1, 3]} rotation-y={Math.PI / 2} scale={[7, 6, 1]} />
         <Lightformer form="rect" intensity={0.8} position={[6, -1, 3]} rotation-y={-Math.PI / 2} scale={[7, 4, 1]} />
         <Lightformer form="ring" intensity={0.9} position={[0, 1, -7]} scale={5} />

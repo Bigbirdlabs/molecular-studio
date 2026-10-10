@@ -5,7 +5,10 @@
  * Honesty notes (SPEC sections 5, 8):
  *  - No dipole moment, no logP, no melting/boiling point is computed anywhere in this module.
  *  - Gasteiger-Marsili partial charges are an empirical estimate (PEOE, 6 iterations) and are
- *    labelled approximate by the UI.
+ *    labelled approximate by the UI. Only parameters of the cited 1980 table are used (H, C, N, O, F, Cl, Br, I and divalent
+ *    sp3 S); an atom without such a parameter, and its neighbours, get `partialCharge: null` instead of an extrapolated value.
+ *  - VSEPR (steric number, lone pairs, conjugated N) comes from geometry.ts `electronDomains` (SPEC A4.2): there is no second
+ *    implementation here; the only local addition is the aromatic O / S lone pair delocalised into the ring.
  *  - Lipinski's rule of five normally has four rules (MW <= 500, HBD <= 5, HBA <= 10, logP <= 5).
  *    logP is NOT computed here, so only the three computable rules are evaluated and
  *    `lipinski.rulesEvaluated` says so (3, never 4).
@@ -18,7 +21,7 @@
  * Stored values are never rounded (SPEC A2.3): rounding is the formatter's job.
  */
 import { BOND_NAMES, BOND_NAMES_EN, VALENCE_ELECTRONS, el } from './elements'
-import { bondTargetLength } from './geometry'
+import { bondTargetLength, electronDomains } from './geometry'
 import {
   type Atom,
   type Bond,
@@ -197,6 +200,8 @@ interface Analysis {
   /** atoms that belong to an aromatic ring containing at least one non-carbon atom */
   heteroAromaticAtoms: Set<number>
   geo: Map<number, GeoInfo>
+  /** topology-only molecule view built lazily for geometry.ts electronDomains */
+  mol?: Molecule
   charges: Map<number, number> | null
   /** ids of bonds that lie on a ring (union of the SSSR bonds) */
   ringBonds: Set<number>
@@ -548,13 +553,19 @@ const GEOMETRY: Record<string, [string, string]> = {
   '4:0': ['Düzgün dörtyüzlü', 'Tetrahedral'],
   '4:1': ['Üçgen piramit', 'Trigonal pyramidal'],
   '4:2': ['Kırık doğru (açısal)', 'Bent'],
+  // SN 5 and 6 (SPEC A4.3): only the lone-pair-free shapes are named; the lone-pair variants are "hesaplanamadı".
   '5:0': ['Üçgen çift piramit', 'Trigonal bipyramidal'],
-  '5:1': ['Tahterevalli (see-saw)', 'Seesaw'],
-  '5:2': ['T şekilli', 'T-shaped'],
-  '5:3': ['Doğrusal', 'Linear'],
-  '6:0': ['Sekizyüzlü (oktahedral)', 'Octahedral'],
-  '6:1': ['Kare piramit', 'Square pyramidal'],
-  '6:2': ['Kare düzlem', 'Square planar'],
+  '6:0': ['Düzgün sekizyüzlü', 'Octahedral'],
+}
+
+const NOT_COMPUTABLE: [string, string] = ['hesaplanamadı', 'not computable']
+
+/** Minimal molecule view of the analysis (topology only) so geometry.ts `electronDomains` can classify an atom. */
+function topologyMolecule(an: Analysis): Molecule {
+  if (an.mol) return an.mol
+  const bonds = an.bonds.map((b) => (an.aromaticBonds.has(b.id) ? { ...b, aromatic: true } : b))
+  an.mol = { id: 'analysis', name: 'analysis', atoms: [...an.byId.values()], bonds, nextId: 1 }
+  return an.mol
 }
 
 function geoOf(an: Analysis, id: number): GeoInfo {
@@ -565,16 +576,18 @@ function geoOf(an: Analysis, id: number): GeoInfo {
   const deg = nbs.length
   let used = 0
   for (const nb of nbs) used += nb.bond.order
-  const V = VALENCE_ELECTRONS[a.symbol] ?? 4
-  const lp = Math.max(0, Math.floor((V - a.charge - used) / 2))
-  let sn = deg + lp
+  // The ONE VSEPR classification lives in geometry.ts (SPEC A4.2): sigma neighbours, lone pairs, steric number = sigma + lp.
+  const dom = electronDomains(topologyMolecule(an), a)
+  let sn = dom.sn
+  let lp = dom.lp
   let g: GeoInfo
   const metal = a.symbol === 'Na' || a.symbol === 'Mg'
   // Missing H / under- or over-valent: hybridization, geometry and lone pairs cannot be derived honestly.
   let incomplete = false
   if (!metal && a.symbol !== 'H') {
     const allowed = allowedValences(a)
-    incomplete = allowed.length > 0 && !allowed.includes(used)
+    // lone-pair count that is not a non-negative integer (odd electron count, unsupported charge) is never clamped to something invented
+    incomplete = (allowed.length > 0 && !allowed.includes(used)) || !dom.lpExact
   } else if (a.symbol === 'H') {
     incomplete = used > 1
   }
@@ -590,32 +603,33 @@ function geoOf(an: Analysis, id: number): GeoInfo {
   } else if (incomplete) {
     g = { hyb: '—', hybShown: '—', vsepr: false, sn: deg, lp: 0, geometry: 'hesaplanamadı (yapı eksik)', geometryEn: 'not computable (incomplete structure)', incomplete }
   } else {
-    let hyb: Hyb = sn === 2 ? 'sp' : sn === 3 ? 'sp2' : sn === 4 ? 'sp3' : '—'
     let tr: string, en: string
     if (deg === 1) {
       tr = 'Uç atom (tek komşu)'
       en = 'Terminal atom (one neighbour)'
     } else {
-      const names = GEOMETRY[`${sn}:${lp}`]
-      tr = names ? names[0] : '—'
-      en = names ? names[1] : '—'
+      const names = GEOMETRY[`${sn}:${lp}`] ?? NOT_COMPUTABLE
+      tr = names[0]
+      en = names[1]
     }
-    // Lone pair delocalised into a pi system -> planar, sp2 (amide / aniline / pyrrole N, furan O, thiophene S).
-    if (sn === 4 && lp >= 1 && !nbs.some((nb) => nb.bond.order >= 2)) {
-      const aromaticLP = an.aromaticAtoms.has(id) && (a.symbol === 'N' || a.symbol === 'O' || a.symbol === 'S')
-      const conjugatedN =
-        a.symbol === 'N' && lp === 1 && deg === 3 &&
-        nbs.some((nb) => {
-          const x = an.byId.get(nb.id)!
-          return (x.symbol === 'C' || x.symbol === 'N') && an.adj.get(x.id)!.some((o) => o.id !== id && o.bond.order >= 2)
-        })
-      if (aromaticLP || conjugatedN) {
-        hyb = 'sp2'
-        // one lone pair sits in the p orbital (delocalised): it is not a steric domain of the planar sigma frame
-        sn = sn - 1
-        if (deg === 3) { tr = 'Düzlem üçgen (konjugasyon, tahmini)'; en = 'Trigonal planar (conjugation, estimated)' }
-        else { tr = 'Kırık doğru (konjugasyon, tahmini)'; en = 'Bent (conjugation, estimated)' }
-      }
+    let hyb: Hyb = sn === 2 ? 'sp' : sn === 3 ? 'sp2' : sn === 4 ? 'sp3' : '—'
+    if (dom.conjugated) {
+      // N lone pair delocalised into a pi system (amide / aniline / pyrrole / sulfonamide): planar sp2. geometry.ts already
+      // counts that lone pair as pi (lp 0, sn 3), so sn = sigma + lp holds and the geometry is trigonal planar.
+      hyb = 'sp2'
+      tr = 'Düzlem üçgen (konjugasyon, tahmini)'
+      en = 'Trigonal planar (conjugation, estimated)'
+    } else if (
+      sn === 4 && lp === 2 && deg === 2 && (a.symbol === 'O' || a.symbol === 'S') && !hypervalent &&
+      an.aromaticAtoms.has(id) && !nbs.some((nb) => nb.bond.order >= 2)
+    ) {
+      // furan O / thiophene S: one of the two lone pairs sits in the aromatic pi system; the in-plane one remains a domain,
+      // so sn = sigma (2) + lp (1) = 3.
+      hyb = 'sp2'
+      lp = 1
+      sn = 3
+      tr = 'Kırık doğru (konjugasyon, tahmini)'
+      en = 'Bent (conjugation, estimated)'
     }
     if (hypervalent) hyb = '—'
     // Hybridisation is only reported for C, N, O and B (SPEC A4.2); sp3 for Cl / F / S / P would be wrong or meaningless.
@@ -643,9 +657,10 @@ function peoeParams(a: Atom, geo: GeoInfo, aromatic: boolean): Peoe | null {
     case 'Cl': return [11.0, 9.69, 1.35]
     case 'Br': return [10.08, 8.47, 1.16]
     case 'I': return [9.9, 7.96, 0.96]
-    case 'S': return h === 'sp2' ? [10.88, 9.49, 1.33] : [10.14, 9.13, 1.38]
-    case 'P': return [8.9, 8.24, 0.96]
-    default: return null // B, Na, Mg, Si: no published PEOE parameters -> exchange skipped, charge stays formal
+    // Only the divalent (thiol / thioether) sulfur parameters of the cited 1980 table are used. Sulfur sp2 (thiophene, C=S),
+    // hypervalent S(IV) / S(VI) (sulfoxide, sulfone, SF6, sulfate) and phosphorus have no parameters in that source -> null.
+    case 'S': return h === 'sp3' ? [10.14, 9.13, 1.38] : null
+    default: return null // P, B, Na, Mg, Si, hypervalent S: no parameters in Gasteiger & Marsili 1980 -> charge not computable (null)
   }
 }
 

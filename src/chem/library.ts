@@ -1,24 +1,32 @@
 /**
  * Curated molecule library (Molecular Studio).
  *
- * GENERATED DATA (gauntlet/scratch/build-library.mjs): coordinates come from PubChem 3D conformers
- * (PUG REST, record_type=3d) with explicit hydrogens, except where noted below. Every molecule is centered on its
- * centroid and rotated onto its principal axes (longest extent along x, plane normal along z) so planar molecules
- * face the default camera. Kekule bond orders are kept as delivered by PubChem; rings that satisfy a simple Hueckel
- * test (planar 5/6-membered ring, all sp2, 4n+2 pi electrons, no exocyclic C=O/C=S) carry the aromatic flag on
- * their bonds.
+ * DATA FILE, edited in place. It was first produced by a throwaway generator (gauntlet/scratch/build-library.mjs, gitignored and
+ * NOT shipped); the CCCBDB geometries, the SOURCES table and the descriptions below were applied to THIS file afterwards, so the
+ * generator is not the source of truth and re-running it would overwrite them (it would restore PubChem water 0.969 A / 104.0 deg,
+ * Hill-formula descriptions, etc.). Edit this file directly, or bring the generator up to date first.
  *
- * CCCBDB values below were copied from the NIST CCCBDB experimental-geometry pages (cccbdb.nist.gov/exp2x.asp), accessed 2026-10-10:
+ * Coordinates of the remaining entries come from PubChem 3D conformers (PUG REST, record_type=3d) with explicit hydrogens,
+ * except where noted below. Every molecule is centered on its centroid and rotated onto its principal axes (longest extent along
+ * x, plane normal along z) so planar molecules face the default camera. Kekule bond orders are kept as delivered by PubChem; rings
+ * that satisfy a simple Hueckel test (planar 5/6-membered ring, all sp2, 4n+2 pi electrons, no exocyclic C=O/C=S) carry the
+ * aromatic flag on their bonds.
+ *
+ * Descriptions: quantitative statements are limited to values that are sourced in this header or measurable from the coordinates
+ * below (SPEC A.5). No boiling / melting / sublimation / flame temperature is quoted.
+ *
+ * CCCBDB values below were entered from the NIST CCCBDB experimental-geometry listings (cccbdb.nist.gov, exp2x.asp), recorded
+ * 2026-10-10. No page capture is archived in the repository, so the values are citations, not an auditable copy:
  *  - CH4: r(C-H) 1.087 A (re, 1979Hir), H-C-H 109.471 deg
  *  - H2O: r(O-H) 0.958 A (re, 1979Hoy/Bun; Cartesians give 0.9578 A), H-O-H 104.4776 deg (Cartesian-derived 104.478)
  *  - NH3: r(N-H) 1.012 A, H-N-H 106.67 deg (1966Herzberg; CCCBDB does not state the structure type)
- *  - CO2: r(C=O) 1.162 A (Cartesians 1.1621), 180 deg (1966Herzberg; type not stated)
+ *  - CO2: r(C=O) 1.162 A (the coordinates use the Cartesian value 1.1621 A), 180 deg (1966Herzberg; type not stated)
  *  - C2H4: r(C=C) 1.339 A, r(C-H) 1.086 A, H-C-H 117.6 deg (1966Herzberg; type not stated)
  *  - C2H2: r(C#C) 1.203 A, r(C-H) 1.063 A (1998Kuchitsu, rm structure), 180 deg
  *  - C6H6: r(C-C) 1.397 A, r(C-H) 1.084 A, 120 deg (1966Herzberg; type not stated)
  *
  * Sources that are NOT PubChem conformers (PubChem has no usable 3D record for these):
- *  - metan: exact tetrahedron, C-H 1.087 A (CCCBDB experimental); su/amonyak/karbondioksit also use CCCBDB experimental geometries (O-H 0.9578 A, 104.48 deg; N-H 1.012 A, 106.67 deg; C=O 1.160 A, 180 deg)
+ *  - metan: exact tetrahedron, C-H 1.087 A (CCCBDB experimental); su/amonyak/karbondioksit also use CCCBDB experimental geometries (O-H 0.9578 A, 104.48 deg; N-H 1.012 A, 106.67 deg; C=O 1.1621 A, 180 deg)
  *  - bor-triflorur: D3h, B-F 1.313 A; kukurt-heksaflorur: Oh, S-F 1.56 A; kukurt-dioksit: S=O 1.431 A, O=S=O 119.3 deg
  *    (experimental gas-phase geometries from electron diffraction / microwave spectroscopy)
  *  - tristearin: RCSB Chemical Component Dictionary ideal coordinates (component TGL), a computed extended conformer.
@@ -86,8 +94,8 @@ const RAW: RawEntry[] = [
     category: 'Temel Moleküller',
     name: "Su",
     nameEn: "Water",
-    description: "H₂O — Bükülmüş bir moleküldür (H–O–H açısı gaz fazında yaklaşık 104,5°); hidrojen bağları nedeniyle kaynama noktası 100 °C'dir, kütlesi benzer H₂S ise −60 °C'de kaynar.",
-    descriptionEn: "H₂O — A bent molecule (H–O–H angle about 104.5° in the gas phase); hydrogen bonding gives it a boiling point of 100 °C, whereas the similar-mass H₂S boils at −60 °C.",
+    description: "H₂O — Bükülmüş bir moleküldür (H–O–H açısı gaz fazında yaklaşık 104,5°); O–H bağları polardır ve moleküller birbirleriyle hidrojen bağı kurar.",
+    descriptionEn: "H₂O — A bent molecule (H–O–H angle about 104.5° in the gas phase); the O–H bonds are polar and the molecules hydrogen-bond to one another.",
     atoms: [
       ['O',0,0.391,0], ['H',0.7572,-0.1955,0], ['H',-0.7572,-0.1955,0],
     ],
@@ -114,8 +122,8 @@ const RAW: RawEntry[] = [
     category: 'Temel Moleküller',
     name: "Karbondioksit",
     nameEn: "Carbon dioxide",
-    description: "CO₂ — Doğrusal bir moleküldür (O=C=O açısı 180°). Katı hali olan kuru buz, atmosfer basıncında sıvılaşmadan doğrudan gaza dönüşür (−78,5 °C'de süblimleşir).",
-    descriptionEn: "CO₂ — A linear molecule (O=C=O angle 180°). Its solid form, dry ice, sublimes directly to gas at atmospheric pressure (−78.5 °C).",
+    description: "CO₂ — Doğrusal bir moleküldür (O=C=O açısı 180°). İki C=O bağının dipolleri birbirini götürdüğü için molekül apolardır; katı hali kuru buz olarak bilinir.",
+    descriptionEn: "CO₂ — A linear molecule (O=C=O angle 180°). The two C=O bond dipoles cancel, so the molecule is nonpolar; its solid form is known as dry ice.",
     atoms: [
       ['O',-1.1621,0,0], ['O',1.1621,0,0], ['C',0,0,0],
     ],
@@ -128,8 +136,8 @@ const RAW: RawEntry[] = [
     category: 'Temel Moleküller',
     name: "Hidrojen peroksit",
     nameEn: "Hydrogen peroxide",
-    description: "H₂O₂ — Tek bir O–O bağı içerir; H–O–O–H burulma açısı gaz fazında yaklaşık 111°'dir, yani molekül düzlemsel değildir. Seyreltik çözeltileri ağartıcı ve antiseptik olarak kullanılır.",
-    descriptionEn: "H₂O₂ — Contains a single O–O bond; the H–O–O–H torsion angle is about 111° in the gas phase, so the molecule is not planar. Dilute solutions are used as bleach and antiseptic.",
+    description: "H₂O₂ — Tek bir O–O bağı içerir; H–O–O–H burulma açısı 0° ve 180°'den farklıdır, yani molekül düzlemsel değildir (bu modeldeki PubChem hesaplanmış koordinatlarda ölçülen yaklaşık 94°). Seyreltik çözeltileri ağartıcı ve antiseptik olarak kullanılır.",
+    descriptionEn: "H₂O₂ — Contains a single O–O bond; the H–O–O–H torsion angle is neither 0° nor 180°, so the molecule is not planar (about 94° as measured in the computed PubChem coordinates of this model). Dilute solutions are used as bleach and antiseptic.",
     atoms: [
       ['O',-0.6311,0.3299,-0.3563], ['O',0.6311,0.33,0.3562], ['H',-1.0647,-0.3299,0.2112], ['H',1.0647,-0.33,-0.2112],
     ],
@@ -215,8 +223,8 @@ const RAW: RawEntry[] = [
     category: 'Hidrokarbonlar',
     name: "Etan",
     nameEn: "Ethane",
-    description: "C₂H₆ — İki karbonlu en basit alkandır ve doğal gazın bir bileşenidir. C–C tek bağı etrafındaki dönmede engelli (şaşırtmalı) konformasyon, örtüşmüş konformasyondan yaklaşık 12 kJ/mol daha kararlıdır.",
-    descriptionEn: "C₂H₆ — The simplest two-carbon alkane and a component of natural gas. Around the C–C single bond the staggered conformation is about 12 kJ/mol more stable than the eclipsed one.",
+    description: "C₂H₆ — İki karbonlu en basit alkandır ve doğal gazın bir bileşenidir. C–C tek bağı etrafındaki dönmede şaşırtmalı konformasyon, örtüşmüş konformasyondan daha kararlıdır.",
+    descriptionEn: "C₂H₆ — The simplest two-carbon alkane and a component of natural gas. Around the C–C single bond the staggered conformation is more stable than the eclipsed one.",
     atoms: [
       ['C',-0.756,0,0], ['C',0.756,0,0], ['H',-1.1404,0.8777,0.5281], ['H',-1.1404,0.0186,-1.0241],
       ['H',-1.1405,-0.8962,0.496], ['H',1.1404,-0.0186,1.0241], ['H',1.1405,0.8962,-0.496], ['H',1.1404,-0.8777,-0.5281],
@@ -262,8 +270,8 @@ const RAW: RawEntry[] = [
     category: 'Hidrokarbonlar',
     name: "Asetilen (etin)",
     nameEn: "Acetylene (ethyne)",
-    description: "C₂H₂ — Doğrusal H–C≡C–H yapısındadır ve C≡C üçlü bağı yaklaşık 1,20 Å uzunluğundadır. Oksi-asetilen kaynağında alev sıcaklığı 3000 °C'nin üzerine çıkar.",
-    descriptionEn: "C₂H₂ — Linear H–C≡C–H with a C≡C triple bond about 1.20 Å long. The flame in oxy-acetylene welding exceeds 3000 °C.",
+    description: "C₂H₂ — Doğrusal H–C≡C–H yapısındadır ve C≡C üçlü bağı yaklaşık 1,20 Å uzunluğundadır (deneysel 1,203 Å, NIST CCCBDB). Oksi-asetilen kaynağında yakıt olarak kullanılır.",
+    descriptionEn: "C₂H₂ — Linear H–C≡C–H with a C≡C triple bond about 1.20 Å long. (experimental 1.203 Å, NIST CCCBDB). It is used as the fuel in oxy-acetylene welding.",
     atoms: [
       ['C',-0.6015,0,0], ['C',0.6015,0,0], ['H',-1.6645,0,0], ['H',1.6645,0,0],
     ],
@@ -319,8 +327,8 @@ const RAW: RawEntry[] = [
     category: 'Aromatik Bileşikler',
     name: "Benzen",
     nameEn: "Benzene",
-    description: "C₆H₆ — Düzlemsel altılı halkadır ve tüm C–C bağları yaklaşık 1,39 Å ile eşit uzunluktadır (tek ve çift bağ arasında). Kekulé halka yapısını 1865'te önermiştir; burada Kekulé gösterimi çizilir, halka aromatik olarak işaretlidir.",
-    descriptionEn: "C₆H₆ — A planar six-membered ring whose C–C bonds are all equal at about 1.39 Å (between single and double). Kekulé proposed the ring structure in 1865; the Kekulé drawing is shown and the ring is flagged aromatic.",
+    description: "C₆H₆ — Düzlemsel altılı halkadır ve tüm C–C bağları eşit uzunluktadır (deneysel 1,397 Å, NIST CCCBDB; tek ve çift bağ arasında). Kekulé halka yapısını 1865'te önermiştir; burada Kekulé gösterimi çizilir, halka aromatik olarak işaretlidir.",
+    descriptionEn: "C₆H₆ — A planar six-membered ring whose C–C bonds are all equal in length (experimental 1.397 Å, NIST CCCBDB; between single and double). Kekulé proposed the ring structure in 1865; the Kekulé drawing is shown and the ring is flagged aromatic.",
     atoms: [
       ['C',-0.9965,0.9791,0], ['C',-1.3462,-0.3734,0], ['C',0.3497,1.3525,0], ['C',-0.3497,-1.3525,0],
       ['C',1.3462,0.3733,0], ['C',0.9965,-0.9791,0], ['H',-1.7697,1.7389,0], ['H',-2.3907,-0.6631,0],
@@ -356,8 +364,8 @@ const RAW: RawEntry[] = [
     category: 'Aromatik Bileşikler',
     name: "Toluen",
     nameEn: "Toluene",
-    description: "C₇H₈ — Benzen halkasına bir metil grubu bağlıdır. Kaynama noktası yaklaşık 111 °C olan, boya inceltici ve çözücü olarak kullanılan bir sıvıdır.",
-    descriptionEn: "C₇H₈ — A methyl group attached to a benzene ring. It is a liquid boiling at about 111 °C, used as a paint thinner and solvent.",
+    description: "C₇H₈ — Benzen halkasına bir metil grubu bağlıdır. Boya inceltici ve çözücü olarak kullanılan bir sıvıdır.",
+    descriptionEn: "C₇H₈ — A methyl group attached to a benzene ring. It is a liquid used as a paint thinner and solvent.",
     atoms: [
       ['C',0.7143,0,0.0006], ['C',0.0168,1.2079,0.0001], ['C',0.017,-1.2079,0.0002], ['C',2.2059,0.0001,0.0022],
       ['C',-1.3781,1.208,-0.0009], ['C',-1.3779,-1.208,-0.001], ['C',-2.0754,0,-0.0015], ['H',0.5487,2.1557,0.0023],
@@ -442,8 +450,8 @@ const RAW: RawEntry[] = [
     category: 'Alkol, Eter ve Karbonil',
     name: "Etanol",
     nameEn: "Ethanol",
-    description: "C₂H₆O — Alkollü içeceklerdeki alkoldür. Hidrojen bağı yaptığı için kaynama noktası 78 °C'dir; benzer boyuttaki etan ise −89 °C'de kaynar.",
-    descriptionEn: "C₂H₆O — The alcohol in alcoholic drinks. Because it hydrogen-bonds, it boils at 78 °C, whereas ethane of similar size boils at −89 °C.",
+    description: "C₂H₆O — Alkollü içeceklerdeki alkoldür. Hidroksil grubu sayesinde hidrojen bağı kurar.",
+    descriptionEn: "C₂H₆O — The alcohol in alcoholic drinks. Its hydroxyl group lets it form hydrogen bonds.",
     atoms: [
       ['O',-1.4437,-0.4036,0.468], ['C',-0.4699,0.5141,-0.0066], ['C',0.887,-0.1569,0.0054], ['H',-0.7456,0.8333,-1.016],
       ['H',-0.4736,1.3894,0.6493], ['H',1.6645,0.5308,-0.339], ['H',1.1398,-0.4994,1.0143], ['H',0.8886,-1.0411,-0.6406],
@@ -490,8 +498,8 @@ const RAW: RawEntry[] = [
     category: 'Alkol, Eter ve Karbonil',
     name: "Aseton",
     nameEn: "Acetone",
-    description: "C₃H₆O — En basit ketondur; kaynama noktası yaklaşık 56 °C olan, suyla her oranda karışabilen bir çözücüdür ve oje çıkarıcılarda kullanılır.",
-    descriptionEn: "C₃H₆O — The simplest ketone: a solvent boiling at about 56 °C, miscible with water in all proportions, and used in nail-polish remover.",
+    description: "C₃H₆O — En basit ketondur; suyla her oranda karışabilen bir çözücüdür ve oje çıkarıcılarda kullanılır.",
+    descriptionEn: "C₃H₆O — The simplest ketone: a solvent miscible with water in all proportions, and used in nail-polish remover.",
     atoms: [
       ['O',-0.0001,1.8512,0], ['C',0,0.6213,0.0008], ['C',-1.2812,-0.1681,0], ['C',1.2811,-0.1681,-0.0001],
       ['H',-1.3282,-0.7891,-0.8979], ['H',-1.3263,-0.7939,0.8946], ['H',-2.1351,0.5149,0.0029], ['H',2.1352,0.515,0.0029],
@@ -507,8 +515,8 @@ const RAW: RawEntry[] = [
     category: 'Alkol, Eter ve Karbonil',
     name: "Asetik asit",
     nameEn: "Acetic acid",
-    description: "C₂H₄O₂ — Sirkenin ekşi tadını ve kokusunu veren karboksilik asittir. Saf (susuz) hali 16,6 °C'nin altında donar ve buzul asetik asit olarak adlandırılır.",
-    descriptionEn: "C₂H₄O₂ — The carboxylic acid that gives vinegar its sour taste and smell. Pure (anhydrous) acid freezes below 16.6 °C and is called glacial acetic acid.",
+    description: "C₂H₄O₂ — Sirkenin ekşi tadını ve kokusunu veren karboksilik asittir. Saf (susuz) hali buzul asetik asit olarak adlandırılır.",
+    descriptionEn: "C₂H₄O₂ — The carboxylic acid that gives vinegar its sour taste and smell. The pure (anhydrous) acid is called glacial acetic acid.",
     atoms: [
       ['O',1.3149,-0.7091,0.0003], ['O',0.8326,1.5188,-0.0001], ['C',-0.953,-0.1065,-0.0002], ['C',0.4709,0.3515,0.0008],
       ['H',-1.1544,-0.6899,-0.902], ['H',-1.1523,-0.7005,0.8953], ['H',-1.6139,0.7651,0.0062], ['H',2.2552,-0.4293,-0.0002],

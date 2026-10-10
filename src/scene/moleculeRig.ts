@@ -48,6 +48,8 @@ export interface UpdateParts {
 const NEUTRAL = new THREE.Color('#9aa3ad')
 const POSITIVE = new THREE.Color('#4c7dff')
 const NEGATIVE = new THREE.Color('#ff5a4d')
+/** Charge could not be computed (BF3, SiH4, incomplete structures...): a dim slate, visibly not the neutral grey. */
+const UNKNOWN_CHARGE = new THREE.Color('#4a4f57')
 const ACCENT_TINT = tintOf(ACCENT)
 const LABEL_TINT = tintOf(LABEL_COLOR)
 const DASH_TINT = tintOf(DASH_COLOR)
@@ -55,8 +57,9 @@ const DANGER_TINT = tintOf(DANGER)
 const WARN_TINT = tintOf(WARN)
 const HOVER_RING_DIM = 0.55 // ring colour is scaled down for the 0.45-opacity look of hover (the ring shader has no alpha input)
 
-/** Diverging colour for a (approximate) partial charge: red negative, grey neutral, blue positive. */
-export function chargeColor(q: number, out: THREE.Color): THREE.Color {
+/** Diverging colour for a (approximate) partial charge: red negative, grey neutral, blue positive, dark slate = not computable. */
+export function chargeColor(q: number | null, out: THREE.Color): THREE.Color {
+  if (q === null || !Number.isFinite(q)) return out.copy(UNKNOWN_CHARGE)
   const t = Math.max(-1, Math.min(1, q / 0.45))
   return t >= 0 ? out.copy(NEUTRAL).lerp(POSITIVE, t) : out.copy(NEUTRAL).lerp(NEGATIVE, -t)
 }
@@ -255,6 +258,8 @@ export class MoleculeRig {
     const HA = this.hoverAtoms, HB = this.hoverBonds
     const R = this.rings
     for (const pool of [SOA, SRA, SOB, SRB, HA, HB]) pool.begin()
+    // size the shell pools up front: growth mid-fill would otherwise have to carry instances over (see InstancePool.ensure)
+    SOA.ensure(v.selection.size + 1); SRA.ensure(v.selection.size + 1); HA.ensure(2)
     R.ensure(v.selection.size + 2)
     R.begin()
 
@@ -337,7 +342,18 @@ export class MoleculeRig {
       for (const [a, b] of viz.lines) for (const [d0, d1] of dashSegments(a, b)) lineSegs.push({ a: d0, b: d1, col: DASH_TINT })
       for (let i = 1; i < viz.arc.length; i++) arcSegs.push({ a: viz.arc[i - 1], b: viz.arc[i], col: ACCENT_TINT })
       if (viz.label) L.add(viz.label.text, viz.label.pos[0], viz.label.pos[1], viz.label.pos[2], { px: 14, tint: LABEL_TINT })
-      for (const s of viz.segLabels) L.add(s.text, s.pos[0], s.pos[1], s.pos[2], { px: 12, tint: LABEL_TINT, offsetPx: [0, -13] })
+      for (const [a, b] of viz.radials) for (const [d0, d1] of dashSegments(a, b, 0.09, 0.07)) lineSegs.push({ a: d0, b: d1, col: ACCENT_TINT })
+      // pair-distance labels: pushed outwards from the chain (so two midpoints that project close together separate in
+      // space) and alternately above / below their anchor (so they never print over each other on screen)
+      const ctr: Vec3 = [0, 0, 0]
+      for (const p of pts) { ctr[0] += p[0] / pts.length; ctr[1] += p[1] / pts.length; ctr[2] += p[2] / pts.length }
+      viz.segLabels.forEach((s, k) => {
+        let ox = s.pos[0] - ctr[0], oy = s.pos[1] - ctr[1], oz = s.pos[2] - ctr[2]
+        const ol = Math.hypot(ox, oy, oz)
+        if (ol < 1e-4) { ox = 0; oy = 1; oz = 0 } else { ox /= ol; oy /= ol; oz /= ol }
+        const push = 0.2
+        L.add(s.text, s.pos[0] + ox * push, s.pos[1] + oy * push, s.pos[2] + oz * push, { px: 12, tint: LABEL_TINT, offsetPx: [0, k % 2 === 0 ? -13 : 13] })
+      })
     }
 
     if (v.pendingFrom !== null && model.rubberTo) {

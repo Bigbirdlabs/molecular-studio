@@ -216,15 +216,23 @@ export function parseMolfile(text: string): Molecule {
     let x = num(line.slice(0, 10)), y = num(line.slice(10, 20)), z = num(line.slice(20, 30))
     let symRaw = line.slice(31, 34)
     let chargeCode = intField(line, 36, 39)
+    let massDiff = intField(line, 34, 36)
     if (![x, y, z].every(Number.isFinite) || !/[A-Za-z]/.test(symRaw)) {
       // free-format fallback
       const t = line.trim().split(/\s+/)
       x = Number(t[0]); y = Number(t[1]); z = Number(t[2]); symRaw = t[3] ?? ''
       chargeCode = Number.isFinite(Number(t[5])) ? Math.trunc(Number(t[5])) : 0
+      massDiff = Number.isFinite(Number(t[4])) ? Math.trunc(Number(t[4])) : 0
       if (![x, y, z].every(Number.isFinite)) throw new ChemIOError('invalidMolfile')
     }
     const charge = Number.isFinite(chargeCode) ? CHARGE_CODES[chargeCode] ?? 0 : 0
-    atoms.push({ id: m.nextId++, symbol: normaliseSymbol(symRaw), pos: [x, y, z], charge })
+    const symbol = normaliseSymbol(symRaw)
+    // The atom-block mass-difference field is an isotope label (13C = +1, D written as H +1, ...). Isotopes are not modelled, so
+    // the file is rejected instead of silently loading the natural-abundance mass (SPEC A1.1).
+    if (Number.isFinite(massDiff) && massDiff !== 0) {
+      throw new ChemIOError('unsupportedIsotope', { symbol: `${symbol}${massDiff > 0 ? '+' : ''}${massDiff}` })
+    }
+    atoms.push({ id: m.nextId++, symbol, pos: [x, y, z], charge })
   }
   m.atoms = atoms
 
@@ -258,6 +266,17 @@ export function parseMolfile(text: string): Molecule {
     const l = lines[i]
     if (l.startsWith('M  END')) break
     if (l.startsWith('M  CHG')) chargeLines.push(l)
+    else if (l.startsWith('M  ISO')) {
+      // M  ISO nn aaa vvv ...: absolute mass numbers (vvv = 0 clears a label). Any real label is an unsupported isotope.
+      const n = Math.trunc(num(l.slice(6, 9)))
+      for (let k = 0; k < n; k++) {
+        const at = Math.trunc(num(l.slice(9 + k * 8, 13 + k * 8)))
+        const mass = Math.trunc(num(l.slice(13 + k * 8, 17 + k * 8)))
+        if (at >= 1 && at <= nAtoms && Number.isFinite(mass) && mass !== 0) {
+          throw new ChemIOError('unsupportedIsotope', { symbol: `${mass}${atoms[at - 1].symbol}` })
+        }
+      }
+    }
   }
   if (chargeLines.length) {
     for (const a of atoms) a.charge = 0

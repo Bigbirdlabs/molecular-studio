@@ -21,6 +21,12 @@ export interface SceneContext {
   shellDirty: { current: boolean }
   /** Adopt the store's molecule / style / toggles into the model. Idempotent; call before reading the model. */
   sync(): void
+  /** First error thrown from a frame callback (null while healthy). Frame callbacks stop once it is set. */
+  failure: { current: unknown }
+  /** Set by the Viewport: surfaces a frame-loop error to the React error boundary (React cannot catch useFrame errors). */
+  onFailure?: (error: unknown) => void
+  /** Record a frame-loop error exactly once and hand it to the boundary instead of throwing on every frame. */
+  fail(error: unknown): void
 }
 
 export function createSceneContext(): SceneContext {
@@ -28,7 +34,7 @@ export function createSceneContext(): SceneContext {
   let lastMol: Molecule | null = null
   let lastNonce = -1
   let chargeKey: number | null = null
-  let charges: Map<number, number> | null = null
+  let charges: Map<number, number | null> | null = null
   let chargesOn = false
 
   const sync = () => {
@@ -61,7 +67,16 @@ export function createSceneContext(): SceneContext {
     }
   }
 
-  return { model, controls: { current: null }, dirty: { current: true }, shellDirty: { current: true }, sync }
+  const ctx: SceneContext = {
+    model, controls: { current: null }, dirty: { current: true }, shellDirty: { current: true }, sync,
+    failure: { current: null },
+    fail(error: unknown) {
+      if (ctx.failure.current !== null) return
+      ctx.failure.current = error ?? new Error('Scene failure')
+      ctx.onFailure?.(ctx.failure.current)
+    },
+  }
+  return ctx
 }
 
 export const SceneCtx = createContext<SceneContext | null>(null)

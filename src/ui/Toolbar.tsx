@@ -1,4 +1,4 @@
-import { useEffect, useRef, useState, type ReactNode } from 'react'
+import { useRef, useState, type ReactNode } from 'react'
 import { Eraser, Hand, Loader2, MousePointer2, Rotate3d, Ruler, Wrench, FilePlus, ZoomIn, Ellipsis } from 'lucide-react'
 import { useStudio, type Tool } from '../store'
 import type { BondOrder } from '../chem/molecule'
@@ -121,42 +121,58 @@ export function Toolbar({ layout }: { layout: Layout }) {
   )
 }
 
-/** Phone: compact bottom dock. Tools scroll horizontally; secondary actions live in a popover menu. */
+/** Phone dock (SPEC D.8): Select, Atom, Bond, Delete, Measure and More. Rotate / Pan / Zoom and the secondary actions live under More. */
+const DOCK_TOOLS: Tool[] = ['select', 'atom', 'bond', 'erase', 'measure']
+const MORE_TOOLS: Tool[] = ['rotate', 'pan', 'zoom']
+
+/** Phone: compact bottom dock, six 44 px buttons that all fit at 360 px; no horizontal scrolling. */
 export function Dock() {
   const t = useT()
   const actions = useActions()
   const tool = useStudio((s) => s.tool)
+  const setTool = useStudio((s) => s.setTool)
   const roving = useRoving<HTMLDivElement>({ orientation: 'horizontal' })
-  const scroller = roving.ref
   const moreRef = useRef<HTMLButtonElement>(null)
   const [moreOpen, setMoreOpen] = useState(false)
 
-  useEffect(() => {
-    scroller.current?.querySelector<HTMLElement>('[aria-pressed="true"]')?.scrollIntoView({ inline: 'nearest', block: 'nearest' })
-  }, [tool, scroller])
-
-  const items: MenuEntry[] = actions.map((a) => ({
-    type: 'item', label: a.label, icon: a.icon, shortcut: a.shortcut, onSelect: a.onClick, disabled: a.disabled, reason: a.reason,
-  }))
+  const items: MenuEntry[] = [
+    { type: 'label', label: t('tool.nav') },
+    ...MORE_TOOLS.map((id): MenuEntry => ({
+      type: 'item', role: 'radio', checked: tool === id, label: toolLabel(t, id), onSelect: () => setTool(id),
+    })),
+    { type: 'sep' },
+    { type: 'label', label: t('tool.actions') },
+    ...actions.map((a): MenuEntry => ({
+      type: 'item', label: a.label, icon: a.icon, shortcut: a.shortcut, onSelect: a.onClick, disabled: a.disabled, reason: a.reason,
+    })),
+  ]
+  const moreActive = moreOpen || MORE_TOOLS.includes(tool)
 
   return (
-    <div className="pb-safe flex shrink-0 items-center border-t border-line bg-surface-1">
+    <div className="pb-safe shrink-0 border-t border-line bg-surface-1">
       <div
-        ref={scroller}
+        ref={roving.ref}
         onKeyDown={roving.onKeyDown}
         onFocus={roving.onFocus}
         role="toolbar"
         aria-orientation="horizontal"
         aria-label={t('tool.group')}
-        className="no-scrollbar flex min-w-0 flex-1 items-center gap-0.5 overflow-x-auto px-2 py-1.5"
+        className="flex items-center justify-around px-1 py-1"
       >
-        {TOOL_ORDER.map((id) => <ToolButton key={id} tool={id} tip={false} bar="bottom" />)}
+        {DOCK_TOOLS.map((id) => <ToolButton key={id} tool={id} tip={false} bar="bottom" />)}
+        <IconButton
+          buttonRef={moreRef}
+          label={t('top.more')}
+          tip={false}
+          icon={<Ellipsis size={ICON_SIZE} aria-hidden />}
+          active={moreActive}
+          bar="bottom"
+          aria-haspopup="menu"
+          aria-expanded={moreOpen}
+          onClick={() => setMoreOpen((o) => !o)}
+        />
       </div>
-      <div aria-hidden="true" className="h-6 w-px bg-line" />
-      <div className="px-1.5">
-        <IconButton buttonRef={moreRef} label={t('tool.actions')} tip={false} icon={<Ellipsis size={ICON_SIZE} aria-hidden />} active={moreOpen} aria-haspopup="menu" aria-expanded={moreOpen} onClick={() => setMoreOpen((o) => !o)} />
-      </div>
-      <Menu anchor={moreRef} open={moreOpen} onClose={() => setMoreOpen(false)} items={items} placement="top-end" ariaLabel={t('tool.actions')} minWidth={236} />
+      <Menu anchor={moreRef} open={moreOpen} onClose={() => setMoreOpen(false)} items={items} placement="top-end" ariaLabel={t('top.more')} minWidth={236} />
     </div>
   )
 }
@@ -199,14 +215,11 @@ export function ToolOptions({ layout }: { layout: Layout }) {
   if (tool !== 'atom' && tool !== 'bond') return null
 
   if (layout === 'mobile') {
+    // The 14 element chips wrap onto two rows (7 x 44 px fits a 360 px phone): nothing hides behind an invisible scroll.
     return (
-      <div className="flex shrink-0 items-center gap-2 border-t border-line bg-surface-1 px-2 py-1.5">
+      <div className="flex shrink-0 flex-col items-center gap-1.5 border-t border-line bg-surface-1 px-2 py-1.5">
         <BondOrderPicker />
-        {tool === 'atom' && (
-          <div className="no-scrollbar min-w-0 flex-1 overflow-x-auto">
-            <ElementPicker value={element} onPick={setElement} ariaLabel={t('opt.element')} columns={14} className="w-max" />
-          </div>
-        )}
+        {tool === 'atom' && <ElementPicker value={element} onPick={setElement} ariaLabel={t('opt.element')} columns={7} />}
       </div>
     )
   }

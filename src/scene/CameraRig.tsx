@@ -3,11 +3,15 @@ import { useFrame, useThree } from '@react-three/fiber'
 import * as THREE from 'three'
 import { OrbitControls } from 'three/examples/jsm/controls/OrbitControls.js'
 import type { Molecule } from '../chem/molecule'
-import { useStudio, type CameraMode, type Tool } from '../store'
+import { useStudio, type CameraMode, type RenderStyle, type Tool } from '../store'
 import { useUI } from '../ui/uiStore'
 import { boundingRadius, clamp, computeFit, easeInOutCubic, wheelPixels } from './cameraMath'
 import { useSceneContext } from './sceneContext'
-import { CAMERA_TWEEN_MS, DEFAULT_VIEW_DIR, FIT_FILL, FOV, MAX_DISTANCE_RADII, MIN_CAMERA_DISTANCE } from './theme'
+import { STYLE_TARGETS, atomRadius } from './styleParams'
+import {
+  AUTOFRAME_EDGE, CAMERA_TWEEN_MS, DEFAULT_VIEW_DIR, FIT_FILL, FIT_FILL_DEFAULT, FOV, MAX_DISTANCE_RADII, MIN_CAMERA_DISTANCE,
+  REFIT_WIDTH_FRACTION,
+} from './theme'
 
 interface Tween {
   t0: number
@@ -39,6 +43,13 @@ interface RigState {
   coverTarget: number
   coverApplied: number
   coverSize: string
+  /** Canvas size (CSS px) at the last framing: a later resize of more than 20 % of the width (or a landscape / portrait flip) re-fits. */
+  fitW: number
+  fitH: number
+  resizeTimer: number
+  /** Molecule the auto-frame check last looked at (edits that push atoms out of view re-frame). */
+  checkedMol: Molecule | null
+  checkedNonce: number
   publish: () => void
   setDistance: (d: number) => void
 }
@@ -67,6 +78,7 @@ export function CameraRig() {
     controls: null, tween: null, chase: null, initialized: false, pristineUntil: 0, pendingFit: 'none', zoomRequest: null,
     mode: 'orbit', lastDist: -1, lastMode: 'orbit', limitMol: null, limitAspect: 0, limitHide: true,
     cover: 0, coverTarget: 0, coverApplied: 0, coverSize: '',
+    fitW: 0, fitH: 0, resizeTimer: 0, checkedMol: null, checkedNonce: -1,
     publish: () => {}, setDistance: () => {},
   })
   const scratch = useRef({ pts: [] as number[], q: new THREE.Quaternion(), qi: new THREE.Quaternion() })
@@ -181,14 +193,17 @@ export function CameraRig() {
     const sheetCover = (): number => {
       if (!useStudio.getState().inspectorOpen || typeof window.matchMedia !== 'function' || !window.matchMedia('(max-width: 767.98px)').matches) return 0
       const vh = window.visualViewport?.height ?? window.innerHeight
-      const snap = useUI.getState().infoSnap
-      const sheetH = snap === 'peek' ? 132 : vh * (snap === 'half' ? 0.5 : 0.9)
+      const { infoSnap: snap, chromeBottom } = useUI.getState()
+      // mirrors BottomSheet: a non-modal sheet rests on top of the bottom chrome and its detents are fractions of what is left
+      const inset = Math.min(chromeBottom, Math.round(vh * 0.4))
+      const base = vh - inset
+      const sheetH = snap === 'peek' ? 132 : Math.round(base * (snap === 'half' ? 0.5 : 0.9))
       const rect = canvas.getBoundingClientRect()
-      return clamp(rect.bottom - (vh - sheetH), 0, rect.height * 0.62)
+      return clamp(rect.bottom - (vh - inset - sheetH), 0, rect.height * 0.62)
     }
     s.coverTarget = sheetCover()
     const unsubUI = useUI.subscribe((next, prev) => {
-      if (next.infoSnap === prev.infoSnap) return
+      if (next.infoSnap === prev.infoSnap && next.chromeBottom === prev.chromeBottom) return
       s.coverTarget = sheetCover()
       invalidate()
     })
@@ -212,6 +227,8 @@ export function CameraRig() {
 
     invalidate()
     return () => {
+      window.clearTimeout(s.resizeTimer)
+      s.resizeTimer = 0
       unsub()
       unsubUI()
       window.removeEventListener('resize', onResizeWin)
@@ -279,8 +296,12 @@ export function CameraRig() {
     const cur = camera.position.clone().sub(c.target)
     const dir = kind === 'reset' || cur.lengthSq() < 1e-9 ? DEFAULT_DIR.clone() : cur.clone().normalize()
     const pts = scratch.current.pts
-    ctx.model.collectFit(store.style, pts)
-    const fit = computeFit(pts, dirTuple(dir), FOV, camera.aspect, FIT_FILL)
+    // Default framing uses the space-filling radii (the largest style) so that a style switch, which never moves the camera,
+    // cannot clip the molecule; ball-and-stick then sits comfortably inside the frame with room for edits.
+    ctx.model.collectFit('spacefill', pts)
+    const fit = computeFit(pts, dirTuple(dir), FOV, camera.aspect, FIT_FILL_DEFAULT)
+    s.fitW = gl.domElement.clientWidth || width
+    s.fitH = gl.domElement.clientHeight || height
     const toTarget = new THREE.Vector3(fit.center[0], fit.center[1], fit.center[2])
     const toDist = clamp(fit.distance, c.minDistance, c.maxDistance)
     s.chase = null
@@ -297,30 +318,91 @@ export function CameraRig() {
     }
   }
 
-  // viewport resize: only re-frame while the scene is still settling right after the first framing
+  /** Has the canvas changed enough since the last framing to need a new one (> 20 % of the width, or landscape <-> portrait)? */
+  const needsRefit = (): boolean => {
+    const s = st.current
+    const w = gl.domElement.clientWidth, h = gl.domElement.clientHeight
+    if (s.fitW < 2 || w < 2 || h < 2) return false
+    return Math.abs(w - s.fitW) / s.fitW > REFIT_WIDTH_FRACTION || (w >= h) !== (s.fitW >= s.fitH)
+  }
+
+  // viewport resize: re-frame while the scene is still settling right after the first framing, and afterwards whenever the
+  // canvas width changes by more than 20 % or the orientation flips (debounced, so a panel animation re-fits once, at its end)
   useEffect(() => {
     const s = st.current
     if (!s.controls || !s.initialized || width < 2 || height < 2) return
     camera.aspect = width / height // R3F does this too; doing it here makes the ordering irrelevant
     camera.updateProjectionMatrix()
     refreshLimits()
-    if (performance.now() < s.pristineUntil) frame('fit', true)
+    if (performance.now() < s.pristineUntil) { frame('fit', true); return }
+    if (!needsRefit()) return
+    window.clearTimeout(s.resizeTimer)
+    s.resizeTimer = window.setTimeout(() => {
+      s.resizeTimer = 0
+      if (!s.controls || !needsRefit()) return
+      s.pristineUntil = 0
+      frame('fit', false)
+      invalidate()
+    }, 140)
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [width, height])
 
-  useFrame((state, delta) => {
-    const s = st.current
-    const c = s.controls
-    if (!c || width < 2 || height < 2) return
+  /**
+   * Projected silhouette of the visible atoms (final positions, the given style's radii; optionally only some atom ids) in NDC at zoom 1 and no view offset:
+   * [minX, maxX, minY, maxY] relative to the canvas centre, or null when nothing is visible / behind the camera.
+   */
+  const silhouette = (style: RenderStyle, only?: ReadonlySet<number>): [number, number, number, number] | null => {
+    camera.updateMatrixWorld()
+    const inv = camera.matrixWorldInverse
+    const e = inv.elements
+    const tanV = Math.tan((camera.fov * Math.PI) / 360)
+    const tanH = tanV * camera.aspect
+    let mnx = Infinity, mxx = -Infinity, mny = Infinity, mxy = -Infinity
+    const radii = STYLE_TARGETS[style]
+    for (const atom of ctx.model.atoms) {
+      if (!ctx.model.isVisible(atom) || (only && !only.has(atom.id))) continue
+      const x = atom.t[0], y = atom.t[1], z = atom.t[2], r = Math.max(atomRadius(radii, atom.symbol), 0.2)
+      const vx = e[0] * x + e[4] * y + e[8] * z + e[12]
+      const vy = e[1] * x + e[5] * y + e[9] * z + e[13]
+      const depth = -(e[2] * x + e[6] * y + e[10] * z + e[14])
+      if (depth <= r + 1e-3) return null // the camera is inside / past this atom: let the distance limits sort it out
+      mnx = Math.min(mnx, vx / (depth * tanH) - r / (depth * tanH)); mxx = Math.max(mxx, vx / (depth * tanH) + r / (depth * tanH))
+      mny = Math.min(mny, vy / (depth * tanV) - r / (depth * tanV)); mxy = Math.max(mxy, vy / (depth * tanV) + r / (depth * tanV))
+    }
+    return mnx === Infinity ? null : [mnx, mxx, mny, mxy]
+  }
+
+  const step = (state: { invalidate: () => void }, delta: number, s: RigState, c: OrbitControls) => {
     ctx.sync()
     const store = useStudio.getState()
     refreshLimits()
+
+    // An edit that adds atoms outside the visible (uncovered) area re-frames with an animated fit. Loads and clean-up have their
+    // own fit, an atom drag never re-frames, and atoms that were already there are ignored (the user may have zoomed in on purpose).
+    if (s.initialized && (store.mol !== s.checkedMol || store.loadNonce !== s.checkedNonce)) {
+      const prev = s.checkedMol
+      const loaded = store.loadNonce !== s.checkedNonce
+      s.checkedMol = store.mol
+      s.checkedNonce = store.loadNonce
+      if (prev && !loaded && s.pendingFit === 'none' && !store.relaxing && !ctx.model.snap && store.mol.atoms.length > prev.atoms.length) {
+        const known = new Set(prev.atoms.map((a) => a.id))
+        const fresh = new Set(store.mol.atoms.filter((a) => !known.has(a.id)).map((a) => a.id))
+        const sil = fresh.size > 0 ? silhouette(store.style, fresh) : null
+        if (sil) {
+          const z = camera.zoom, shift = s.coverApplied / height
+          const lo = -1 + (2 * s.coverApplied) / height + (1 - AUTOFRAME_EDGE)
+          if (sil[1] * z > AUTOFRAME_EDGE || sil[0] * z < -AUTOFRAME_EDGE || sil[3] * z + shift > AUTOFRAME_EDGE || sil[2] * z + shift < lo) s.pendingFit = 'fit'
+        }
+      }
+    }
 
     if (!s.initialized) {
       s.initialized = true
       frame('reset', true)
       s.pristineUntil = performance.now() + PRISTINE_MS
       s.pendingFit = 'none'
+      s.checkedMol = store.mol
+      s.checkedNonce = store.loadNonce
     } else if (s.pendingFit !== 'none') {
       const kind = s.pendingFit
       s.pendingFit = 'none'
@@ -340,7 +422,8 @@ export function CameraRig() {
       else s.chase = next
     }
 
-    // keep the molecule visible above the mobile info sheet: shift (and shrink) the view into the uncovered part of the canvas
+    // keep the molecule visible above the mobile info sheet: shift the view into the uncovered part of the canvas. The scale is
+    // left alone (no zoom jump, SPEC D.8) unless the molecule is taller than the uncovered part, then it shrinks just enough.
     if (Math.abs(s.cover - s.coverTarget) > 0.5) {
       s.cover = store.reducedMotion ? s.coverTarget : s.cover + (s.coverTarget - s.cover) * (1 - Math.exp(-Math.min(delta, 0.05) / 0.09))
       state.invalidate()
@@ -351,7 +434,10 @@ export function CameraRig() {
       s.coverSize = sizeKey
       if (s.cover < 0.5) { camera.clearViewOffset(); camera.zoom = 1 }
       else {
-        camera.zoom = Math.max(0.38, (height - s.cover) / height)
+        const sil = silhouette(store.style)
+        const extent = sil ? Math.max(Math.abs(sil[2]), Math.abs(sil[3])) : 0
+        const free = (height - s.cover) / height // half-height of the uncovered part in NDC units
+        camera.zoom = extent > 1e-6 ? clamp((free * 0.94) / extent, 0.38, 1) : 1
         camera.setViewOffset(width, height, 0, s.cover / 2, width, height)
       }
       camera.updateProjectionMatrix()
@@ -383,6 +469,17 @@ export function CameraRig() {
     if (c.autoRotate) state.invalidate()
     c.update(delta)
     s.publish()
+  }
+
+  useFrame((state, delta) => {
+    const s = st.current
+    const c = s.controls
+    if (!c || width < 2 || height < 2 || ctx.failure.current !== null) return
+    try {
+      step(state, delta, s, c)
+    } catch (e) {
+      ctx.fail(e)
+    }
   }, -1)
 
   return null

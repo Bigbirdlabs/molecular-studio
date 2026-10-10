@@ -18,8 +18,18 @@ export const BG_EDGE = '#08090b'
 export const FOV = 26
 /** 3/4 view: shows tetrahedral / planar geometry at first glance instead of an axis-aligned projection. */
 export const DEFAULT_VIEW_DIR: Vec3 = [0.36, 0.3, 1]
-/** Fraction of the limiting viewport dimension the molecule should occupy after a fit (leaves a 10-20 % margin). */
+/** Fraction of the limiting viewport dimension used for the distance limits (largest style = space filling). */
 export const FIT_FILL = 0.7
+/**
+ * Fraction of the limiting viewport dimension the molecule occupies after a fit / reset / load. The default framing uses the
+ * space-filling radii (the largest style), so a style switch - which never moves the camera - cannot clip the molecule, and
+ * an edit that grows it has room before the auto-frame kicks in.
+ */
+export const FIT_FILL_DEFAULT = 0.86
+/** Edits that push the molecule's silhouette beyond this fraction of the free viewport trigger an animated re-frame. */
+export const AUTOFRAME_EDGE = 0.94
+/** A viewport resize of more than this fraction of the width (or an orientation change) re-fits the camera (SPEC B.5). */
+export const REFIT_WIDTH_FRACTION = 0.2
 /** Absolute closest camera distance from the orbit target (Å), SPEC B.1 / E13. */
 export const MIN_CAMERA_DISTANCE = 1.5
 /** Farthest camera distance as a multiple of the fit radius (bounding-sphere radius incl. atom radii). */

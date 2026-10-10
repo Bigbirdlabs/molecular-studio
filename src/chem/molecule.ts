@@ -98,10 +98,17 @@ export function targetValence(m: Molecule, a: Atom): number {
 }
 
 export type ValenceState = 'ok' | 'under' | 'over'
+/** Elements whose higher valences only make sense next to O or F (SPEC A1.3): S, P and the halogens. */
+const NEEDS_OF_ABOVE_LOWEST = new Set(['S', 'P', 'F', 'Cl', 'Br', 'I'])
+
 export function valenceState(m: Molecule, a: Atom): ValenceState {
   const used = valenceUsed(m, a.id)
   const list = allowedValences(a)
-  if (list.includes(used)) return 'ok'
+  if (list.includes(used)) {
+    // SH4, PH5, (CH3)3SH: allowed numerically, but an S / P / halogen above its lowest valence needs O or F neighbours
+    if (NEEDS_OF_ABOVE_LOWEST.has(a.symbol) && used > list[0] && !neighbours(m, a.id).some((n) => n.atom.symbol === 'O' || n.atom.symbol === 'F')) return 'under'
+    return 'ok'
+  }
   if (used > Math.max(0, ...list)) return 'over'
   return 'under'
 }
@@ -256,14 +263,21 @@ export function bondLength(m: Molecule, b: Bond): number {
 type LengthSource = 'A' | 'C' | 'T'
 const LENGTH_SOURCE_TEXT: Record<LengthSource, string> = {
   A: 'Allen 1987 (rounded)', // Allen et al., J. Chem. Soc. Perkin Trans. 2 1987, S1
-  C: 'CCCBDB gas-phase', // NIST Computational Chemistry Comparison and Benchmark Database, e.g. C≡N 1.16 ~ HCN 1.153, C≡C 1.20 ~ C2H2 1.203
-  T: 'typical reference value (row source not verified)', // textbook-typical value rounded to 0.01 Å; re-check against CCCBDB when touched
+  C: 'CCCBDB gas-phase', // NIST Computational Chemistry Comparison and Benchmark Database, experimental geometry page
+  T: 'typical reference value (no single table source, about ±0.05 Å)', // textbook-typical value rounded to 0.01 Å; CCCBDB has no usable entry for this bond type
 }
 
 /**
  * [a, b, order (4 = aromatic), length in Å, source]. Typical reference lengths rounded to 0.01 Å. Each row carries its
- * source family (A = Allen 1987 rounded, C = CCCBDB gas-phase, T = typical value, row source not verified).
+ * source family (A = Allen 1987 rounded, C = CCCBDB experimental gas-phase, T = typical value without a single table source).
  * Key values asserted by tests: C–C 1.54, C=C 1.34, C≡C 1.20, C⋯C aromatic 1.39, C–H 1.09, C–O 1.43, C=O 1.21, O–H 0.96, N–H 1.01.
+ *
+ * Rows re-verified against CCCBDB experimental geometries (page cccbdb.nist.gov/exp2x.asp, retrieved 2026-10-10):
+ *   S–F 1.56 SF6 rSF 1.561 · O=S 1.43 SO2 rSO 1.432 · O–S 1.57 H2SO4 S–OH 1.574 · O–Cl 1.70 Cl2O rClO 1.696
+ *   P–F 1.56 PF3 rFP 1.561 · P–Cl 2.04 PCl3 rPCl 2.043 · Si–Cl 2.02 SiCl4 rSiCl 2.019 · Si–F 1.55 SiF4 rSiF 1.554
+ *   S–Cl 2.01 SCl2 rSCl 2.013 · B–Cl 1.74 BCl3 rBCl 1.742 · N–F 1.36 NF3 rNF 1.365 · Mg–Cl 2.18 MgCl2 rMgCl 2.180
+ *   C–Si 1.87 CH3SiH3 rSiC 1.869 · C–B 1.58 B(CH3)3 rBC 1.578 · B–H 1.20 B2H6 terminal rBH 1.200
+ * Rows still tagged T had no usable CCCBDB entry (page empty or defaulted to another molecule).
  */
 const LENGTHS: [string, string, number, number, LengthSource][] = [
   ['C', 'C', 1, 1.54, 'A'], ['C', 'C', 2, 1.34, 'A'], ['C', 'C', 3, 1.2, 'C'],
@@ -273,24 +287,24 @@ const LENGTHS: [string, string, number, number, LengthSource][] = [
   ['C', 'O', 4, 1.36, 'A'], ['C', 'S', 1, 1.82, 'A'], ['C', 'S', 2, 1.61, 'A'],
   ['C', 'S', 4, 1.72, 'A'], ['C', 'F', 1, 1.35, 'A'], ['C', 'Cl', 1, 1.77, 'A'],
   ['C', 'Br', 1, 1.94, 'A'], ['C', 'I', 1, 2.14, 'A'], ['C', 'P', 1, 1.84, 'T'],
-  ['C', 'P', 2, 1.67, 'T'], ['C', 'Si', 1, 1.87, 'T'], ['C', 'B', 1, 1.56, 'T'],
+  ['C', 'P', 2, 1.67, 'T'], ['C', 'Si', 1, 1.87, 'C'], ['C', 'B', 1, 1.58, 'C'],
   ['C', 'Mg', 1, 2.1, 'T'], ['N', 'H', 1, 1.01, 'A'], ['N', 'N', 1, 1.45, 'A'],
   ['N', 'N', 2, 1.25, 'A'], ['N', 'N', 3, 1.1, 'C'], ['N', 'N', 4, 1.35, 'A'],
   ['N', 'O', 1, 1.4, 'A'], ['N', 'O', 2, 1.21, 'A'], ['N', 'O', 4, 1.37, 'A'],
-  ['N', 'F', 1, 1.36, 'T'], ['N', 'Cl', 1, 1.75, 'T'], ['N', 'S', 1, 1.65, 'T'],
+  ['N', 'F', 1, 1.36, 'C'], ['N', 'Cl', 1, 1.75, 'T'], ['N', 'S', 1, 1.65, 'T'],
   ['N', 'P', 1, 1.68, 'T'], ['N', 'B', 1, 1.4, 'T'], ['O', 'H', 1, 0.96, 'A'],
-  ['O', 'O', 1, 1.48, 'A'], ['O', 'O', 2, 1.21, 'C'], ['O', 'S', 1, 1.58, 'T'],
-  ['O', 'S', 2, 1.43, 'T'], ['O', 'P', 1, 1.61, 'T'], ['O', 'P', 2, 1.48, 'T'],
+  ['O', 'O', 1, 1.48, 'A'], ['O', 'O', 2, 1.21, 'C'], ['O', 'S', 1, 1.57, 'C'],
+  ['O', 'S', 2, 1.43, 'C'], ['O', 'P', 1, 1.61, 'T'], ['O', 'P', 2, 1.48, 'T'],
   ['O', 'Si', 1, 1.64, 'T'], ['O', 'B', 1, 1.37, 'T'], ['O', 'B', 2, 1.36, 'T'],
-  ['O', 'Cl', 1, 1.7, 'T'], ['O', 'Na', 1, 2.1, 'T'], ['O', 'Mg', 1, 2.0, 'T'],
-  ['S', 'H', 1, 1.34, 'C'], ['S', 'S', 1, 2.05, 'A'], ['S', 'F', 1, 1.58, 'T'],
-  ['S', 'Cl', 1, 2.07, 'T'], ['P', 'H', 1, 1.42, 'C'], ['P', 'Cl', 1, 2.04, 'T'],
-  ['P', 'F', 1, 1.56, 'T'], ['Si', 'H', 1, 1.48, 'C'], ['Si', 'Cl', 1, 2.05, 'T'],
-  ['Si', 'F', 1, 1.6, 'T'], ['B', 'H', 1, 1.19, 'T'], ['B', 'F', 1, 1.31, 'C'],
-  ['B', 'Cl', 1, 1.75, 'T'], ['H', 'H', 1, 0.74, 'C'], ['F', 'F', 1, 1.42, 'C'],
+  ['O', 'Cl', 1, 1.7, 'C'], ['O', 'Na', 1, 2.1, 'T'], ['O', 'Mg', 1, 2.0, 'T'],
+  ['S', 'H', 1, 1.34, 'C'], ['S', 'S', 1, 2.05, 'A'], ['S', 'F', 1, 1.56, 'C'],
+  ['S', 'Cl', 1, 2.01, 'C'], ['P', 'H', 1, 1.42, 'C'], ['P', 'Cl', 1, 2.04, 'C'],
+  ['P', 'F', 1, 1.56, 'C'], ['Si', 'H', 1, 1.48, 'C'], ['Si', 'Cl', 1, 2.02, 'C'],
+  ['Si', 'F', 1, 1.55, 'C'], ['B', 'H', 1, 1.2, 'C'], ['B', 'F', 1, 1.31, 'C'],
+  ['B', 'Cl', 1, 1.74, 'C'], ['H', 'H', 1, 0.74, 'C'], ['F', 'F', 1, 1.42, 'C'],
   ['Cl', 'Cl', 1, 1.99, 'C'], ['Br', 'Br', 1, 2.28, 'C'], ['I', 'I', 1, 2.67, 'C'],
   ['Na', 'Cl', 1, 2.36, 'C'], ['Na', 'F', 1, 1.93, 'C'], ['Na', 'Br', 1, 2.5, 'C'],
-  ['Na', 'I', 1, 2.71, 'C'], ['Mg', 'Cl', 1, 2.2, 'T'], ['Cl', 'F', 1, 1.63, 'C'],
+  ['Na', 'I', 1, 2.71, 'C'], ['Mg', 'Cl', 1, 2.18, 'C'], ['Cl', 'F', 1, 1.63, 'C'],
 ]
 const lenKey = (a: string, b: string, o: number) => (a < b ? `${a}|${b}|${o}` : `${b}|${a}|${o}`)
 const LEN = new Map<string, { length: number; source: LengthSource }>(LENGTHS.map(([a, b, o, l, s]) => [lenKey(a, b, o), { length: l, source: s }]))

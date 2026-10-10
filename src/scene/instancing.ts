@@ -74,15 +74,27 @@ export class InstancePool {
     return mesh
   }
 
+  /**
+   * Make room for n instances. Growth replaces the mesh but carries over the `count` instances already written, so
+   * growing while a fill is in progress (selection shells, bond outlines) never turns earlier instances into identity
+   * matrices (unit spheres at the origin).
+   */
   ensure(n: number): void {
     if (n <= this.capacity) return
     let cap = this.capacity
     while (cap < n) cap *= 2
     const old = this.mesh
+    const keep = Math.min(this.count, this.capacity)
     this.parent.remove(old)
-    old.dispose()
     this.capacity = cap
     this.mesh = this.create(cap)
+    if (keep > 0) {
+      ;(this.mesh.instanceMatrix.array as Float32Array).set((old.instanceMatrix.array as Float32Array).subarray(0, keep * 16))
+      if (this.mesh.instanceColor && old.instanceColor) {
+        ;(this.mesh.instanceColor.array as Float32Array).set((old.instanceColor.array as Float32Array).subarray(0, keep * 3))
+      }
+    }
+    old.dispose()
     this.parent.add(this.mesh)
   }
 

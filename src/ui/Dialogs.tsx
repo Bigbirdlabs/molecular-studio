@@ -1,11 +1,12 @@
 import { lazy, Suspense, useEffect, useRef, useState, type FormEvent } from 'react'
 import { Loader2, Search } from 'lucide-react'
 import { useStudio } from '../store'
-import { useT, type TrKey } from './i18n'
+import { useT, type Params, type TrKey } from './i18n'
 import { Modal } from './Modal'
 import { PrimaryButton, Segmented, Switch } from './controls'
 import { useUI } from './uiStore'
 import { searchPubChem } from './actions'
+import { markPubChemMolecule } from './inspector/source'
 import { MOD, TOOL_KEYS } from './shortcuts'
 import { useOnline } from './layout'
 
@@ -154,7 +155,7 @@ export function PubChemDialog() {
   const close = useUI((s) => s.closeDialog)
   const [query, setQuery] = useState('')
   const [busy, setBusy] = useState(false)
-  const [error, setError] = useState<TrKey | null>(null)
+  const [error, setError] = useState<{ key: TrKey; params?: Params } | null>(null)
   const token = useRef(0)
   const online = useOnline()
 
@@ -173,11 +174,12 @@ export function PubChemDialog() {
     if (mine !== token.current) return
     setBusy(false)
     if (res.ok) {
+      markPubChemMolecule(res.mol.id) // the molecule card attributes the coordinates to PubChem
       useStudio.getState().loadMolecule(res.mol)
       useStudio.getState().notify(t('toast.pubchemOk', { name: res.mol.name }), 'success')
       setQuery('')
       close()
-    } else setError(res.error)
+    } else setError({ key: res.error, params: res.params })
   }
 
   return (
@@ -199,7 +201,7 @@ export function PubChemDialog() {
           />
         </label>
         {!online && <p role="alert" className="m-0 text-ui text-warn">{t('pc.offline')}</p>}
-        {error && <p role="alert" className="m-0 text-ui text-danger">{t(error)}</p>}
+        {error && <p role="alert" className="m-0 text-ui text-danger">{t(error.key, error.params)}</p>}
         <div className="flex items-center justify-between gap-3">
           <span className="text-label text-ink-dim">{t('pc.source')}</span>
           <PrimaryButton type="submit" busy={busy} disabled={!online} icon={busy ? <Loader2 size={15} aria-hidden className="animate-spin" /> : <Search size={15} aria-hidden />}>

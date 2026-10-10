@@ -5,24 +5,65 @@ import { atomById, bondById } from '../chem/molecule'
 import { fmtNum, useT, type TrKey } from './i18n'
 import type { Layout } from './layout'
 
-const SETTLE_MS = 1300 // camera status updates during a reset/fit animation do not count as a custom view
+/** Keys that move the camera when the 3D view has focus. */
+const CAMERA_KEYS = new Set(['ArrowLeft', 'ArrowRight', 'ArrowUp', 'ArrowDown', '+', '-', '=', '_', 'PageUp', 'PageDown'])
+/** Tools whose primary-button drag edits the molecule rather than moving the camera. */
+const EDIT_TOOLS = new Set(['atom', 'bond', 'erase', 'measure'])
+const DRAG_PX = 4
 
+/**
+ * Camera status: "reset" until the user actually moves the camera. The state is decided by what the user did, never
+ * by timing: it returns to "reset" on every reset / fit / load (a fresh fit is the default pose) and flips to "custom"
+ * on a wheel turn, a camera drag (> 4 px), a camera key, or a zoom command.
+ */
 function useCameraState(): 'reset' | 'custom' {
   const resetNonce = useStudio((s) => s.cameraResetNonce)
   const fitNonce = useStudio((s) => s.fitNonce)
-  const distance = useStudio((s) => s.cameraStatus.distance)
-  const mode = useStudio((s) => s.cameraStatus.mode)
+  const loadNonce = useStudio((s) => s.loadNonce)
+  const zoomNonce = useStudio((s) => s.zoomNonce)
   const [state, setState] = useState<'reset' | 'custom'>('reset')
-  const stamp = useRef(typeof performance !== 'undefined' ? performance.now() : 0)
+  const firstZoom = useRef(true)
+
+  useEffect(() => { setState('reset') }, [resetNonce, fitNonce, loadNonce])
 
   useEffect(() => {
-    stamp.current = performance.now()
-    setState('reset')
-  }, [resetNonce, fitNonce])
+    if (firstZoom.current) { firstZoom.current = false; return }
+    setState('custom')
+  }, [zoomNonce])
 
   useEffect(() => {
-    if (performance.now() - stamp.current > SETTLE_MS) setState('custom')
-  }, [distance, mode])
+    const host = document.getElementById('viewport')
+    if (!host) return
+    const custom = () => setState('custom')
+    let down: { id: number; x: number; y: number; camera: boolean } | null = null
+    const onDown = (e: PointerEvent) => {
+      if (!(e.target instanceof HTMLCanvasElement)) return
+      const tool = useStudio.getState().tool
+      down = { id: e.pointerId, x: e.clientX, y: e.clientY, camera: e.button !== 0 || e.shiftKey || e.ctrlKey || e.metaKey || !EDIT_TOOLS.has(tool) }
+    }
+    const onMove = (e: PointerEvent) => {
+      if (!down || e.pointerId !== down.id || !down.camera) return
+      if (Math.hypot(e.clientX - down.x, e.clientY - down.y) > DRAG_PX) { down = null; custom() }
+    }
+    const onUp = (e: PointerEvent) => { if (down && e.pointerId === down.id) down = null }
+    const onKey = (e: KeyboardEvent) => {
+      if (e.target instanceof HTMLCanvasElement && CAMERA_KEYS.has(e.key) && !e.altKey) custom()
+    }
+    host.addEventListener('wheel', custom, { passive: true, capture: true })
+    host.addEventListener('pointerdown', onDown, true)
+    host.addEventListener('pointermove', onMove, true)
+    host.addEventListener('pointerup', onUp, true)
+    host.addEventListener('pointercancel', onUp, true)
+    host.addEventListener('keydown', onKey, true)
+    return () => {
+      host.removeEventListener('wheel', custom, true)
+      host.removeEventListener('pointerdown', onDown, true)
+      host.removeEventListener('pointermove', onMove, true)
+      host.removeEventListener('pointerup', onUp, true)
+      host.removeEventListener('pointercancel', onUp, true)
+      host.removeEventListener('keydown', onKey, true)
+    }
+  }, [])
   return state
 }
 

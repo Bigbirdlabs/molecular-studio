@@ -1,11 +1,13 @@
 import { useEffect, useLayoutEffect, useRef, useState, type ReactNode, type RefObject } from 'react'
 import { createPortal } from 'react-dom'
-import { Check } from 'lucide-react'
+import { Check, ChevronDown } from 'lucide-react'
 
 export type MenuEntry =
   | { type: 'item'; label: string; icon?: ReactNode; shortcut?: string; onSelect: () => void; disabled?: boolean; reason?: string; checked?: boolean; role?: 'checkbox' | 'radio' }
   | { type: 'sep' }
   | { type: 'label'; label: string }
+  /** Collapsible group (phone overflow menu): shows its items inline when expanded. */
+  | { type: 'group'; label: string; icon?: ReactNode; items: MenuEntry[] }
 
 export type MenuPlacement = 'bottom-start' | 'bottom-end' | 'top-end'
 
@@ -23,6 +25,7 @@ interface MenuProps {
 export function Menu({ anchor, open, onClose, items, placement = 'bottom-start', ariaLabel, minWidth = 220 }: MenuProps) {
   const panel = useRef<HTMLDivElement>(null)
   const [style, setStyle] = useState<React.CSSProperties>({})
+  const [openGroup, setOpenGroup] = useState<number | null>(null)
 
   useLayoutEffect(() => {
     if (!open || !anchor.current) return
@@ -32,6 +35,10 @@ export function Menu({ anchor, open, onClose, items, placement = 'bottom-start',
     else if (placement === 'bottom-end') setStyle({ right: Math.max(8, window.innerWidth - r.right), top: r.bottom + margin })
     else setStyle({ right: Math.max(8, window.innerWidth - r.right), bottom: window.innerHeight - r.top + margin })
   }, [open, anchor, placement, minWidth])
+
+  useEffect(() => {
+    if (!open) setOpenGroup(null)
+  }, [open])
 
   useEffect(() => {
     if (!open) return
@@ -73,6 +80,42 @@ export function Menu({ anchor, open, onClose, items, placement = 'bottom-start',
     } else if (e.key === 'Tab') onClose()
   }
 
+  const renderEntry = (it: MenuEntry, key: string): ReactNode => {
+    if (it.type === 'sep') return <div key={key} role="separator" className="my-1 h-px bg-line" />
+    if (it.type === 'label')
+      return (
+        <div key={key} className="px-3 pb-1 pt-2 text-label text-ink-faint">
+          {it.label}
+        </div>
+      )
+    if (it.type === 'group') return null
+    const role = it.role === 'radio' ? 'menuitemradio' : it.role === 'checkbox' ? 'menuitemcheckbox' : 'menuitem'
+    return (
+      <button
+        key={key}
+        type="button"
+        role={role}
+        aria-checked={it.role ? !!it.checked : undefined}
+        aria-disabled={it.disabled || undefined}
+        title={it.disabled ? it.reason : undefined}
+        onClick={() => {
+          if (it.disabled) return
+          onClose()
+          it.onSelect()
+        }}
+        className={`flex min-h-(--hit) w-full items-center gap-2.5 px-3 text-left text-ui transition-colors duration-100 ${
+          it.disabled ? 'cursor-not-allowed text-ink-faint opacity-60' : 'text-ink hover:bg-surface-3 focus-visible:bg-surface-3'
+        }`}
+      >
+        <span className="flex w-4 shrink-0 items-center justify-center text-ink-dim">
+          {it.role ? (it.checked ? <Check size={14} aria-hidden className="text-accent" /> : null) : it.icon}
+        </span>
+        <span className="flex-1">{it.label}</span>
+        {it.shortcut && <kbd className="font-mono text-micro text-ink-faint [@media(pointer:coarse)]:hidden in-data-[layout=mobile]:hidden">{it.shortcut}</kbd>}
+      </button>
+    )
+  }
+
   return createPortal(
     <div
       ref={panel}
@@ -90,31 +133,31 @@ export function Menu({ anchor, open, onClose, items, placement = 'bottom-start',
               {it.label}
             </div>
           )
-        const role = it.role === 'radio' ? 'menuitemradio' : it.role === 'checkbox' ? 'menuitemcheckbox' : 'menuitem'
-        return (
-          <button
-            key={i}
-            type="button"
-            role={role}
-            aria-checked={it.role ? !!it.checked : undefined}
-            aria-disabled={it.disabled || undefined}
-            title={it.disabled ? it.reason : undefined}
-            onClick={() => {
-              if (it.disabled) return
-              onClose()
-              it.onSelect()
-            }}
-            className={`flex min-h-(--hit) w-full items-center gap-2.5 px-3 text-left text-ui transition-colors duration-100 ${
-              it.disabled ? 'cursor-not-allowed text-ink-faint opacity-60' : 'text-ink hover:bg-surface-3 focus-visible:bg-surface-3'
-            }`}
-          >
-            <span className="flex w-4 shrink-0 items-center justify-center text-ink-dim">
-              {it.role ? (it.checked ? <Check size={14} aria-hidden className="text-accent" /> : null) : it.icon}
-            </span>
-            <span className="flex-1">{it.label}</span>
-            {it.shortcut && <kbd className="font-mono text-micro text-ink-faint [@media(pointer:coarse)]:hidden in-data-[layout=mobile]:hidden">{it.shortcut}</kbd>}
-          </button>
-        )
+        if (it.type === 'group') {
+          const expanded = openGroup === i
+          return (
+            <div key={i}>
+              <button
+                type="button"
+                role="menuitem"
+                aria-haspopup="menu"
+                aria-expanded={expanded}
+                onClick={() => setOpenGroup(expanded ? null : i)}
+                className="flex min-h-(--hit) w-full items-center gap-2.5 px-3 text-left text-ui text-ink transition-colors duration-100 hover:bg-surface-3 focus-visible:bg-surface-3"
+              >
+                <span className="flex w-4 shrink-0 items-center justify-center text-ink-dim">{it.icon}</span>
+                <span className="flex-1">{it.label}</span>
+                <ChevronDown size={14} aria-hidden className={`shrink-0 text-ink-dim transition-transform duration-150 ${expanded ? 'rotate-180' : ''}`} />
+              </button>
+              {expanded && (
+                <div role="group" aria-label={it.label} className="border-y border-line bg-surface-1/60 py-1">
+                  {it.items.map((sub, j) => renderEntry(sub, `${i}-${j}`))}
+                </div>
+              )}
+            </div>
+          )
+        }
+        return renderEntry(it, String(i))
       })}
     </div>,
     document.body,

@@ -37,10 +37,11 @@ function cursorFor(tool: Tool, hit: Pick, busy: boolean): string {
     case 'pan': return busy ? 'grabbing' : 'move'
     case 'zoom': return 'zoom-in'
     case 'select': return hit ? 'pointer' : 'default'
-    case 'atom': return hit?.kind === 'atom' ? 'pointer' : hit ? 'default' : 'crosshair'
-    case 'bond': return hit?.kind === 'atom' ? 'pointer' : 'default'
-    case 'erase': return hit ? 'pointer' : 'default'
-    case 'measure': return hit?.kind === 'atom' ? 'pointer' : 'crosshair'
+    // SPEC B.2: every editing / measuring tool shows a crosshair (the hover shell, danger-tinted for delete, marks the target)
+    case 'atom':
+    case 'bond':
+    case 'erase':
+    case 'measure': return 'crosshair'
   }
 }
 

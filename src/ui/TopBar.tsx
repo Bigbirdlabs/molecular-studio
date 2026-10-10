@@ -174,13 +174,11 @@ export function TopBar({ layout }: { layout: Layout }) {
     const moreItems: MenuEntry[] = [
       { type: 'item', label: t('top.library'), icon: <Library size={15} aria-hidden />, onSelect: () => openDialog('library') },
       { type: 'item', label: t('top.settings'), icon: <Settings size={15} aria-hidden />, onSelect: () => openDialog('settings') },
-      { type: 'sep' },
-      ...fileItems,
-      { type: 'sep' },
-      ...phoneViewItems,
+      { type: 'group', label: t('top.file'), icon: <FileText size={15} aria-hidden />, items: fileItems },
+      { type: 'group', label: t('top.view'), icon: <ScanEye size={15} aria-hidden />, items: phoneViewItems },
     ]
     return (
-      <header className={`flex shrink-0 items-center gap-1 border-b border-line bg-surface-1 pl-3 pr-1 pt-[env(safe-area-inset-top)] box-content ${short ? 'h-10' : 'h-[52px]'}`}>
+      <header className={`flex shrink-0 items-center gap-1 border-b border-line bg-surface-1 pl-3 pr-1 pt-[env(safe-area-inset-top)] box-content ${short ? 'h-10' : 'h-11'}`}>
         <LogoMark size={22} />
         <ProjectName className="flex-1" />
         <SaveStatus compact />
@@ -193,7 +191,7 @@ export function TopBar({ layout }: { layout: Layout }) {
   }
 
   return (
-    <header className={`flex shrink-0 items-center gap-1 border-b border-line bg-surface-1 px-2 ${short ? 'h-10' : desktop ? 'h-11' : 'h-[52px]'}`}>
+    <header className={`flex shrink-0 items-center gap-1 border-b border-line bg-surface-1 px-2 box-content ${short ? 'h-10' : 'h-11'}`}>
       <div className="flex shrink-0 items-center gap-2 pl-1 pr-2">
         <LogoMark size={22} />
         {desktop && <span className="text-ui font-medium tracking-[0.01em] text-ink">{t('app.name')}</span>}

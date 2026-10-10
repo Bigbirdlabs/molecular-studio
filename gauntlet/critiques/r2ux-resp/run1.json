@@ -1,0 +1,5230 @@
+{
+ "m360-tr": {
+  "layout": "mobile",
+  "reduced": "true",
+  "lang": "tr",
+  "W": 360,
+  "H": 740,
+  "scrollW": 360,
+  "bodyScrollW": 360,
+  "coarse": true,
+  "hit": "44px",
+  "header": {
+   "x": 0,
+   "y": 0,
+   "w": 360,
+   "h": 53
+  },
+  "toolbars": [
+   {
+    "label": "Araçlar",
+    "r": {
+     "x": 0,
+     "y": 684,
+     "w": 303,
+     "h": 56
+    },
+    "sw": 382,
+    "cw": 303,
+    "sh": 56,
+    "ch": 56,
+    "buttons": [
+     {
+      "n": "Seç",
+      "x": 8,
+      "y": 690,
+      "w": 44,
+      "h": 44,
+      "clipped": false
+     },
+     {
+      "n": "Döndür",
+      "x": 54,
+      "y": 690,
+      "w": 44,
+      "h": 44,
+      "clipped": false
+     },
+     {
+      "n": "Kaydır",
+      "x": 100,
+      "y": 690,
+      "w": 44,
+      "h": 44,
+      "clipped": false
+     },
+     {
+      "n": "Yakınlaştır",
+      "x": 146,
+      "y": 690,
+      "w": 44,
+      "h": 44,
+      "clipped": false
+     },
+     {
+      "n": "Atom Ekle",
+      "x": 192,
+      "y": 690,
+      "w": 44,
+      "h": 44,
+      "clipped": false
+     },
+     {
+      "n": "Bağ Ekle",
+      "x": 238,
+      "y": 690,
+      "w": 44,
+      "h": 44,
+      "clipped": false
+     },
+     {
+      "n": "Sil",
+      "x": 284,
+      "y": 690,
+      "w": 44,
+      "h": 44,
+      "clipped": true
+     },
+     {
+      "n": "Ölç",
+      "x": 330,
+      "y": 690,
+      "w": 44,
+      "h": 44,
+      "clipped": true
+     }
+    ]
+   }
+  ],
+  "sheet": null,
+  "aside": null,
+  "canvas": {
+   "x": 0,
+   "y": 53,
+   "w": 360,
+   "h": 602,
+   "tabIndex": 0
+  },
+  "small": [
+   {
+    "n": "Top-Çubuk",
+    "role": "radio",
+    "x": 11,
+    "y": 64,
+    "w": 84,
+    "h": 38,
+    "clipped": false
+   },
+   {
+    "n": "Uzay Dolgulu",
+    "role": "radio",
+    "x": 95,
+    "y": 64,
+    "w": 87,
+    "h": 38,
+    "clipped": false
+   },
+   {
+    "n": "Çubuk",
+    "role": "radio",
+    "x": 182,
+    "y": 64,
+    "w": 84,
+    "h": 38,
+    "clipped": false
+   },
+   {
+    "n": "Tel Kafes",
+    "role": "radio",
+    "x": 265,
+    "y": 64,
+    "w": 84,
+    "h": 38,
+    "clipped": false
+   }
+  ],
+  "tiny": [],
+  "noName": [],
+  "offscreenCtrls": [],
+  "clippedCtrls": [
+   {
+    "n": "Sil",
+    "x": 284,
+    "y": 690,
+    "w": 44,
+    "h": 44
+   },
+   {
+    "n": "Ölç",
+    "x": 330,
+    "y": 690,
+    "w": 44,
+    "h": 44
+   }
+  ],
+  "announcer": "",
+  "anims": [
+   {
+    "name": "background-color",
+    "dur": 0.01
+   }
+  ]
+ },
+ "m360-en": {
+  "layout": "mobile",
+  "reduced": "true",
+  "lang": "en",
+  "W": 360,
+  "H": 740,
+  "scrollW": 360,
+  "bodyScrollW": 360,
+  "coarse": true,
+  "hit": "44px",
+  "header": {
+   "x": 0,
+   "y": 0,
+   "w": 360,
+   "h": 53
+  },
+  "toolbars": [
+   {
+    "label": "Tools",
+    "r": {
+     "x": 0,
+     "y": 684,
+     "w": 303,
+     "h": 56
+    },
+    "sw": 382,
+    "cw": 303,
+    "sh": 56,
+    "ch": 56,
+    "buttons": [
+     {
+      "n": "Select",
+      "x": 8,
+      "y": 690,
+      "w": 44,
+      "h": 44,
+      "clipped": false
+     },
+     {
+      "n": "Rotate",
+      "x": 54,
+      "y": 690,
+      "w": 44,
+      "h": 44,
+      "clipped": false
+     },
+     {
+      "n": "Pan",
+      "x": 100,
+      "y": 690,
+      "w": 44,
+      "h": 44,
+      "clipped": false
+     },
+     {
+      "n": "Zoom",
+      "x": 146,
+      "y": 690,
+      "w": 44,
+      "h": 44,
+      "clipped": false
+     },
+     {
+      "n": "Add Atom",
+      "x": 192,
+      "y": 690,
+      "w": 44,
+      "h": 44,
+      "clipped": false
+     },
+     {
+      "n": "Add Bond",
+      "x": 238,
+      "y": 690,
+      "w": 44,
+      "h": 44,
+      "clipped": false
+     },
+     {
+      "n": "Delete",
+      "x": 284,
+      "y": 690,
+      "w": 44,
+      "h": 44,
+      "clipped": true
+     },
+     {
+      "n": "Measure",
+      "x": 330,
+      "y": 690,
+      "w": 44,
+      "h": 44,
+      "clipped": true
+     }
+    ]
+   }
+  ],
+  "sheet": null,
+  "aside": null,
+  "canvas": {
+   "x": 0,
+   "y": 53,
+   "w": 360,
+   "h": 602,
+   "tabIndex": 0
+  },
+  "small": [
+   {
+    "n": "Ball & Stick",
+    "role": "radio",
+    "x": 11,
+    "y": 64,
+    "w": 85,
+    "h": 38,
+    "clipped": false
+   },
+   {
+    "n": "Space Filling",
+    "role": "radio",
+    "x": 96,
+    "y": 64,
+    "w": 85,
+    "h": 38,
+    "clipped": false
+   },
+   {
+    "n": "Stick",
+    "role": "radio",
+    "x": 180,
+    "y": 64,
+    "w": 85,
+    "h": 38,
+    "clipped": false
+   },
+   {
+    "n": "Wireframe",
+    "role": "radio",
+    "x": 265,
+    "y": 64,
+    "w": 85,
+    "h": 38,
+    "clipped": false
+   }
+  ],
+  "tiny": [],
+  "noName": [],
+  "offscreenCtrls": [],
+  "clippedCtrls": [
+   {
+    "n": "Delete",
+    "x": 284,
+    "y": 690,
+    "w": 44,
+    "h": 44
+   },
+   {
+    "n": "Measure",
+    "x": 330,
+    "y": 690,
+    "w": 44,
+    "h": 44
+   }
+  ],
+  "announcer": "",
+  "anims": [],
+  "trHits": []
+ },
+ "m390-tr": {
+  "lang": "tr",
+  "W": 390,
+  "H": 844,
+  "scrollW": 390,
+  "bodyScrollW": 390,
+  "coarse": true,
+  "hit": "",
+  "header": null,
+  "toolbars": [],
+  "sheet": null,
+  "aside": null,
+  "canvas": null,
+  "small": [],
+  "tiny": [],
+  "noName": [],
+  "offscreenCtrls": [],
+  "clippedCtrls": [],
+  "announcer": null,
+  "anims": []
+ },
+ "m390-en": {
+  "layout": "mobile",
+  "reduced": "true",
+  "lang": "en",
+  "W": 390,
+  "H": 844,
+  "scrollW": 390,
+  "bodyScrollW": 390,
+  "coarse": true,
+  "hit": "44px",
+  "header": {
+   "x": 0,
+   "y": 0,
+   "w": 390,
+   "h": 53
+  },
+  "toolbars": [
+   {
+    "label": "Tools",
+    "r": {
+     "x": 0,
+     "y": 788,
+     "w": 333,
+     "h": 56
+    },
+    "sw": 382,
+    "cw": 333,
+    "sh": 56,
+    "ch": 56,
+    "buttons": [
+     {
+      "n": "Select",
+      "x": 8,
+      "y": 794,
+      "w": 44,
+      "h": 44,
+      "clipped": false
+     },
+     {
+      "n": "Rotate",
+      "x": 54,
+      "y": 794,
+      "w": 44,
+      "h": 44,
+      "clipped": false
+     },
+     {
+      "n": "Pan",
+      "x": 100,
+      "y": 794,
+      "w": 44,
+      "h": 44,
+      "clipped": false
+     },
+     {
+      "n": "Zoom",
+      "x": 146,
+      "y": 794,
+      "w": 44,
+      "h": 44,
+      "clipped": false
+     },
+     {
+      "n": "Add Atom",
+      "x": 192,
+      "y": 794,
+      "w": 44,
+      "h": 44,
+      "clipped": false
+     },
+     {
+      "n": "Add Bond",
+      "x": 238,
+      "y": 794,
+      "w": 44,
+      "h": 44,
+      "clipped": false
+     },
+     {
+      "n": "Delete",
+      "x": 284,
+      "y": 794,
+      "w": 44,
+      "h": 44,
+      "clipped": false
+     },
+     {
+      "n": "Measure",
+      "x": 330,
+      "y": 794,
+      "w": 44,
+      "h": 44,
+      "clipped": true
+     }
+    ]
+   }
+  ],
+  "sheet": null,
+  "aside": null,
+  "canvas": {
+   "x": 0,
+   "y": 53,
+   "w": 390,
+   "h": 706,
+   "tabIndex": 0
+  },
+  "small": [
+   {
+    "n": "Ball & Stick",
+    "role": "radio",
+    "x": 11,
+    "y": 64,
+    "w": 92,
+    "h": 38,
+    "clipped": false
+   },
+   {
+    "n": "Space Filling",
+    "role": "radio",
+    "x": 103,
+    "y": 64,
+    "w": 92,
+    "h": 38,
+    "clipped": false
+   },
+   {
+    "n": "Stick",
+    "role": "radio",
+    "x": 195,
+    "y": 64,
+    "w": 92,
+    "h": 38,
+    "clipped": false
+   },
+   {
+    "n": "Wireframe",
+    "role": "radio",
+    "x": 287,
+    "y": 64,
+    "w": 92,
+    "h": 38,
+    "clipped": false
+   }
+  ],
+  "tiny": [],
+  "noName": [],
+  "offscreenCtrls": [],
+  "clippedCtrls": [
+   {
+    "n": "Measure",
+    "x": 330,
+    "y": 794,
+    "w": 44,
+    "h": 44
+   }
+  ],
+  "announcer": "",
+  "anims": [],
+  "trHits": []
+ },
+ "t768-tr": {
+  "layout": "tablet",
+  "reduced": "true",
+  "lang": "tr",
+  "W": 768,
+  "H": 1024,
+  "scrollW": 768,
+  "bodyScrollW": 768,
+  "coarse": true,
+  "hit": "44px",
+  "header": {
+   "x": 0,
+   "y": 0,
+   "w": 768,
+   "h": 52
+  },
+  "toolbars": [
+   {
+    "label": "Araçlar",
+    "r": {
+     "x": 0,
+     "y": 52,
+     "w": 48,
+     "h": 946
+    },
+    "sw": 47,
+    "cw": 47,
+    "sh": 946,
+    "ch": 946,
+    "buttons": [
+     {
+      "n": "Seç",
+      "x": 2,
+      "y": 60,
+      "w": 44,
+      "h": 44,
+      "clipped": false
+     },
+     {
+      "n": "Döndür",
+      "x": 2,
+      "y": 108,
+      "w": 44,
+      "h": 44,
+      "clipped": false
+     },
+     {
+      "n": "Kaydır",
+      "x": 2,
+      "y": 156,
+      "w": 44,
+      "h": 44,
+      "clipped": false
+     },
+     {
+      "n": "Yakınlaştır",
+      "x": 2,
+      "y": 204,
+      "w": 44,
+      "h": 44,
+      "clipped": false
+     },
+     {
+      "n": "Atom Ekle",
+      "x": 2,
+      "y": 265,
+      "w": 44,
+      "h": 44,
+      "clipped": false
+     },
+     {
+      "n": "Bağ Ekle",
+      "x": 2,
+      "y": 313,
+      "w": 44,
+      "h": 44,
+      "clipped": false
+     },
+     {
+      "n": "Sil",
+      "x": 2,
+      "y": 361,
+      "w": 44,
+      "h": 44,
+      "clipped": false
+     },
+     {
+      "n": "Ölç",
+      "x": 2,
+      "y": 409,
+      "w": 44,
+      "h": 44,
+      "clipped": false
+     },
+     {
+      "n": "Geometriyi düzenle (basit kuvv",
+      "x": 2,
+      "y": 470,
+      "w": 44,
+      "h": 44,
+      "clipped": false
+     },
+     {
+      "n": "Hidrojen ekle",
+      "x": 2,
+      "y": 518,
+      "w": 44,
+      "h": 44,
+      "clipped": false
+     },
+     {
+      "n": "Hidrojenleri kaldır",
+      "x": 2,
+      "y": 566,
+      "w": 44,
+      "h": 44,
+      "clipped": false
+     },
+     {
+      "n": "Yeni molekül",
+      "x": 2,
+      "y": 614,
+      "w": 44,
+      "h": 44,
+      "clipped": false
+     }
+    ]
+   }
+  ],
+  "sheet": null,
+  "aside": null,
+  "canvas": {
+   "x": 48,
+   "y": 52,
+   "w": 720,
+   "h": 946,
+   "tabIndex": 0
+  },
+  "small": [
+   {
+    "n": "Top-Çubuk",
+    "role": "radio",
+    "x": 63,
+    "y": 945,
+    "w": 74,
+    "h": 38,
+    "clipped": false
+   },
+   {
+    "n": "Uzay Dolgulu",
+    "role": "radio",
+    "x": 137,
+    "y": 945,
+    "w": 87,
+    "h": 38,
+    "clipped": false
+   },
+   {
+    "n": "Çubuk",
+    "role": "radio",
+    "x": 224,
+    "y": 945,
+    "w": 50,
+    "h": 38,
+    "clipped": false
+   },
+   {
+    "n": "Tel Kafes",
+    "role": "radio",
+    "x": 274,
+    "y": 945,
+    "w": 62,
+    "h": 38,
+    "clipped": false
+   }
+  ],
+  "tiny": [],
+  "noName": [],
+  "offscreenCtrls": [],
+  "clippedCtrls": [],
+  "announcer": "",
+  "anims": []
+ },
+ "t768-en": {
+  "layout": "tablet",
+  "reduced": "true",
+  "lang": "en",
+  "W": 768,
+  "H": 1024,
+  "scrollW": 768,
+  "bodyScrollW": 768,
+  "coarse": true,
+  "hit": "44px",
+  "header": {
+   "x": 0,
+   "y": 0,
+   "w": 768,
+   "h": 52
+  },
+  "toolbars": [
+   {
+    "label": "Tools",
+    "r": {
+     "x": 0,
+     "y": 52,
+     "w": 48,
+     "h": 946
+    },
+    "sw": 47,
+    "cw": 47,
+    "sh": 946,
+    "ch": 946,
+    "buttons": [
+     {
+      "n": "Select",
+      "x": 2,
+      "y": 60,
+      "w": 44,
+      "h": 44,
+      "clipped": false
+     },
+     {
+      "n": "Rotate",
+      "x": 2,
+      "y": 108,
+      "w": 44,
+      "h": 44,
+      "clipped": false
+     },
+     {
+      "n": "Pan",
+      "x": 2,
+      "y": 156,
+      "w": 44,
+      "h": 44,
+      "clipped": false
+     },
+     {
+      "n": "Zoom",
+      "x": 2,
+      "y": 204,
+      "w": 44,
+      "h": 44,
+      "clipped": false
+     },
+     {
+      "n": "Add Atom",
+      "x": 2,
+      "y": 265,
+      "w": 44,
+      "h": 44,
+      "clipped": false
+     },
+     {
+      "n": "Add Bond",
+      "x": 2,
+      "y": 313,
+      "w": 44,
+      "h": 44,
+      "clipped": false
+     },
+     {
+      "n": "Delete",
+      "x": 2,
+      "y": 361,
+      "w": 44,
+      "h": 44,
+      "clipped": false
+     },
+     {
+      "n": "Measure",
+      "x": 2,
+      "y": 409,
+      "w": 44,
+      "h": 44,
+      "clipped": false
+     },
+     {
+      "n": "Tidy geometry (simple force fi",
+      "x": 2,
+      "y": 470,
+      "w": 44,
+      "h": 44,
+      "clipped": false
+     },
+     {
+      "n": "Add hydrogens",
+      "x": 2,
+      "y": 518,
+      "w": 44,
+      "h": 44,
+      "clipped": false
+     },
+     {
+      "n": "Remove hydrogens",
+      "x": 2,
+      "y": 566,
+      "w": 44,
+      "h": 44,
+      "clipped": false
+     },
+     {
+      "n": "New molecule",
+      "x": 2,
+      "y": 614,
+      "w": 44,
+      "h": 44,
+      "clipped": false
+     }
+    ]
+   }
+  ],
+  "sheet": null,
+  "aside": null,
+  "canvas": {
+   "x": 48,
+   "y": 52,
+   "w": 720,
+   "h": 946,
+   "tabIndex": 0
+  },
+  "small": [
+   {
+    "n": "Ball & Stick",
+    "role": "radio",
+    "x": 63,
+    "y": 945,
+    "w": 75,
+    "h": 38,
+    "clipped": false
+   },
+   {
+    "n": "Space Filling",
+    "role": "radio",
+    "x": 138,
+    "y": 945,
+    "w": 82,
+    "h": 38,
+    "clipped": false
+   },
+   {
+    "n": "Stick",
+    "role": "radio",
+    "x": 220,
+    "y": 945,
+    "w": 40,
+    "h": 38,
+    "clipped": false
+   },
+   {
+    "n": "Wireframe",
+    "role": "radio",
+    "x": 261,
+    "y": 945,
+    "w": 71,
+    "h": 38,
+    "clipped": false
+   }
+  ],
+  "tiny": [],
+  "noName": [],
+  "offscreenCtrls": [],
+  "clippedCtrls": [],
+  "announcer": "",
+  "anims": [],
+  "trHits": []
+ },
+ "t820-tr": {
+  "layout": "tablet",
+  "reduced": "true",
+  "lang": "tr",
+  "W": 820,
+  "H": 1180,
+  "scrollW": 820,
+  "bodyScrollW": 820,
+  "coarse": true,
+  "hit": "44px",
+  "header": {
+   "x": 0,
+   "y": 0,
+   "w": 820,
+   "h": 52
+  },
+  "toolbars": [
+   {
+    "label": "Araçlar",
+    "r": {
+     "x": 0,
+     "y": 52,
+     "w": 48,
+     "h": 1102
+    },
+    "sw": 47,
+    "cw": 47,
+    "sh": 1102,
+    "ch": 1102,
+    "buttons": [
+     {
+      "n": "Seç",
+      "x": 2,
+      "y": 60,
+      "w": 44,
+      "h": 44,
+      "clipped": false
+     },
+     {
+      "n": "Döndür",
+      "x": 2,
+      "y": 108,
+      "w": 44,
+      "h": 44,
+      "clipped": false
+     },
+     {
+      "n": "Kaydır",
+      "x": 2,
+      "y": 156,
+      "w": 44,
+      "h": 44,
+      "clipped": false
+     },
+     {
+      "n": "Yakınlaştır",
+      "x": 2,
+      "y": 204,
+      "w": 44,
+      "h": 44,
+      "clipped": false
+     },
+     {
+      "n": "Atom Ekle",
+      "x": 2,
+      "y": 265,
+      "w": 44,
+      "h": 44,
+      "clipped": false
+     },
+     {
+      "n": "Bağ Ekle",
+      "x": 2,
+      "y": 313,
+      "w": 44,
+      "h": 44,
+      "clipped": false
+     },
+     {
+      "n": "Sil",
+      "x": 2,
+      "y": 361,
+      "w": 44,
+      "h": 44,
+      "clipped": false
+     },
+     {
+      "n": "Ölç",
+      "x": 2,
+      "y": 409,
+      "w": 44,
+      "h": 44,
+      "clipped": false
+     },
+     {
+      "n": "Geometriyi düzenle (basit kuvv",
+      "x": 2,
+      "y": 470,
+      "w": 44,
+      "h": 44,
+      "clipped": false
+     },
+     {
+      "n": "Hidrojen ekle",
+      "x": 2,
+      "y": 518,
+      "w": 44,
+      "h": 44,
+      "clipped": false
+     },
+     {
+      "n": "Hidrojenleri kaldır",
+      "x": 2,
+      "y": 566,
+      "w": 44,
+      "h": 44,
+      "clipped": false
+     },
+     {
+      "n": "Yeni molekül",
+      "x": 2,
+      "y": 614,
+      "w": 44,
+      "h": 44,
+      "clipped": false
+     }
+    ]
+   }
+  ],
+  "sheet": null,
+  "aside": null,
+  "canvas": null,
+  "small": [
+   {
+    "n": "Proje adı",
+    "role": "input",
+    "x": 59,
+    "y": 10,
+    "w": 144,
+    "h": 32,
+    "clipped": false
+   },
+   {
+    "n": "Top-Çubuk",
+    "role": "radio",
+    "x": 63,
+    "y": 1101,
+    "w": 74,
+    "h": 38,
+    "clipped": false
+   },
+   {
+    "n": "Uzay Dolgulu",
+    "role": "radio",
+    "x": 137,
+    "y": 1101,
+    "w": 87,
+    "h": 38,
+    "clipped": false
+   },
+   {
+    "n": "Çubuk",
+    "role": "radio",
+    "x": 224,
+    "y": 1101,
+    "w": 50,
+    "h": 38,
+    "clipped": false
+   },
+   {
+    "n": "Tel Kafes",
+    "role": "radio",
+    "x": 274,
+    "y": 1101,
+    "w": 62,
+    "h": 38,
+    "clipped": false
+   }
+  ],
+  "tiny": [],
+  "noName": [],
+  "offscreenCtrls": [],
+  "clippedCtrls": [],
+  "announcer": null,
+  "anims": [
+   {
+    "name": "height",
+    "dur": 0.01
+   },
+   {
+    "name": "min-height",
+    "dur": 0.01
+   },
+   {
+    "name": "scrollbar-color",
+    "dur": 0.01
+   },
+   {
+    "name": "scrollbar-color",
+    "dur": 0.01
+   },
+   {
+    "name": "scrollbar-color",
+    "dur": 0.01
+   },
+   {
+    "name": "scrollbar-color",
+    "dur": 0.01
+   },
+   {
+    "name": "spin",
+    "dur": 0.01
+   }
+  ]
+ },
+ "t820-en": {
+  "layout": "tablet",
+  "reduced": "true",
+  "lang": "en",
+  "W": 820,
+  "H": 1180,
+  "scrollW": 820,
+  "bodyScrollW": 820,
+  "coarse": true,
+  "hit": "44px",
+  "header": {
+   "x": 0,
+   "y": 0,
+   "w": 820,
+   "h": 52
+  },
+  "toolbars": [
+   {
+    "label": "Tools",
+    "r": {
+     "x": 0,
+     "y": 52,
+     "w": 48,
+     "h": 1102
+    },
+    "sw": 47,
+    "cw": 47,
+    "sh": 1102,
+    "ch": 1102,
+    "buttons": [
+     {
+      "n": "Select",
+      "x": 2,
+      "y": 60,
+      "w": 44,
+      "h": 44,
+      "clipped": false
+     },
+     {
+      "n": "Rotate",
+      "x": 2,
+      "y": 108,
+      "w": 44,
+      "h": 44,
+      "clipped": false
+     },
+     {
+      "n": "Pan",
+      "x": 2,
+      "y": 156,
+      "w": 44,
+      "h": 44,
+      "clipped": false
+     },
+     {
+      "n": "Zoom",
+      "x": 2,
+      "y": 204,
+      "w": 44,
+      "h": 44,
+      "clipped": false
+     },
+     {
+      "n": "Add Atom",
+      "x": 2,
+      "y": 265,
+      "w": 44,
+      "h": 44,
+      "clipped": false
+     },
+     {
+      "n": "Add Bond",
+      "x": 2,
+      "y": 313,
+      "w": 44,
+      "h": 44,
+      "clipped": false
+     },
+     {
+      "n": "Delete",
+      "x": 2,
+      "y": 361,
+      "w": 44,
+      "h": 44,
+      "clipped": false
+     },
+     {
+      "n": "Measure",
+      "x": 2,
+      "y": 409,
+      "w": 44,
+      "h": 44,
+      "clipped": false
+     },
+     {
+      "n": "Tidy geometry (simple force fi",
+      "x": 2,
+      "y": 470,
+      "w": 44,
+      "h": 44,
+      "clipped": false
+     },
+     {
+      "n": "Add hydrogens",
+      "x": 2,
+      "y": 518,
+      "w": 44,
+      "h": 44,
+      "clipped": false
+     },
+     {
+      "n": "Remove hydrogens",
+      "x": 2,
+      "y": 566,
+      "w": 44,
+      "h": 44,
+      "clipped": false
+     },
+     {
+      "n": "New molecule",
+      "x": 2,
+      "y": 614,
+      "w": 44,
+      "h": 44,
+      "clipped": false
+     }
+    ]
+   }
+  ],
+  "sheet": null,
+  "aside": null,
+  "canvas": {
+   "x": 48,
+   "y": 52,
+   "w": 772,
+   "h": 1102,
+   "tabIndex": 0
+  },
+  "small": [
+   {
+    "n": "Ball & Stick",
+    "role": "radio",
+    "x": 63,
+    "y": 1101,
+    "w": 75,
+    "h": 38,
+    "clipped": false
+   },
+   {
+    "n": "Space Filling",
+    "role": "radio",
+    "x": 138,
+    "y": 1101,
+    "w": 82,
+    "h": 38,
+    "clipped": false
+   },
+   {
+    "n": "Stick",
+    "role": "radio",
+    "x": 220,
+    "y": 1101,
+    "w": 40,
+    "h": 38,
+    "clipped": false
+   },
+   {
+    "n": "Wireframe",
+    "role": "radio",
+    "x": 261,
+    "y": 1101,
+    "w": 71,
+    "h": 38,
+    "clipped": false
+   }
+  ],
+  "tiny": [],
+  "noName": [],
+  "offscreenCtrls": [],
+  "clippedCtrls": [],
+  "announcer": "",
+  "anims": [],
+  "trHits": []
+ },
+ "t1024-tr": {
+  "layout": "tablet",
+  "reduced": "true",
+  "lang": "tr",
+  "W": 1024,
+  "H": 768,
+  "scrollW": 1024,
+  "bodyScrollW": 1024,
+  "coarse": true,
+  "hit": "44px",
+  "header": {
+   "x": 0,
+   "y": 0,
+   "w": 1024,
+   "h": 52
+  },
+  "toolbars": [
+   {
+    "label": "Araçlar",
+    "r": {
+     "x": 0,
+     "y": 52,
+     "w": 48,
+     "h": 690
+    },
+    "sw": 47,
+    "cw": 47,
+    "sh": 690,
+    "ch": 690,
+    "buttons": [
+     {
+      "n": "Seç",
+      "x": 2,
+      "y": 60,
+      "w": 44,
+      "h": 44,
+      "clipped": false
+     },
+     {
+      "n": "Döndür",
+      "x": 2,
+      "y": 108,
+      "w": 44,
+      "h": 44,
+      "clipped": false
+     },
+     {
+      "n": "Kaydır",
+      "x": 2,
+      "y": 156,
+      "w": 44,
+      "h": 44,
+      "clipped": false
+     },
+     {
+      "n": "Yakınlaştır",
+      "x": 2,
+      "y": 204,
+      "w": 44,
+      "h": 44,
+      "clipped": false
+     },
+     {
+      "n": "Atom Ekle",
+      "x": 2,
+      "y": 265,
+      "w": 44,
+      "h": 44,
+      "clipped": false
+     },
+     {
+      "n": "Bağ Ekle",
+      "x": 2,
+      "y": 313,
+      "w": 44,
+      "h": 44,
+      "clipped": false
+     },
+     {
+      "n": "Sil",
+      "x": 2,
+      "y": 361,
+      "w": 44,
+      "h": 44,
+      "clipped": false
+     },
+     {
+      "n": "Ölç",
+      "x": 2,
+      "y": 409,
+      "w": 44,
+      "h": 44,
+      "clipped": false
+     },
+     {
+      "n": "Geometriyi düzenle (basit kuvv",
+      "x": 2,
+      "y": 470,
+      "w": 44,
+      "h": 44,
+      "clipped": false
+     },
+     {
+      "n": "Hidrojen ekle",
+      "x": 2,
+      "y": 518,
+      "w": 44,
+      "h": 44,
+      "clipped": false
+     },
+     {
+      "n": "Hidrojenleri kaldır",
+      "x": 2,
+      "y": 566,
+      "w": 44,
+      "h": 44,
+      "clipped": false
+     },
+     {
+      "n": "Yeni molekül",
+      "x": 2,
+      "y": 614,
+      "w": 44,
+      "h": 44,
+      "clipped": false
+     }
+    ]
+   }
+  ],
+  "sheet": null,
+  "aside": {
+   "x": 704,
+   "y": 52,
+   "w": 320,
+   "h": 690
+  },
+  "canvas": {
+   "x": 48,
+   "y": 52,
+   "w": 656,
+   "h": 690,
+   "tabIndex": 0
+  },
+  "small": [
+   {
+    "n": "Top-Çubuk",
+    "role": "radio",
+    "x": 63,
+    "y": 689,
+    "w": 74,
+    "h": 38,
+    "clipped": false
+   },
+   {
+    "n": "Uzay Dolgulu",
+    "role": "radio",
+    "x": 137,
+    "y": 689,
+    "w": 87,
+    "h": 38,
+    "clipped": false
+   },
+   {
+    "n": "Çubuk",
+    "role": "radio",
+    "x": 224,
+    "y": 689,
+    "w": 50,
+    "h": 38,
+    "clipped": false
+   },
+   {
+    "n": "Tel Kafes",
+    "role": "radio",
+    "x": 274,
+    "y": 689,
+    "w": 62,
+    "h": 38,
+    "clipped": false
+   }
+  ],
+  "tiny": [],
+  "noName": [],
+  "offscreenCtrls": [],
+  "clippedCtrls": [
+   {
+    "n": "Kütlece yüzde bileşim",
+    "x": 705,
+    "y": 739,
+    "w": 319,
+    "h": 44
+   },
+   {
+    "n": "Fonksiyonel gruplarTahmini",
+    "x": 705,
+    "y": 839,
+    "w": 319,
+    "h": 44
+   },
+   {
+    "n": "Lipinski kuralları",
+    "x": 705,
+    "y": 914,
+    "w": 319,
+    "h": 44
+   },
+   {
+    "n": "Değerlik sorunları",
+    "x": 705,
+    "y": 959,
+    "w": 319,
+    "h": 44
+   }
+  ],
+  "announcer": "",
+  "anims": [
+   {
+    "name": "background-color",
+    "dur": 0.01
+   }
+  ]
+ },
+ "t1024-en": {
+  "lang": "en",
+  "W": 1024,
+  "H": 768,
+  "scrollW": 1024,
+  "bodyScrollW": 1024,
+  "coarse": true,
+  "hit": "32px",
+  "header": {
+   "x": 0,
+   "y": 0,
+   "w": 1024,
+   "h": 52
+  },
+  "toolbars": [
+   {
+    "label": "Tools",
+    "r": {
+     "x": 0,
+     "y": 52,
+     "w": 48,
+     "h": 690
+    },
+    "sw": 47,
+    "cw": 47,
+    "sh": 690,
+    "ch": 690,
+    "buttons": [
+     {
+      "n": "Select",
+      "x": 8,
+      "y": 60,
+      "w": 32,
+      "h": 32,
+      "clipped": false
+     },
+     {
+      "n": "Rotate",
+      "x": 8,
+      "y": 96,
+      "w": 32,
+      "h": 32,
+      "clipped": false
+     },
+     {
+      "n": "Pan",
+      "x": 8,
+      "y": 132,
+      "w": 32,
+      "h": 32,
+      "clipped": false
+     },
+     {
+      "n": "Zoom",
+      "x": 8,
+      "y": 168,
+      "w": 32,
+      "h": 32,
+      "clipped": false
+     },
+     {
+      "n": "Add Atom",
+      "x": 8,
+      "y": 217,
+      "w": 32,
+      "h": 32,
+      "clipped": false
+     },
+     {
+      "n": "Add Bond",
+      "x": 8,
+      "y": 253,
+      "w": 32,
+      "h": 32,
+      "clipped": false
+     },
+     {
+      "n": "Delete",
+      "x": 8,
+      "y": 289,
+      "w": 32,
+      "h": 32,
+      "clipped": false
+     },
+     {
+      "n": "Measure",
+      "x": 8,
+      "y": 325,
+      "w": 32,
+      "h": 32,
+      "clipped": false
+     },
+     {
+      "n": "Tidy geometry (simple force fi",
+      "x": 8,
+      "y": 374,
+      "w": 32,
+      "h": 32,
+      "clipped": false
+     },
+     {
+      "n": "Add hydrogens",
+      "x": 8,
+      "y": 410,
+      "w": 32,
+      "h": 32,
+      "clipped": false
+     },
+     {
+      "n": "Remove hydrogens",
+      "x": 8,
+      "y": 446,
+      "w": 32,
+      "h": 32,
+      "clipped": false
+     },
+     {
+      "n": "New molecule",
+      "x": 8,
+      "y": 482,
+      "w": 32,
+      "h": 32,
+      "clipped": false
+     }
+    ]
+   }
+  ],
+  "sheet": null,
+  "aside": null,
+  "canvas": null,
+  "small": [
+   {
+    "n": "Project name",
+    "role": "input",
+    "x": 59,
+    "y": 10,
+    "w": 144,
+    "h": 32,
+    "clipped": false
+   },
+   {
+    "n": "Undo",
+    "role": "button",
+    "x": 746,
+    "y": 10,
+    "w": 32,
+    "h": 32,
+    "clipped": false
+   },
+   {
+    "n": "Redo",
+    "role": "button",
+    "x": 778,
+    "y": 10,
+    "w": 32,
+    "h": 32,
+    "clipped": false
+   },
+   {
+    "n": "Library",
+    "role": "button",
+    "x": 827,
+    "y": 10,
+    "w": 32,
+    "h": 32,
+    "clipped": false
+   },
+   {
+    "n": "File",
+    "role": "button",
+    "x": 863,
+    "y": 10,
+    "w": 32,
+    "h": 32,
+    "clipped": false
+   },
+   {
+    "n": "View",
+    "role": "button",
+    "x": 899,
+    "y": 10,
+    "w": 32,
+    "h": 32,
+    "clipped": false
+   },
+   {
+    "n": "Settings",
+    "role": "button",
+    "x": 948,
+    "y": 10,
+    "w": 32,
+    "h": 32,
+    "clipped": false
+   },
+   {
+    "n": "Molecule info",
+    "role": "button",
+    "x": 984,
+    "y": 10,
+    "w": 32,
+    "h": 32,
+    "clipped": false
+   },
+   {
+    "n": "Select",
+    "role": "button",
+    "x": 8,
+    "y": 60,
+    "w": 32,
+    "h": 32,
+    "clipped": false
+   },
+   {
+    "n": "Rotate",
+    "role": "button",
+    "x": 8,
+    "y": 96,
+    "w": 32,
+    "h": 32,
+    "clipped": false
+   },
+   {
+    "n": "Pan",
+    "role": "button",
+    "x": 8,
+    "y": 132,
+    "w": 32,
+    "h": 32,
+    "clipped": false
+   },
+   {
+    "n": "Zoom",
+    "role": "button",
+    "x": 8,
+    "y": 168,
+    "w": 32,
+    "h": 32,
+    "clipped": false
+   },
+   {
+    "n": "Add Atom",
+    "role": "button",
+    "x": 8,
+    "y": 217,
+    "w": 32,
+    "h": 32,
+    "clipped": false
+   },
+   {
+    "n": "Add Bond",
+    "role": "button",
+    "x": 8,
+    "y": 253,
+    "w": 32,
+    "h": 32,
+    "clipped": false
+   },
+   {
+    "n": "Delete",
+    "role": "button",
+    "x": 8,
+    "y": 289,
+    "w": 32,
+    "h": 32,
+    "clipped": false
+   },
+   {
+    "n": "Measure",
+    "role": "button",
+    "x": 8,
+    "y": 325,
+    "w": 32,
+    "h": 32,
+    "clipped": false
+   },
+   {
+    "n": "Tidy geometry (simple force field, a",
+    "role": "button",
+    "x": 8,
+    "y": 374,
+    "w": 32,
+    "h": 32,
+    "clipped": false
+   },
+   {
+    "n": "Add hydrogens",
+    "role": "button",
+    "x": 8,
+    "y": 410,
+    "w": 32,
+    "h": 32,
+    "clipped": false
+   },
+   {
+    "n": "Remove hydrogens",
+    "role": "button",
+    "x": 8,
+    "y": 446,
+    "w": 32,
+    "h": 32,
+    "clipped": false
+   },
+   {
+    "n": "New molecule",
+    "role": "button",
+    "x": 8,
+    "y": 482,
+    "w": 32,
+    "h": 32,
+    "clipped": false
+   },
+   {
+    "n": "Ball & Stick",
+    "role": "radio",
+    "x": 63,
+    "y": 701,
+    "w": 75,
+    "h": 26,
+    "clipped": false
+   },
+   {
+    "n": "Space Filling",
+    "role": "radio",
+    "x": 138,
+    "y": 701,
+    "w": 82,
+    "h": 26,
+    "clipped": false
+   },
+   {
+    "n": "Stick",
+    "role": "radio",
+    "x": 220,
+    "y": 701,
+    "w": 40,
+    "h": 26,
+    "clipped": false
+   },
+   {
+    "n": "Wireframe",
+    "role": "radio",
+    "x": 261,
+    "y": 701,
+    "w": 71,
+    "h": 26,
+    "clipped": false
+   },
+   {
+    "n": "Zoom in",
+    "role": "button",
+    "x": 881,
+    "y": 695,
+    "w": 32,
+    "h": 32,
+    "clipped": false
+   },
+   {
+    "n": "Zoom out",
+    "role": "button",
+    "x": 913,
+    "y": 695,
+    "w": 32,
+    "h": 32,
+    "clipped": false
+   },
+   {
+    "n": "Fit",
+    "role": "button",
+    "x": 945,
+    "y": 695,
+    "w": 32,
+    "h": 32,
+    "clipped": false
+   },
+   {
+    "n": "Reset camera",
+    "role": "button",
+    "x": 977,
+    "y": 695,
+    "w": 32,
+    "h": 32,
+    "clipped": false
+   }
+  ],
+  "tiny": [],
+  "noName": [],
+  "offscreenCtrls": [],
+  "clippedCtrls": [],
+  "announcer": null,
+  "anims": [
+   {
+    "name": "spin",
+    "dur": 1000
+   }
+  ],
+  "trHits": []
+ },
+ "p1366t-tr": {
+  "lang": "tr",
+  "W": 1366,
+  "H": 1024,
+  "scrollW": 1366,
+  "bodyScrollW": 1366,
+  "coarse": true,
+  "hit": "32px",
+  "header": null,
+  "toolbars": [],
+  "sheet": null,
+  "aside": null,
+  "canvas": null,
+  "small": [],
+  "tiny": [],
+  "noName": [],
+  "offscreenCtrls": [],
+  "clippedCtrls": [],
+  "announcer": null,
+  "anims": []
+ },
+ "p1366t-en": {
+  "layout": "desktop",
+  "reduced": "true",
+  "lang": "en",
+  "W": 1366,
+  "H": 1024,
+  "scrollW": 1366,
+  "bodyScrollW": 1366,
+  "coarse": true,
+  "hit": "32px",
+  "header": {
+   "x": 0,
+   "y": 0,
+   "w": 1366,
+   "h": 44
+  },
+  "toolbars": [
+   {
+    "label": "Tools",
+    "r": {
+     "x": 0,
+     "y": 44,
+     "w": 48,
+     "h": 954
+    },
+    "sw": 47,
+    "cw": 47,
+    "sh": 954,
+    "ch": 954,
+    "buttons": [
+     {
+      "n": "Select",
+      "x": 8,
+      "y": 52,
+      "w": 32,
+      "h": 32,
+      "clipped": false
+     },
+     {
+      "n": "Rotate",
+      "x": 8,
+      "y": 88,
+      "w": 32,
+      "h": 32,
+      "clipped": false
+     },
+     {
+      "n": "Pan",
+      "x": 8,
+      "y": 124,
+      "w": 32,
+      "h": 32,
+      "clipped": false
+     },
+     {
+      "n": "Zoom",
+      "x": 8,
+      "y": 160,
+      "w": 32,
+      "h": 32,
+      "clipped": false
+     },
+     {
+      "n": "Add Atom",
+      "x": 8,
+      "y": 209,
+      "w": 32,
+      "h": 32,
+      "clipped": false
+     },
+     {
+      "n": "Add Bond",
+      "x": 8,
+      "y": 245,
+      "w": 32,
+      "h": 32,
+      "clipped": false
+     },
+     {
+      "n": "Delete",
+      "x": 8,
+      "y": 281,
+      "w": 32,
+      "h": 32,
+      "clipped": false
+     },
+     {
+      "n": "Measure",
+      "x": 8,
+      "y": 317,
+      "w": 32,
+      "h": 32,
+      "clipped": false
+     },
+     {
+      "n": "Tidy geometry (simple force fi",
+      "x": 8,
+      "y": 366,
+      "w": 32,
+      "h": 32,
+      "clipped": false
+     },
+     {
+      "n": "Add hydrogens",
+      "x": 8,
+      "y": 402,
+      "w": 32,
+      "h": 32,
+      "clipped": false
+     },
+     {
+      "n": "Remove hydrogens",
+      "x": 8,
+      "y": 438,
+      "w": 32,
+      "h": 32,
+      "clipped": false
+     },
+     {
+      "n": "New molecule",
+      "x": 8,
+      "y": 474,
+      "w": 32,
+      "h": 32,
+      "clipped": false
+     }
+    ]
+   }
+  ],
+  "sheet": null,
+  "aside": {
+   "x": 1046,
+   "y": 44,
+   "w": 320,
+   "h": 954
+  },
+  "canvas": {
+   "x": 48,
+   "y": 44,
+   "w": 998,
+   "h": 954,
+   "tabIndex": 0
+  },
+  "small": [
+   {
+    "n": "Project name",
+    "role": "input",
+    "x": 169,
+    "y": 6,
+    "w": 224,
+    "h": 32,
+    "clipped": false
+   },
+   {
+    "n": "Undo",
+    "role": "button",
+    "x": 947,
+    "y": 6,
+    "w": 32,
+    "h": 32,
+    "clipped": false
+   },
+   {
+    "n": "Redo",
+    "role": "button",
+    "x": 979,
+    "y": 6,
+    "w": 32,
+    "h": 32,
+    "clipped": false
+   },
+   {
+    "n": "Library",
+    "role": "button",
+    "x": 1028,
+    "y": 6,
+    "w": 78,
+    "h": 32,
+    "clipped": false
+   },
+   {
+    "n": "File",
+    "role": "button",
+    "x": 1110,
+    "y": 6,
+    "w": 75,
+    "h": 32,
+    "clipped": false
+   },
+   {
+    "n": "View",
+    "role": "button",
+    "x": 1190,
+    "y": 6,
+    "w": 83,
+    "h": 32,
+    "clipped": false
+   },
+   {
+    "n": "Settings",
+    "role": "button",
+    "x": 1290,
+    "y": 6,
+    "w": 32,
+    "h": 32,
+    "clipped": false
+   },
+   {
+    "n": "Close molecule info",
+    "role": "button",
+    "x": 1326,
+    "y": 6,
+    "w": 32,
+    "h": 32,
+    "clipped": false
+   },
+   {
+    "n": "Select",
+    "role": "button",
+    "x": 8,
+    "y": 52,
+    "w": 32,
+    "h": 32,
+    "clipped": false
+   },
+   {
+    "n": "Rotate",
+    "role": "button",
+    "x": 8,
+    "y": 88,
+    "w": 32,
+    "h": 32,
+    "clipped": false
+   },
+   {
+    "n": "Pan",
+    "role": "button",
+    "x": 8,
+    "y": 124,
+    "w": 32,
+    "h": 32,
+    "clipped": false
+   },
+   {
+    "n": "Zoom",
+    "role": "button",
+    "x": 8,
+    "y": 160,
+    "w": 32,
+    "h": 32,
+    "clipped": false
+   },
+   {
+    "n": "Add Atom",
+    "role": "button",
+    "x": 8,
+    "y": 209,
+    "w": 32,
+    "h": 32,
+    "clipped": false
+   },
+   {
+    "n": "Add Bond",
+    "role": "button",
+    "x": 8,
+    "y": 245,
+    "w": 32,
+    "h": 32,
+    "clipped": false
+   },
+   {
+    "n": "Delete",
+    "role": "button",
+    "x": 8,
+    "y": 281,
+    "w": 32,
+    "h": 32,
+    "clipped": false
+   },
+   {
+    "n": "Measure",
+    "role": "button",
+    "x": 8,
+    "y": 317,
+    "w": 32,
+    "h": 32,
+    "clipped": false
+   },
+   {
+    "n": "Tidy geometry (simple force field, a",
+    "role": "button",
+    "x": 8,
+    "y": 366,
+    "w": 32,
+    "h": 32,
+    "clipped": false
+   },
+   {
+    "n": "Add hydrogens",
+    "role": "button",
+    "x": 8,
+    "y": 402,
+    "w": 32,
+    "h": 32,
+    "clipped": false
+   },
+   {
+    "n": "Remove hydrogens",
+    "role": "button",
+    "x": 8,
+    "y": 438,
+    "w": 32,
+    "h": 32,
+    "clipped": false
+   },
+   {
+    "n": "New molecule",
+    "role": "button",
+    "x": 8,
+    "y": 474,
+    "w": 32,
+    "h": 32,
+    "clipped": false
+   },
+   {
+    "n": "Ball & Stick",
+    "role": "radio",
+    "x": 63,
+    "y": 957,
+    "w": 75,
+    "h": 26,
+    "clipped": false
+   },
+   {
+    "n": "Space Filling",
+    "role": "radio",
+    "x": 138,
+    "y": 957,
+    "w": 82,
+    "h": 26,
+    "clipped": false
+   },
+   {
+    "n": "Stick",
+    "role": "radio",
+    "x": 220,
+    "y": 957,
+    "w": 40,
+    "h": 26,
+    "clipped": false
+   },
+   {
+    "n": "Wireframe",
+    "role": "radio",
+    "x": 261,
+    "y": 957,
+    "w": 71,
+    "h": 26,
+    "clipped": false
+   },
+   {
+    "n": "Zoom in",
+    "role": "button",
+    "x": 903,
+    "y": 951,
+    "w": 32,
+    "h": 32,
+    "clipped": false
+   },
+   {
+    "n": "Zoom out",
+    "role": "button",
+    "x": 935,
+    "y": 951,
+    "w": 32,
+    "h": 32,
+    "clipped": false
+   },
+   {
+    "n": "Fit",
+    "role": "button",
+    "x": 967,
+    "y": 951,
+    "w": 32,
+    "h": 32,
+    "clipped": false
+   },
+   {
+    "n": "Reset camera",
+    "role": "button",
+    "x": 999,
+    "y": 951,
+    "w": 32,
+    "h": 32,
+    "clipped": false
+   },
+   {
+    "n": "Collapse panel",
+    "role": "button",
+    "x": 1330,
+    "y": 48,
+    "w": 32,
+    "h": 32,
+    "clipped": false
+   },
+   {
+    "n": "General",
+    "role": "button",
+    "x": 1047,
+    "y": 181,
+    "w": 319,
+    "h": 32,
+    "clipped": false
+   },
+   {
+    "n": "Structure",
+    "role": "button",
+    "x": 1047,
+    "y": 413,
+    "w": 319,
+    "h": 32,
+    "clipped": false
+   },
+   {
+    "n": "Hydrogen bonding",
+    "role": "button",
+    "x": 1047,
+    "y": 580,
+    "w": 319,
+    "h": 32,
+    "clipped": false
+   },
+   {
+    "n": "Mass composition",
+    "role": "button",
+    "x": 1047,
+    "y": 714,
+    "w": 319,
+    "h": 32,
+    "clipped": false
+   },
+   {
+    "n": "Functional groupsEstimated",
+    "role": "button",
+    "x": 1047,
+    "y": 801,
+    "w": 319,
+    "h": 32,
+    "clipped": false
+   },
+   {
+    "n": "Lipinski rules",
+    "role": "button",
+    "x": 1047,
+    "y": 864,
+    "w": 319,
+    "h": 32,
+    "clipped": false
+   },
+   {
+    "n": "Valence issues",
+    "role": "button",
+    "x": 1047,
+    "y": 897,
+    "w": 319,
+    "h": 32,
+    "clipped": false
+   }
+  ],
+  "tiny": [],
+  "noName": [],
+  "offscreenCtrls": [],
+  "clippedCtrls": [],
+  "announcer": "",
+  "anims": [],
+  "trHits": []
+ },
+ "d1366-tr": {
+  "layout": "desktop",
+  "reduced": "true",
+  "lang": "tr",
+  "W": 1366,
+  "H": 768,
+  "scrollW": 1366,
+  "bodyScrollW": 1366,
+  "coarse": false,
+  "hit": "32px",
+  "header": {
+   "x": 0,
+   "y": 0,
+   "w": 1366,
+   "h": 44
+  },
+  "toolbars": [
+   {
+    "label": "Araçlar",
+    "r": {
+     "x": 0,
+     "y": 44,
+     "w": 48,
+     "h": 698
+    },
+    "sw": 47,
+    "cw": 47,
+    "sh": 698,
+    "ch": 698,
+    "buttons": [
+     {
+      "n": "Seç",
+      "x": 8,
+      "y": 52,
+      "w": 32,
+      "h": 32,
+      "clipped": false
+     },
+     {
+      "n": "Döndür",
+      "x": 8,
+      "y": 88,
+      "w": 32,
+      "h": 32,
+      "clipped": false
+     },
+     {
+      "n": "Kaydır",
+      "x": 8,
+      "y": 124,
+      "w": 32,
+      "h": 32,
+      "clipped": false
+     },
+     {
+      "n": "Yakınlaştır",
+      "x": 8,
+      "y": 160,
+      "w": 32,
+      "h": 32,
+      "clipped": false
+     },
+     {
+      "n": "Atom Ekle",
+      "x": 8,
+      "y": 209,
+      "w": 32,
+      "h": 32,
+      "clipped": false
+     },
+     {
+      "n": "Bağ Ekle",
+      "x": 8,
+      "y": 245,
+      "w": 32,
+      "h": 32,
+      "clipped": false
+     },
+     {
+      "n": "Sil",
+      "x": 8,
+      "y": 281,
+      "w": 32,
+      "h": 32,
+      "clipped": false
+     },
+     {
+      "n": "Ölç",
+      "x": 8,
+      "y": 317,
+      "w": 32,
+      "h": 32,
+      "clipped": false
+     },
+     {
+      "n": "Geometriyi düzenle (basit kuvv",
+      "x": 8,
+      "y": 366,
+      "w": 32,
+      "h": 32,
+      "clipped": false
+     },
+     {
+      "n": "Hidrojen ekle",
+      "x": 8,
+      "y": 402,
+      "w": 32,
+      "h": 32,
+      "clipped": false
+     },
+     {
+      "n": "Hidrojenleri kaldır",
+      "x": 8,
+      "y": 438,
+      "w": 32,
+      "h": 32,
+      "clipped": false
+     },
+     {
+      "n": "Yeni molekül",
+      "x": 8,
+      "y": 474,
+      "w": 32,
+      "h": 32,
+      "clipped": false
+     }
+    ]
+   }
+  ],
+  "sheet": null,
+  "aside": {
+   "x": 1046,
+   "y": 44,
+   "w": 320,
+   "h": 698
+  },
+  "canvas": {
+   "x": 48,
+   "y": 44,
+   "w": 998,
+   "h": 698,
+   "tabIndex": 0
+  },
+  "small": [
+   {
+    "n": "Proje adı",
+    "role": "input",
+    "x": 169,
+    "y": 6,
+    "w": 224,
+    "h": 32,
+    "clipped": false
+   },
+   {
+    "n": "Geri al",
+    "role": "button",
+    "x": 881,
+    "y": 6,
+    "w": 32,
+    "h": 32,
+    "clipped": false
+   },
+   {
+    "n": "Yinele",
+    "role": "button",
+    "x": 913,
+    "y": 6,
+    "w": 32,
+    "h": 32,
+    "clipped": false
+   },
+   {
+    "n": "Kütüphane",
+    "role": "button",
+    "x": 962,
+    "y": 6,
+    "w": 101,
+    "h": 32,
+    "clipped": false
+   },
+   {
+    "n": "Dosya",
+    "role": "button",
+    "x": 1068,
+    "y": 6,
+    "w": 91,
+    "h": 32,
+    "clipped": false
+   },
+   {
+    "n": "Görünüm",
+    "role": "button",
+    "x": 1163,
+    "y": 6,
+    "w": 110,
+    "h": 32,
+    "clipped": false
+   },
+   {
+    "n": "Ayarlar",
+    "role": "button",
+    "x": 1290,
+    "y": 6,
+    "w": 32,
+    "h": 32,
+    "clipped": false
+   },
+   {
+    "n": "Molekül bilgisini kapat",
+    "role": "button",
+    "x": 1326,
+    "y": 6,
+    "w": 32,
+    "h": 32,
+    "clipped": false
+   },
+   {
+    "n": "Seç",
+    "role": "button",
+    "x": 8,
+    "y": 52,
+    "w": 32,
+    "h": 32,
+    "clipped": false
+   },
+   {
+    "n": "Döndür",
+    "role": "button",
+    "x": 8,
+    "y": 88,
+    "w": 32,
+    "h": 32,
+    "clipped": false
+   },
+   {
+    "n": "Kaydır",
+    "role": "button",
+    "x": 8,
+    "y": 124,
+    "w": 32,
+    "h": 32,
+    "clipped": false
+   },
+   {
+    "n": "Yakınlaştır",
+    "role": "button",
+    "x": 8,
+    "y": 160,
+    "w": 32,
+    "h": 32,
+    "clipped": false
+   },
+   {
+    "n": "Atom Ekle",
+    "role": "button",
+    "x": 8,
+    "y": 209,
+    "w": 32,
+    "h": 32,
+    "clipped": false
+   },
+   {
+    "n": "Bağ Ekle",
+    "role": "button",
+    "x": 8,
+    "y": 245,
+    "w": 32,
+    "h": 32,
+    "clipped": false
+   },
+   {
+    "n": "Sil",
+    "role": "button",
+    "x": 8,
+    "y": 281,
+    "w": 32,
+    "h": 32,
+    "clipped": false
+   },
+   {
+    "n": "Ölç",
+    "role": "button",
+    "x": 8,
+    "y": 317,
+    "w": 32,
+    "h": 32,
+    "clipped": false
+   },
+   {
+    "n": "Geometriyi düzenle (basit kuvvet ala",
+    "role": "button",
+    "x": 8,
+    "y": 366,
+    "w": 32,
+    "h": 32,
+    "clipped": false
+   },
+   {
+    "n": "Hidrojen ekle",
+    "role": "button",
+    "x": 8,
+    "y": 402,
+    "w": 32,
+    "h": 32,
+    "clipped": false
+   },
+   {
+    "n": "Hidrojenleri kaldır",
+    "role": "button",
+    "x": 8,
+    "y": 438,
+    "w": 32,
+    "h": 32,
+    "clipped": false
+   },
+   {
+    "n": "Yeni molekül",
+    "role": "button",
+    "x": 8,
+    "y": 474,
+    "w": 32,
+    "h": 32,
+    "clipped": false
+   },
+   {
+    "n": "Top-Çubuk",
+    "role": "radio",
+    "x": 63,
+    "y": 701,
+    "w": 74,
+    "h": 26,
+    "clipped": false
+   },
+   {
+    "n": "Uzay Dolgulu",
+    "role": "radio",
+    "x": 137,
+    "y": 701,
+    "w": 87,
+    "h": 26,
+    "clipped": false
+   },
+   {
+    "n": "Çubuk",
+    "role": "radio",
+    "x": 224,
+    "y": 701,
+    "w": 50,
+    "h": 26,
+    "clipped": false
+   },
+   {
+    "n": "Tel Kafes",
+    "role": "radio",
+    "x": 274,
+    "y": 701,
+    "w": 62,
+    "h": 26,
+    "clipped": false
+   },
+   {
+    "n": "Yakınlaş",
+    "role": "button",
+    "x": 903,
+    "y": 695,
+    "w": 32,
+    "h": 32,
+    "clipped": false
+   },
+   {
+    "n": "Uzaklaş",
+    "role": "button",
+    "x": 935,
+    "y": 695,
+    "w": 32,
+    "h": 32,
+    "clipped": false
+   },
+   {
+    "n": "Sığdır",
+    "role": "button",
+    "x": 967,
+    "y": 695,
+    "w": 32,
+    "h": 32,
+    "clipped": false
+   },
+   {
+    "n": "Kamerayı sıfırla",
+    "role": "button",
+    "x": 999,
+    "y": 695,
+    "w": 32,
+    "h": 32,
+    "clipped": false
+   },
+   {
+    "n": "Paneli daralt",
+    "role": "button",
+    "x": 1330,
+    "y": 48,
+    "w": 32,
+    "h": 32,
+    "clipped": false
+   },
+   {
+    "n": "Genel",
+    "role": "button",
+    "x": 1047,
+    "y": 181,
+    "w": 319,
+    "h": 32,
+    "clipped": false
+   },
+   {
+    "n": "Yapı",
+    "role": "button",
+    "x": 1047,
+    "y": 395,
+    "w": 319,
+    "h": 32,
+    "clipped": false
+   },
+   {
+    "n": "Hidrojen bağı",
+    "role": "button",
+    "x": 1047,
+    "y": 561,
+    "w": 319,
+    "h": 32,
+    "clipped": false
+   },
+   {
+    "n": "Kütlece yüzde bileşim",
+    "role": "button",
+    "x": 1047,
+    "y": 695,
+    "w": 319,
+    "h": 32,
+    "clipped": false
+   }
+  ],
+  "tiny": [],
+  "noName": [],
+  "offscreenCtrls": [],
+  "clippedCtrls": [
+   {
+    "n": "Fonksiyonel gruplarTahmini",
+    "x": 1047,
+    "y": 783,
+    "w": 319,
+    "h": 32
+   },
+   {
+    "n": "Lipinski kuralları",
+    "x": 1047,
+    "y": 846,
+    "w": 319,
+    "h": 32
+   },
+   {
+    "n": "Değerlik sorunları",
+    "x": 1047,
+    "y": 879,
+    "w": 319,
+    "h": 32
+   }
+  ],
+  "announcer": "",
+  "anims": []
+ },
+ "d1366-en": {
+  "layout": "desktop",
+  "reduced": "true",
+  "lang": "en",
+  "W": 1366,
+  "H": 768,
+  "scrollW": 1366,
+  "bodyScrollW": 1366,
+  "coarse": false,
+  "hit": "32px",
+  "header": {
+   "x": 0,
+   "y": 0,
+   "w": 1366,
+   "h": 44
+  },
+  "toolbars": [
+   {
+    "label": "Tools",
+    "r": {
+     "x": 0,
+     "y": 44,
+     "w": 48,
+     "h": 698
+    },
+    "sw": 47,
+    "cw": 47,
+    "sh": 698,
+    "ch": 698,
+    "buttons": [
+     {
+      "n": "Select",
+      "x": 8,
+      "y": 52,
+      "w": 32,
+      "h": 32,
+      "clipped": false
+     },
+     {
+      "n": "Rotate",
+      "x": 8,
+      "y": 88,
+      "w": 32,
+      "h": 32,
+      "clipped": false
+     },
+     {
+      "n": "Pan",
+      "x": 8,
+      "y": 124,
+      "w": 32,
+      "h": 32,
+      "clipped": false
+     },
+     {
+      "n": "Zoom",
+      "x": 8,
+      "y": 160,
+      "w": 32,
+      "h": 32,
+      "clipped": false
+     },
+     {
+      "n": "Add Atom",
+      "x": 8,
+      "y": 209,
+      "w": 32,
+      "h": 32,
+      "clipped": false
+     },
+     {
+      "n": "Add Bond",
+      "x": 8,
+      "y": 245,
+      "w": 32,
+      "h": 32,
+      "clipped": false
+     },
+     {
+      "n": "Delete",
+      "x": 8,
+      "y": 281,
+      "w": 32,
+      "h": 32,
+      "clipped": false
+     },
+     {
+      "n": "Measure",
+      "x": 8,
+      "y": 317,
+      "w": 32,
+      "h": 32,
+      "clipped": false
+     },
+     {
+      "n": "Tidy geometry (simple force fi",
+      "x": 8,
+      "y": 366,
+      "w": 32,
+      "h": 32,
+      "clipped": false
+     },
+     {
+      "n": "Add hydrogens",
+      "x": 8,
+      "y": 402,
+      "w": 32,
+      "h": 32,
+      "clipped": false
+     },
+     {
+      "n": "Remove hydrogens",
+      "x": 8,
+      "y": 438,
+      "w": 32,
+      "h": 32,
+      "clipped": false
+     },
+     {
+      "n": "New molecule",
+      "x": 8,
+      "y": 474,
+      "w": 32,
+      "h": 32,
+      "clipped": false
+     }
+    ]
+   }
+  ],
+  "sheet": null,
+  "aside": {
+   "x": 1046,
+   "y": 44,
+   "w": 320,
+   "h": 698
+  },
+  "canvas": {
+   "x": 48,
+   "y": 44,
+   "w": 998,
+   "h": 698,
+   "tabIndex": 0
+  },
+  "small": [
+   {
+    "n": "Project name",
+    "role": "input",
+    "x": 169,
+    "y": 6,
+    "w": 224,
+    "h": 32,
+    "clipped": false
+   },
+   {
+    "n": "Undo",
+    "role": "button",
+    "x": 947,
+    "y": 6,
+    "w": 32,
+    "h": 32,
+    "clipped": false
+   },
+   {
+    "n": "Redo",
+    "role": "button",
+    "x": 979,
+    "y": 6,
+    "w": 32,
+    "h": 32,
+    "clipped": false
+   },
+   {
+    "n": "Library",
+    "role": "button",
+    "x": 1028,
+    "y": 6,
+    "w": 78,
+    "h": 32,
+    "clipped": false
+   },
+   {
+    "n": "File",
+    "role": "button",
+    "x": 1110,
+    "y": 6,
+    "w": 75,
+    "h": 32,
+    "clipped": false
+   },
+   {
+    "n": "View",
+    "role": "button",
+    "x": 1190,
+    "y": 6,
+    "w": 83,
+    "h": 32,
+    "clipped": false
+   },
+   {
+    "n": "Settings",
+    "role": "button",
+    "x": 1290,
+    "y": 6,
+    "w": 32,
+    "h": 32,
+    "clipped": false
+   },
+   {
+    "n": "Close molecule info",
+    "role": "button",
+    "x": 1326,
+    "y": 6,
+    "w": 32,
+    "h": 32,
+    "clipped": false
+   },
+   {
+    "n": "Select",
+    "role": "button",
+    "x": 8,
+    "y": 52,
+    "w": 32,
+    "h": 32,
+    "clipped": false
+   },
+   {
+    "n": "Rotate",
+    "role": "button",
+    "x": 8,
+    "y": 88,
+    "w": 32,
+    "h": 32,
+    "clipped": false
+   },
+   {
+    "n": "Pan",
+    "role": "button",
+    "x": 8,
+    "y": 124,
+    "w": 32,
+    "h": 32,
+    "clipped": false
+   },
+   {
+    "n": "Zoom",
+    "role": "button",
+    "x": 8,
+    "y": 160,
+    "w": 32,
+    "h": 32,
+    "clipped": false
+   },
+   {
+    "n": "Add Atom",
+    "role": "button",
+    "x": 8,
+    "y": 209,
+    "w": 32,
+    "h": 32,
+    "clipped": false
+   },
+   {
+    "n": "Add Bond",
+    "role": "button",
+    "x": 8,
+    "y": 245,
+    "w": 32,
+    "h": 32,
+    "clipped": false
+   },
+   {
+    "n": "Delete",
+    "role": "button",
+    "x": 8,
+    "y": 281,
+    "w": 32,
+    "h": 32,
+    "clipped": false
+   },
+   {
+    "n": "Measure",
+    "role": "button",
+    "x": 8,
+    "y": 317,
+    "w": 32,
+    "h": 32,
+    "clipped": false
+   },
+   {
+    "n": "Tidy geometry (simple force field, a",
+    "role": "button",
+    "x": 8,
+    "y": 366,
+    "w": 32,
+    "h": 32,
+    "clipped": false
+   },
+   {
+    "n": "Add hydrogens",
+    "role": "button",
+    "x": 8,
+    "y": 402,
+    "w": 32,
+    "h": 32,
+    "clipped": false
+   },
+   {
+    "n": "Remove hydrogens",
+    "role": "button",
+    "x": 8,
+    "y": 438,
+    "w": 32,
+    "h": 32,
+    "clipped": false
+   },
+   {
+    "n": "New molecule",
+    "role": "button",
+    "x": 8,
+    "y": 474,
+    "w": 32,
+    "h": 32,
+    "clipped": false
+   },
+   {
+    "n": "Ball & Stick",
+    "role": "radio",
+    "x": 63,
+    "y": 701,
+    "w": 75,
+    "h": 26,
+    "clipped": false
+   },
+   {
+    "n": "Space Filling",
+    "role": "radio",
+    "x": 138,
+    "y": 701,
+    "w": 82,
+    "h": 26,
+    "clipped": false
+   },
+   {
+    "n": "Stick",
+    "role": "radio",
+    "x": 220,
+    "y": 701,
+    "w": 40,
+    "h": 26,
+    "clipped": false
+   },
+   {
+    "n": "Wireframe",
+    "role": "radio",
+    "x": 261,
+    "y": 701,
+    "w": 71,
+    "h": 26,
+    "clipped": false
+   },
+   {
+    "n": "Zoom in",
+    "role": "button",
+    "x": 903,
+    "y": 695,
+    "w": 32,
+    "h": 32,
+    "clipped": false
+   },
+   {
+    "n": "Zoom out",
+    "role": "button",
+    "x": 935,
+    "y": 695,
+    "w": 32,
+    "h": 32,
+    "clipped": false
+   },
+   {
+    "n": "Fit",
+    "role": "button",
+    "x": 967,
+    "y": 695,
+    "w": 32,
+    "h": 32,
+    "clipped": false
+   },
+   {
+    "n": "Reset camera",
+    "role": "button",
+    "x": 999,
+    "y": 695,
+    "w": 32,
+    "h": 32,
+    "clipped": false
+   },
+   {
+    "n": "Collapse panel",
+    "role": "button",
+    "x": 1330,
+    "y": 48,
+    "w": 32,
+    "h": 32,
+    "clipped": false
+   },
+   {
+    "n": "General",
+    "role": "button",
+    "x": 1047,
+    "y": 181,
+    "w": 319,
+    "h": 32,
+    "clipped": false
+   },
+   {
+    "n": "Structure",
+    "role": "button",
+    "x": 1047,
+    "y": 413,
+    "w": 319,
+    "h": 32,
+    "clipped": false
+   },
+   {
+    "n": "Hydrogen bonding",
+    "role": "button",
+    "x": 1047,
+    "y": 580,
+    "w": 319,
+    "h": 32,
+    "clipped": false
+   }
+  ],
+  "tiny": [],
+  "noName": [],
+  "offscreenCtrls": [],
+  "clippedCtrls": [
+   {
+    "n": "Mass composition",
+    "x": 1047,
+    "y": 714,
+    "w": 319,
+    "h": 32
+   },
+   {
+    "n": "Functional groupsEstimated",
+    "x": 1047,
+    "y": 801,
+    "w": 319,
+    "h": 32
+   },
+   {
+    "n": "Lipinski rules",
+    "x": 1047,
+    "y": 864,
+    "w": 319,
+    "h": 32
+   },
+   {
+    "n": "Valence issues",
+    "x": 1047,
+    "y": 897,
+    "w": 319,
+    "h": 32
+   }
+  ],
+  "announcer": "",
+  "anims": [],
+  "trHits": []
+ },
+ "d1920-tr": {
+  "layout": "desktop",
+  "reduced": "true",
+  "lang": "tr",
+  "W": 1920,
+  "H": 1080,
+  "scrollW": 1920,
+  "bodyScrollW": 1920,
+  "coarse": false,
+  "hit": "32px",
+  "header": {
+   "x": 0,
+   "y": 0,
+   "w": 1920,
+   "h": 44
+  },
+  "toolbars": [
+   {
+    "label": "Araçlar",
+    "r": {
+     "x": 0,
+     "y": 44,
+     "w": 48,
+     "h": 1010
+    },
+    "sw": 47,
+    "cw": 47,
+    "sh": 1010,
+    "ch": 1010,
+    "buttons": [
+     {
+      "n": "Seç",
+      "x": 8,
+      "y": 52,
+      "w": 32,
+      "h": 32,
+      "clipped": false
+     },
+     {
+      "n": "Döndür",
+      "x": 8,
+      "y": 88,
+      "w": 32,
+      "h": 32,
+      "clipped": false
+     },
+     {
+      "n": "Kaydır",
+      "x": 8,
+      "y": 124,
+      "w": 32,
+      "h": 32,
+      "clipped": false
+     },
+     {
+      "n": "Yakınlaştır",
+      "x": 8,
+      "y": 160,
+      "w": 32,
+      "h": 32,
+      "clipped": false
+     },
+     {
+      "n": "Atom Ekle",
+      "x": 8,
+      "y": 209,
+      "w": 32,
+      "h": 32,
+      "clipped": false
+     },
+     {
+      "n": "Bağ Ekle",
+      "x": 8,
+      "y": 245,
+      "w": 32,
+      "h": 32,
+      "clipped": false
+     },
+     {
+      "n": "Sil",
+      "x": 8,
+      "y": 281,
+      "w": 32,
+      "h": 32,
+      "clipped": false
+     },
+     {
+      "n": "Ölç",
+      "x": 8,
+      "y": 317,
+      "w": 32,
+      "h": 32,
+      "clipped": false
+     },
+     {
+      "n": "Geometriyi düzenle (basit kuvv",
+      "x": 8,
+      "y": 366,
+      "w": 32,
+      "h": 32,
+      "clipped": false
+     },
+     {
+      "n": "Hidrojen ekle",
+      "x": 8,
+      "y": 402,
+      "w": 32,
+      "h": 32,
+      "clipped": false
+     },
+     {
+      "n": "Hidrojenleri kaldır",
+      "x": 8,
+      "y": 438,
+      "w": 32,
+      "h": 32,
+      "clipped": false
+     },
+     {
+      "n": "Yeni molekül",
+      "x": 8,
+      "y": 474,
+      "w": 32,
+      "h": 32,
+      "clipped": false
+     }
+    ]
+   }
+  ],
+  "sheet": null,
+  "aside": {
+   "x": 1600,
+   "y": 44,
+   "w": 320,
+   "h": 1010
+  },
+  "canvas": {
+   "x": 48,
+   "y": 44,
+   "w": 1552,
+   "h": 1010,
+   "tabIndex": 0
+  },
+  "small": [
+   {
+    "n": "Proje adı",
+    "role": "input",
+    "x": 169,
+    "y": 6,
+    "w": 224,
+    "h": 32,
+    "clipped": false
+   },
+   {
+    "n": "Geri al",
+    "role": "button",
+    "x": 1435,
+    "y": 6,
+    "w": 32,
+    "h": 32,
+    "clipped": false
+   },
+   {
+    "n": "Yinele",
+    "role": "button",
+    "x": 1467,
+    "y": 6,
+    "w": 32,
+    "h": 32,
+    "clipped": false
+   },
+   {
+    "n": "Kütüphane",
+    "role": "button",
+    "x": 1516,
+    "y": 6,
+    "w": 101,
+    "h": 32,
+    "clipped": false
+   },
+   {
+    "n": "Dosya",
+    "role": "button",
+    "x": 1622,
+    "y": 6,
+    "w": 91,
+    "h": 32,
+    "clipped": false
+   },
+   {
+    "n": "Görünüm",
+    "role": "button",
+    "x": 1717,
+    "y": 6,
+    "w": 110,
+    "h": 32,
+    "clipped": false
+   },
+   {
+    "n": "Ayarlar",
+    "role": "button",
+    "x": 1844,
+    "y": 6,
+    "w": 32,
+    "h": 32,
+    "clipped": false
+   },
+   {
+    "n": "Molekül bilgisini kapat",
+    "role": "button",
+    "x": 1880,
+    "y": 6,
+    "w": 32,
+    "h": 32,
+    "clipped": false
+   },
+   {
+    "n": "Seç",
+    "role": "button",
+    "x": 8,
+    "y": 52,
+    "w": 32,
+    "h": 32,
+    "clipped": false
+   },
+   {
+    "n": "Döndür",
+    "role": "button",
+    "x": 8,
+    "y": 88,
+    "w": 32,
+    "h": 32,
+    "clipped": false
+   },
+   {
+    "n": "Kaydır",
+    "role": "button",
+    "x": 8,
+    "y": 124,
+    "w": 32,
+    "h": 32,
+    "clipped": false
+   },
+   {
+    "n": "Yakınlaştır",
+    "role": "button",
+    "x": 8,
+    "y": 160,
+    "w": 32,
+    "h": 32,
+    "clipped": false
+   },
+   {
+    "n": "Atom Ekle",
+    "role": "button",
+    "x": 8,
+    "y": 209,
+    "w": 32,
+    "h": 32,
+    "clipped": false
+   },
+   {
+    "n": "Bağ Ekle",
+    "role": "button",
+    "x": 8,
+    "y": 245,
+    "w": 32,
+    "h": 32,
+    "clipped": false
+   },
+   {
+    "n": "Sil",
+    "role": "button",
+    "x": 8,
+    "y": 281,
+    "w": 32,
+    "h": 32,
+    "clipped": false
+   },
+   {
+    "n": "Ölç",
+    "role": "button",
+    "x": 8,
+    "y": 317,
+    "w": 32,
+    "h": 32,
+    "clipped": false
+   },
+   {
+    "n": "Geometriyi düzenle (basit kuvvet ala",
+    "role": "button",
+    "x": 8,
+    "y": 366,
+    "w": 32,
+    "h": 32,
+    "clipped": false
+   },
+   {
+    "n": "Hidrojen ekle",
+    "role": "button",
+    "x": 8,
+    "y": 402,
+    "w": 32,
+    "h": 32,
+    "clipped": false
+   },
+   {
+    "n": "Hidrojenleri kaldır",
+    "role": "button",
+    "x": 8,
+    "y": 438,
+    "w": 32,
+    "h": 32,
+    "clipped": false
+   },
+   {
+    "n": "Yeni molekül",
+    "role": "button",
+    "x": 8,
+    "y": 474,
+    "w": 32,
+    "h": 32,
+    "clipped": false
+   },
+   {
+    "n": "Top-Çubuk",
+    "role": "radio",
+    "x": 63,
+    "y": 1013,
+    "w": 74,
+    "h": 26,
+    "clipped": false
+   },
+   {
+    "n": "Uzay Dolgulu",
+    "role": "radio",
+    "x": 137,
+    "y": 1013,
+    "w": 87,
+    "h": 26,
+    "clipped": false
+   },
+   {
+    "n": "Çubuk",
+    "role": "radio",
+    "x": 224,
+    "y": 1013,
+    "w": 50,
+    "h": 26,
+    "clipped": false
+   },
+   {
+    "n": "Tel Kafes",
+    "role": "radio",
+    "x": 274,
+    "y": 1013,
+    "w": 62,
+    "h": 26,
+    "clipped": false
+   },
+   {
+    "n": "Yakınlaş",
+    "role": "button",
+    "x": 1457,
+    "y": 1007,
+    "w": 32,
+    "h": 32,
+    "clipped": false
+   },
+   {
+    "n": "Uzaklaş",
+    "role": "button",
+    "x": 1489,
+    "y": 1007,
+    "w": 32,
+    "h": 32,
+    "clipped": false
+   },
+   {
+    "n": "Sığdır",
+    "role": "button",
+    "x": 1521,
+    "y": 1007,
+    "w": 32,
+    "h": 32,
+    "clipped": false
+   },
+   {
+    "n": "Kamerayı sıfırla",
+    "role": "button",
+    "x": 1553,
+    "y": 1007,
+    "w": 32,
+    "h": 32,
+    "clipped": false
+   },
+   {
+    "n": "Paneli daralt",
+    "role": "button",
+    "x": 1884,
+    "y": 48,
+    "w": 32,
+    "h": 32,
+    "clipped": false
+   },
+   {
+    "n": "Genel",
+    "role": "button",
+    "x": 1601,
+    "y": 181,
+    "w": 319,
+    "h": 32,
+    "clipped": false
+   },
+   {
+    "n": "Yapı",
+    "role": "button",
+    "x": 1601,
+    "y": 395,
+    "w": 319,
+    "h": 32,
+    "clipped": false
+   },
+   {
+    "n": "Hidrojen bağı",
+    "role": "button",
+    "x": 1601,
+    "y": 561,
+    "w": 319,
+    "h": 32,
+    "clipped": false
+   },
+   {
+    "n": "Kütlece yüzde bileşim",
+    "role": "button",
+    "x": 1601,
+    "y": 695,
+    "w": 319,
+    "h": 32,
+    "clipped": false
+   },
+   {
+    "n": "Fonksiyonel gruplarTahmini",
+    "role": "button",
+    "x": 1601,
+    "y": 783,
+    "w": 319,
+    "h": 32,
+    "clipped": false
+   },
+   {
+    "n": "Lipinski kuralları",
+    "role": "button",
+    "x": 1601,
+    "y": 846,
+    "w": 319,
+    "h": 32,
+    "clipped": false
+   },
+   {
+    "n": "Değerlik sorunları",
+    "role": "button",
+    "x": 1601,
+    "y": 879,
+    "w": 319,
+    "h": 32,
+    "clipped": false
+   }
+  ],
+  "tiny": [],
+  "noName": [],
+  "offscreenCtrls": [],
+  "clippedCtrls": [],
+  "announcer": "",
+  "anims": []
+ },
+ "d1920-en": {
+  "layout": "desktop",
+  "reduced": "true",
+  "lang": "en",
+  "W": 1920,
+  "H": 1080,
+  "scrollW": 1920,
+  "bodyScrollW": 1920,
+  "coarse": false,
+  "hit": "32px",
+  "header": {
+   "x": 0,
+   "y": 0,
+   "w": 1920,
+   "h": 44
+  },
+  "toolbars": [
+   {
+    "label": "Tools",
+    "r": {
+     "x": 0,
+     "y": 44,
+     "w": 48,
+     "h": 1010
+    },
+    "sw": 47,
+    "cw": 47,
+    "sh": 1010,
+    "ch": 1010,
+    "buttons": [
+     {
+      "n": "Select",
+      "x": 8,
+      "y": 52,
+      "w": 32,
+      "h": 32,
+      "clipped": false
+     },
+     {
+      "n": "Rotate",
+      "x": 8,
+      "y": 88,
+      "w": 32,
+      "h": 32,
+      "clipped": false
+     },
+     {
+      "n": "Pan",
+      "x": 8,
+      "y": 124,
+      "w": 32,
+      "h": 32,
+      "clipped": false
+     },
+     {
+      "n": "Zoom",
+      "x": 8,
+      "y": 160,
+      "w": 32,
+      "h": 32,
+      "clipped": false
+     },
+     {
+      "n": "Add Atom",
+      "x": 8,
+      "y": 209,
+      "w": 32,
+      "h": 32,
+      "clipped": false
+     },
+     {
+      "n": "Add Bond",
+      "x": 8,
+      "y": 245,
+      "w": 32,
+      "h": 32,
+      "clipped": false
+     },
+     {
+      "n": "Delete",
+      "x": 8,
+      "y": 281,
+      "w": 32,
+      "h": 32,
+      "clipped": false
+     },
+     {
+      "n": "Measure",
+      "x": 8,
+      "y": 317,
+      "w": 32,
+      "h": 32,
+      "clipped": false
+     },
+     {
+      "n": "Tidy geometry (simple force fi",
+      "x": 8,
+      "y": 366,
+      "w": 32,
+      "h": 32,
+      "clipped": false
+     },
+     {
+      "n": "Add hydrogens",
+      "x": 8,
+      "y": 402,
+      "w": 32,
+      "h": 32,
+      "clipped": false
+     },
+     {
+      "n": "Remove hydrogens",
+      "x": 8,
+      "y": 438,
+      "w": 32,
+      "h": 32,
+      "clipped": false
+     },
+     {
+      "n": "New molecule",
+      "x": 8,
+      "y": 474,
+      "w": 32,
+      "h": 32,
+      "clipped": false
+     }
+    ]
+   }
+  ],
+  "sheet": null,
+  "aside": {
+   "x": 1600,
+   "y": 44,
+   "w": 320,
+   "h": 1010
+  },
+  "canvas": {
+   "x": 48,
+   "y": 44,
+   "w": 1552,
+   "h": 1010,
+   "tabIndex": 0
+  },
+  "small": [
+   {
+    "n": "Project name",
+    "role": "input",
+    "x": 169,
+    "y": 6,
+    "w": 224,
+    "h": 32,
+    "clipped": false
+   },
+   {
+    "n": "Undo",
+    "role": "button",
+    "x": 1501,
+    "y": 6,
+    "w": 32,
+    "h": 32,
+    "clipped": false
+   },
+   {
+    "n": "Redo",
+    "role": "button",
+    "x": 1533,
+    "y": 6,
+    "w": 32,
+    "h": 32,
+    "clipped": false
+   },
+   {
+    "n": "Library",
+    "role": "button",
+    "x": 1582,
+    "y": 6,
+    "w": 78,
+    "h": 32,
+    "clipped": false
+   },
+   {
+    "n": "File",
+    "role": "button",
+    "x": 1664,
+    "y": 6,
+    "w": 75,
+    "h": 32,
+    "clipped": false
+   },
+   {
+    "n": "View",
+    "role": "button",
+    "x": 1744,
+    "y": 6,
+    "w": 83,
+    "h": 32,
+    "clipped": false
+   },
+   {
+    "n": "Settings",
+    "role": "button",
+    "x": 1844,
+    "y": 6,
+    "w": 32,
+    "h": 32,
+    "clipped": false
+   },
+   {
+    "n": "Close molecule info",
+    "role": "button",
+    "x": 1880,
+    "y": 6,
+    "w": 32,
+    "h": 32,
+    "clipped": false
+   },
+   {
+    "n": "Select",
+    "role": "button",
+    "x": 8,
+    "y": 52,
+    "w": 32,
+    "h": 32,
+    "clipped": false
+   },
+   {
+    "n": "Rotate",
+    "role": "button",
+    "x": 8,
+    "y": 88,
+    "w": 32,
+    "h": 32,
+    "clipped": false
+   },
+   {
+    "n": "Pan",
+    "role": "button",
+    "x": 8,
+    "y": 124,
+    "w": 32,
+    "h": 32,
+    "clipped": false
+   },
+   {
+    "n": "Zoom",
+    "role": "button",
+    "x": 8,
+    "y": 160,
+    "w": 32,
+    "h": 32,
+    "clipped": false
+   },
+   {
+    "n": "Add Atom",
+    "role": "button",
+    "x": 8,
+    "y": 209,
+    "w": 32,
+    "h": 32,
+    "clipped": false
+   },
+   {
+    "n": "Add Bond",
+    "role": "button",
+    "x": 8,
+    "y": 245,
+    "w": 32,
+    "h": 32,
+    "clipped": false
+   },
+   {
+    "n": "Delete",
+    "role": "button",
+    "x": 8,
+    "y": 281,
+    "w": 32,
+    "h": 32,
+    "clipped": false
+   },
+   {
+    "n": "Measure",
+    "role": "button",
+    "x": 8,
+    "y": 317,
+    "w": 32,
+    "h": 32,
+    "clipped": false
+   },
+   {
+    "n": "Tidy geometry (simple force field, a",
+    "role": "button",
+    "x": 8,
+    "y": 366,
+    "w": 32,
+    "h": 32,
+    "clipped": false
+   },
+   {
+    "n": "Add hydrogens",
+    "role": "button",
+    "x": 8,
+    "y": 402,
+    "w": 32,
+    "h": 32,
+    "clipped": false
+   },
+   {
+    "n": "Remove hydrogens",
+    "role": "button",
+    "x": 8,
+    "y": 438,
+    "w": 32,
+    "h": 32,
+    "clipped": false
+   },
+   {
+    "n": "New molecule",
+    "role": "button",
+    "x": 8,
+    "y": 474,
+    "w": 32,
+    "h": 32,
+    "clipped": false
+   },
+   {
+    "n": "Ball & Stick",
+    "role": "radio",
+    "x": 63,
+    "y": 1013,
+    "w": 75,
+    "h": 26,
+    "clipped": false
+   },
+   {
+    "n": "Space Filling",
+    "role": "radio",
+    "x": 138,
+    "y": 1013,
+    "w": 82,
+    "h": 26,
+    "clipped": false
+   },
+   {
+    "n": "Stick",
+    "role": "radio",
+    "x": 220,
+    "y": 1013,
+    "w": 40,
+    "h": 26,
+    "clipped": false
+   },
+   {
+    "n": "Wireframe",
+    "role": "radio",
+    "x": 261,
+    "y": 1013,
+    "w": 71,
+    "h": 26,
+    "clipped": false
+   },
+   {
+    "n": "Zoom in",
+    "role": "button",
+    "x": 1457,
+    "y": 1007,
+    "w": 32,
+    "h": 32,
+    "clipped": false
+   },
+   {
+    "n": "Zoom out",
+    "role": "button",
+    "x": 1489,
+    "y": 1007,
+    "w": 32,
+    "h": 32,
+    "clipped": false
+   },
+   {
+    "n": "Fit",
+    "role": "button",
+    "x": 1521,
+    "y": 1007,
+    "w": 32,
+    "h": 32,
+    "clipped": false
+   },
+   {
+    "n": "Reset camera",
+    "role": "button",
+    "x": 1553,
+    "y": 1007,
+    "w": 32,
+    "h": 32,
+    "clipped": false
+   },
+   {
+    "n": "Collapse panel",
+    "role": "button",
+    "x": 1884,
+    "y": 48,
+    "w": 32,
+    "h": 32,
+    "clipped": false
+   },
+   {
+    "n": "General",
+    "role": "button",
+    "x": 1601,
+    "y": 181,
+    "w": 319,
+    "h": 32,
+    "clipped": false
+   },
+   {
+    "n": "Structure",
+    "role": "button",
+    "x": 1601,
+    "y": 413,
+    "w": 319,
+    "h": 32,
+    "clipped": false
+   },
+   {
+    "n": "Hydrogen bonding",
+    "role": "button",
+    "x": 1601,
+    "y": 580,
+    "w": 319,
+    "h": 32,
+    "clipped": false
+   },
+   {
+    "n": "Mass composition",
+    "role": "button",
+    "x": 1601,
+    "y": 714,
+    "w": 319,
+    "h": 32,
+    "clipped": false
+   },
+   {
+    "n": "Functional groupsEstimated",
+    "role": "button",
+    "x": 1601,
+    "y": 801,
+    "w": 319,
+    "h": 32,
+    "clipped": false
+   },
+   {
+    "n": "Lipinski rules",
+    "role": "button",
+    "x": 1601,
+    "y": 864,
+    "w": 319,
+    "h": 32,
+    "clipped": false
+   },
+   {
+    "n": "Valence issues",
+    "role": "button",
+    "x": 1601,
+    "y": 897,
+    "w": 319,
+    "h": 32,
+    "clipped": false
+   }
+  ],
+  "tiny": [],
+  "noName": [],
+  "offscreenCtrls": [],
+  "clippedCtrls": [],
+  "announcer": "",
+  "anims": [],
+  "trHits": []
+ },
+ "l844-tr": {
+  "layout": "tablet",
+  "reduced": "true",
+  "lang": "tr",
+  "W": 844,
+  "H": 390,
+  "scrollW": 844,
+  "bodyScrollW": 844,
+  "coarse": true,
+  "hit": "40px",
+  "header": {
+   "x": 0,
+   "y": 0,
+   "w": 844,
+   "h": 40
+  },
+  "toolbars": [
+   {
+    "label": "Araçlar",
+    "r": {
+     "x": 0,
+     "y": 40,
+     "w": 100,
+     "h": 324
+    },
+    "sw": 99,
+    "cw": 99,
+    "sh": 324,
+    "ch": 324,
+    "buttons": [
+     {
+      "n": "Seç",
+      "x": 9,
+      "y": 44,
+      "w": 40,
+      "h": 40,
+      "clipped": false
+     },
+     {
+      "n": "Döndür",
+      "x": 51,
+      "y": 44,
+      "w": 40,
+      "h": 40,
+      "clipped": false
+     },
+     {
+      "n": "Kaydır",
+      "x": 9,
+      "y": 86,
+      "w": 40,
+      "h": 40,
+      "clipped": false
+     },
+     {
+      "n": "Yakınlaştır",
+      "x": 51,
+      "y": 86,
+      "w": 40,
+      "h": 40,
+      "clipped": false
+     },
+     {
+      "n": "Atom Ekle",
+      "x": 9,
+      "y": 139,
+      "w": 40,
+      "h": 40,
+      "clipped": false
+     },
+     {
+      "n": "Bağ Ekle",
+      "x": 51,
+      "y": 139,
+      "w": 40,
+      "h": 40,
+      "clipped": false
+     },
+     {
+      "n": "Sil",
+      "x": 9,
+      "y": 181,
+      "w": 40,
+      "h": 40,
+      "clipped": false
+     },
+     {
+      "n": "Ölç",
+      "x": 51,
+      "y": 181,
+      "w": 40,
+      "h": 40,
+      "clipped": false
+     },
+     {
+      "n": "Geometriyi düzenle (basit kuvv",
+      "x": 9,
+      "y": 234,
+      "w": 40,
+      "h": 40,
+      "clipped": false
+     },
+     {
+      "n": "Hidrojen ekle",
+      "x": 51,
+      "y": 234,
+      "w": 40,
+      "h": 40,
+      "clipped": false
+     },
+     {
+      "n": "Hidrojenleri kaldır",
+      "x": 9,
+      "y": 276,
+      "w": 40,
+      "h": 40,
+      "clipped": false
+     },
+     {
+      "n": "Yeni molekül",
+      "x": 51,
+      "y": 276,
+      "w": 40,
+      "h": 40,
+      "clipped": false
+     }
+    ]
+   }
+  ],
+  "sheet": null,
+  "aside": {
+   "x": 524,
+   "y": 40,
+   "w": 320,
+   "h": 324
+  },
+  "canvas": {
+   "x": 100,
+   "y": 40,
+   "w": 424,
+   "h": 324,
+   "tabIndex": 0
+  },
+  "small": [
+   {
+    "n": "Proje adı",
+    "role": "input",
+    "x": 59,
+    "y": 0,
+    "w": 144,
+    "h": 40,
+    "clipped": false
+   },
+   {
+    "n": "Geri al",
+    "role": "button",
+    "x": 510,
+    "y": 0,
+    "w": 40,
+    "h": 40,
+    "clipped": false
+   },
+   {
+    "n": "Yinele",
+    "role": "button",
+    "x": 550,
+    "y": 0,
+    "w": 40,
+    "h": 40,
+    "clipped": false
+   },
+   {
+    "n": "Kütüphane",
+    "role": "button",
+    "x": 607,
+    "y": 0,
+    "w": 40,
+    "h": 40,
+    "clipped": false
+   },
+   {
+    "n": "Dosya",
+    "role": "button",
+    "x": 651,
+    "y": 0,
+    "w": 40,
+    "h": 40,
+    "clipped": false
+   },
+   {
+    "n": "Görünüm",
+    "role": "button",
+    "x": 695,
+    "y": 0,
+    "w": 40,
+    "h": 40,
+    "clipped": false
+   },
+   {
+    "n": "Ayarlar",
+    "role": "button",
+    "x": 752,
+    "y": 0,
+    "w": 40,
+    "h": 40,
+    "clipped": false
+   },
+   {
+    "n": "Molekül bilgisini kapat",
+    "role": "button",
+    "x": 796,
+    "y": 0,
+    "w": 40,
+    "h": 40,
+    "clipped": false
+   },
+   {
+    "n": "Seç",
+    "role": "button",
+    "x": 9,
+    "y": 44,
+    "w": 40,
+    "h": 40,
+    "clipped": false
+   },
+   {
+    "n": "Döndür",
+    "role": "button",
+    "x": 51,
+    "y": 44,
+    "w": 40,
+    "h": 40,
+    "clipped": false
+   },
+   {
+    "n": "Kaydır",
+    "role": "button",
+    "x": 9,
+    "y": 86,
+    "w": 40,
+    "h": 40,
+    "clipped": false
+   },
+   {
+    "n": "Yakınlaştır",
+    "role": "button",
+    "x": 51,
+    "y": 86,
+    "w": 40,
+    "h": 40,
+    "clipped": false
+   },
+   {
+    "n": "Atom Ekle",
+    "role": "button",
+    "x": 9,
+    "y": 139,
+    "w": 40,
+    "h": 40,
+    "clipped": false
+   },
+   {
+    "n": "Bağ Ekle",
+    "role": "button",
+    "x": 51,
+    "y": 139,
+    "w": 40,
+    "h": 40,
+    "clipped": false
+   },
+   {
+    "n": "Sil",
+    "role": "button",
+    "x": 9,
+    "y": 181,
+    "w": 40,
+    "h": 40,
+    "clipped": false
+   },
+   {
+    "n": "Ölç",
+    "role": "button",
+    "x": 51,
+    "y": 181,
+    "w": 40,
+    "h": 40,
+    "clipped": false
+   },
+   {
+    "n": "Geometriyi düzenle (basit kuvvet ala",
+    "role": "button",
+    "x": 9,
+    "y": 234,
+    "w": 40,
+    "h": 40,
+    "clipped": false
+   },
+   {
+    "n": "Hidrojen ekle",
+    "role": "button",
+    "x": 51,
+    "y": 234,
+    "w": 40,
+    "h": 40,
+    "clipped": false
+   },
+   {
+    "n": "Hidrojenleri kaldır",
+    "role": "button",
+    "x": 9,
+    "y": 276,
+    "w": 40,
+    "h": 40,
+    "clipped": false
+   },
+   {
+    "n": "Yeni molekül",
+    "role": "button",
+    "x": 51,
+    "y": 276,
+    "w": 40,
+    "h": 40,
+    "clipped": false
+   },
+   {
+    "n": "Top-Çubuk",
+    "role": "radio",
+    "x": 115,
+    "y": 261,
+    "w": 74,
+    "h": 34,
+    "clipped": false
+   },
+   {
+    "n": "Uzay Dolgulu",
+    "role": "radio",
+    "x": 189,
+    "y": 261,
+    "w": 87,
+    "h": 34,
+    "clipped": false
+   },
+   {
+    "n": "Çubuk",
+    "role": "radio",
+    "x": 276,
+    "y": 261,
+    "w": 50,
+    "h": 34,
+    "clipped": false
+   },
+   {
+    "n": "Tel Kafes",
+    "role": "radio",
+    "x": 326,
+    "y": 261,
+    "w": 62,
+    "h": 34,
+    "clipped": false
+   },
+   {
+    "n": "Yakınlaş",
+    "role": "button",
+    "x": 115,
+    "y": 309,
+    "w": 40,
+    "h": 40,
+    "clipped": false
+   },
+   {
+    "n": "Uzaklaş",
+    "role": "button",
+    "x": 155,
+    "y": 309,
+    "w": 40,
+    "h": 40,
+    "clipped": false
+   },
+   {
+    "n": "Sığdır",
+    "role": "button",
+    "x": 195,
+    "y": 309,
+    "w": 40,
+    "h": 40,
+    "clipped": false
+   },
+   {
+    "n": "Kamerayı sıfırla",
+    "role": "button",
+    "x": 235,
+    "y": 309,
+    "w": 40,
+    "h": 40,
+    "clipped": false
+   },
+   {
+    "n": "Paneli kapat",
+    "role": "button",
+    "x": 800,
+    "y": 40,
+    "w": 40,
+    "h": 40,
+    "clipped": false
+   },
+   {
+    "n": "Genel",
+    "role": "button",
+    "x": 525,
+    "y": 177,
+    "w": 319,
+    "h": 40,
+    "clipped": false
+   }
+  ],
+  "tiny": [],
+  "noName": [],
+  "offscreenCtrls": [],
+  "clippedCtrls": [
+   {
+    "n": "Yapı",
+    "x": 525,
+    "y": 399,
+    "w": 319,
+    "h": 40
+   },
+   {
+    "n": "Hidrojen bağı",
+    "x": 525,
+    "y": 573,
+    "w": 319,
+    "h": 40
+   },
+   {
+    "n": "Kütlece yüzde bileşim",
+    "x": 525,
+    "y": 715,
+    "w": 319,
+    "h": 40
+   },
+   {
+    "n": "Fonksiyonel gruplarTahmini",
+    "x": 525,
+    "y": 811,
+    "w": 319,
+    "h": 40
+   },
+   {
+    "n": "Lipinski kuralları",
+    "x": 525,
+    "y": 882,
+    "w": 319,
+    "h": 40
+   },
+   {
+    "n": "Değerlik sorunları",
+    "x": 525,
+    "y": 923,
+    "w": 319,
+    "h": 40
+   }
+  ],
+  "announcer": "",
+  "anims": []
+ },
+ "l844-en": {
+  "layout": "tablet",
+  "reduced": "true",
+  "lang": "en",
+  "W": 844,
+  "H": 390,
+  "scrollW": 844,
+  "bodyScrollW": 844,
+  "coarse": true,
+  "hit": "40px",
+  "header": {
+   "x": 0,
+   "y": 0,
+   "w": 844,
+   "h": 40
+  },
+  "toolbars": [
+   {
+    "label": "Tools",
+    "r": {
+     "x": 0,
+     "y": 40,
+     "w": 100,
+     "h": 324
+    },
+    "sw": 99,
+    "cw": 99,
+    "sh": 324,
+    "ch": 324,
+    "buttons": [
+     {
+      "n": "Select",
+      "x": 9,
+      "y": 44,
+      "w": 40,
+      "h": 40,
+      "clipped": false
+     },
+     {
+      "n": "Rotate",
+      "x": 51,
+      "y": 44,
+      "w": 40,
+      "h": 40,
+      "clipped": false
+     },
+     {
+      "n": "Pan",
+      "x": 9,
+      "y": 86,
+      "w": 40,
+      "h": 40,
+      "clipped": false
+     },
+     {
+      "n": "Zoom",
+      "x": 51,
+      "y": 86,
+      "w": 40,
+      "h": 40,
+      "clipped": false
+     },
+     {
+      "n": "Add Atom",
+      "x": 9,
+      "y": 139,
+      "w": 40,
+      "h": 40,
+      "clipped": false
+     },
+     {
+      "n": "Add Bond",
+      "x": 51,
+      "y": 139,
+      "w": 40,
+      "h": 40,
+      "clipped": false
+     },
+     {
+      "n": "Delete",
+      "x": 9,
+      "y": 181,
+      "w": 40,
+      "h": 40,
+      "clipped": false
+     },
+     {
+      "n": "Measure",
+      "x": 51,
+      "y": 181,
+      "w": 40,
+      "h": 40,
+      "clipped": false
+     },
+     {
+      "n": "Tidy geometry (simple force fi",
+      "x": 9,
+      "y": 234,
+      "w": 40,
+      "h": 40,
+      "clipped": false
+     },
+     {
+      "n": "Add hydrogens",
+      "x": 51,
+      "y": 234,
+      "w": 40,
+      "h": 40,
+      "clipped": false
+     },
+     {
+      "n": "Remove hydrogens",
+      "x": 9,
+      "y": 276,
+      "w": 40,
+      "h": 40,
+      "clipped": false
+     },
+     {
+      "n": "New molecule",
+      "x": 51,
+      "y": 276,
+      "w": 40,
+      "h": 40,
+      "clipped": false
+     }
+    ]
+   }
+  ],
+  "sheet": null,
+  "aside": {
+   "x": 524,
+   "y": 40,
+   "w": 320,
+   "h": 324
+  },
+  "canvas": {
+   "x": 100,
+   "y": 40,
+   "w": 424,
+   "h": 324,
+   "tabIndex": 0
+  },
+  "small": [
+   {
+    "n": "Project name",
+    "role": "input",
+    "x": 59,
+    "y": 0,
+    "w": 144,
+    "h": 40,
+    "clipped": false
+   },
+   {
+    "n": "Undo",
+    "role": "button",
+    "x": 510,
+    "y": 0,
+    "w": 40,
+    "h": 40,
+    "clipped": false
+   },
+   {
+    "n": "Redo",
+    "role": "button",
+    "x": 550,
+    "y": 0,
+    "w": 40,
+    "h": 40,
+    "clipped": false
+   },
+   {
+    "n": "Library",
+    "role": "button",
+    "x": 607,
+    "y": 0,
+    "w": 40,
+    "h": 40,
+    "clipped": false
+   },
+   {
+    "n": "File",
+    "role": "button",
+    "x": 651,
+    "y": 0,
+    "w": 40,
+    "h": 40,
+    "clipped": false
+   },
+   {
+    "n": "View",
+    "role": "button",
+    "x": 695,
+    "y": 0,
+    "w": 40,
+    "h": 40,
+    "clipped": false
+   },
+   {
+    "n": "Settings",
+    "role": "button",
+    "x": 752,
+    "y": 0,
+    "w": 40,
+    "h": 40,
+    "clipped": false
+   },
+   {
+    "n": "Close molecule info",
+    "role": "button",
+    "x": 796,
+    "y": 0,
+    "w": 40,
+    "h": 40,
+    "clipped": false
+   },
+   {
+    "n": "Select",
+    "role": "button",
+    "x": 9,
+    "y": 44,
+    "w": 40,
+    "h": 40,
+    "clipped": false
+   },
+   {
+    "n": "Rotate",
+    "role": "button",
+    "x": 51,
+    "y": 44,
+    "w": 40,
+    "h": 40,
+    "clipped": false
+   },
+   {
+    "n": "Pan",
+    "role": "button",
+    "x": 9,
+    "y": 86,
+    "w": 40,
+    "h": 40,
+    "clipped": false
+   },
+   {
+    "n": "Zoom",
+    "role": "button",
+    "x": 51,
+    "y": 86,
+    "w": 40,
+    "h": 40,
+    "clipped": false
+   },
+   {
+    "n": "Add Atom",
+    "role": "button",
+    "x": 9,
+    "y": 139,
+    "w": 40,
+    "h": 40,
+    "clipped": false
+   },
+   {
+    "n": "Add Bond",
+    "role": "button",
+    "x": 51,
+    "y": 139,
+    "w": 40,
+    "h": 40,
+    "clipped": false
+   },
+   {
+    "n": "Delete",
+    "role": "button",
+    "x": 9,
+    "y": 181,
+    "w": 40,
+    "h": 40,
+    "clipped": false
+   },
+   {
+    "n": "Measure",
+    "role": "button",
+    "x": 51,
+    "y": 181,
+    "w": 40,
+    "h": 40,
+    "clipped": false
+   },
+   {
+    "n": "Tidy geometry (simple force field, a",
+    "role": "button",
+    "x": 9,
+    "y": 234,
+    "w": 40,
+    "h": 40,
+    "clipped": false
+   },
+   {
+    "n": "Add hydrogens",
+    "role": "button",
+    "x": 51,
+    "y": 234,
+    "w": 40,
+    "h": 40,
+    "clipped": false
+   },
+   {
+    "n": "Remove hydrogens",
+    "role": "button",
+    "x": 9,
+    "y": 276,
+    "w": 40,
+    "h": 40,
+    "clipped": false
+   },
+   {
+    "n": "New molecule",
+    "role": "button",
+    "x": 51,
+    "y": 276,
+    "w": 40,
+    "h": 40,
+    "clipped": false
+   },
+   {
+    "n": "Ball & Stick",
+    "role": "radio",
+    "x": 115,
+    "y": 261,
+    "w": 75,
+    "h": 34,
+    "clipped": false
+   },
+   {
+    "n": "Space Filling",
+    "role": "radio",
+    "x": 190,
+    "y": 261,
+    "w": 82,
+    "h": 34,
+    "clipped": false
+   },
+   {
+    "n": "Stick",
+    "role": "radio",
+    "x": 272,
+    "y": 261,
+    "w": 40,
+    "h": 34,
+    "clipped": false
+   },
+   {
+    "n": "Wireframe",
+    "role": "radio",
+    "x": 313,
+    "y": 261,
+    "w": 71,
+    "h": 34,
+    "clipped": false
+   },
+   {
+    "n": "Zoom in",
+    "role": "button",
+    "x": 115,
+    "y": 309,
+    "w": 40,
+    "h": 40,
+    "clipped": false
+   },
+   {
+    "n": "Zoom out",
+    "role": "button",
+    "x": 155,
+    "y": 309,
+    "w": 40,
+    "h": 40,
+    "clipped": false
+   },
+   {
+    "n": "Fit",
+    "role": "button",
+    "x": 195,
+    "y": 309,
+    "w": 40,
+    "h": 40,
+    "clipped": false
+   },
+   {
+    "n": "Reset camera",
+    "role": "button",
+    "x": 235,
+    "y": 309,
+    "w": 40,
+    "h": 40,
+    "clipped": false
+   },
+   {
+    "n": "Close panel",
+    "role": "button",
+    "x": 800,
+    "y": 40,
+    "w": 40,
+    "h": 40,
+    "clipped": false
+   },
+   {
+    "n": "General",
+    "role": "button",
+    "x": 525,
+    "y": 177,
+    "w": 319,
+    "h": 40,
+    "clipped": false
+   }
+  ],
+  "tiny": [],
+  "noName": [],
+  "offscreenCtrls": [],
+  "clippedCtrls": [
+   {
+    "n": "Structure",
+    "x": 525,
+    "y": 417,
+    "w": 319,
+    "h": 40
+   },
+   {
+    "n": "Hydrogen bonding",
+    "x": 525,
+    "y": 592,
+    "w": 319,
+    "h": 40
+   },
+   {
+    "n": "Mass composition",
+    "x": 525,
+    "y": 734,
+    "w": 319,
+    "h": 40
+   },
+   {
+    "n": "Functional groupsEstimated",
+    "x": 525,
+    "y": 829,
+    "w": 319,
+    "h": 40
+   },
+   {
+    "n": "Lipinski rules",
+    "x": 525,
+    "y": 900,
+    "w": 319,
+    "h": 40
+   },
+   {
+    "n": "Valence issues",
+    "x": 525,
+    "y": 941,
+    "w": 319,
+    "h": 40
+   }
+  ],
+  "announcer": "",
+  "anims": [],
+  "trHits": []
+ },
+ "logs": []
+}

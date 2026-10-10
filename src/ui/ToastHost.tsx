@@ -1,4 +1,4 @@
-import { useEffect } from 'react'
+import { useEffect, useRef, useState } from 'react'
 import { AnimatePresence, motion } from 'motion/react'
 import { AlertTriangle, CheckCircle2, Info, X, XCircle } from 'lucide-react'
 import { useStudio, type ToastKind } from '../store'
@@ -7,6 +7,8 @@ import { useUI } from './uiStore'
 import type { Layout } from './layout'
 
 const ICONS: Record<ToastKind, typeof Info> = { info: Info, success: CheckCircle2, warn: AlertTriangle, error: XCircle }
+/** Auto-dismiss delay (SPEC D.6.7). */
+const TOAST_MS = 4000
 const TONE: Record<ToastKind, string> = { info: 'text-accent', success: 'text-ok', warn: 'text-warn', error: 'text-danger' }
 
 /** Renders the store's current toast, translated through its code when one is provided. */
@@ -16,13 +18,25 @@ export function ToastHost({ layout }: { layout: Layout }) {
   const reduced = useStudio((s) => s.reducedMotion)
   const chromeBottom = useUI((s) => s.chromeBottom)
 
+  // SPEC D.6.7: 4 s auto-dismiss, paused while the pointer or keyboard focus is on the toast (the remaining time is kept).
+  const [paused, setPaused] = useState(false)
+  const remaining = useRef(TOAST_MS)
+  const toastId = toast?.id
   useEffect(() => {
-    if (!toast) return
+    remaining.current = TOAST_MS
+    setPaused(false)
+  }, [toastId])
+  useEffect(() => {
+    if (toastId === undefined || paused) return
+    const started = performance.now()
     const id = setTimeout(() => {
-      if (useStudio.getState().toast?.id === toast.id) useStudio.setState({ toast: null })
-    }, toast.kind === 'error' ? 7000 : 4000)
-    return () => clearTimeout(id)
-  }, [toast])
+      if (useStudio.getState().toast?.id === toastId) useStudio.setState({ toast: null })
+    }, remaining.current)
+    return () => {
+      clearTimeout(id)
+      remaining.current = Math.max(400, remaining.current - (performance.now() - started))
+    }
+  }, [toastId, paused])
 
   const key = toast?.code ? `toast.${toast.code}` : null
   const text = toast ? (key && hasKey(key) ? t(key, toast.params) : toast.text) : ''
@@ -38,6 +52,10 @@ export function ToastHost({ layout }: { layout: Layout }) {
           <motion.div
             key={toast.id}
             role={toast.kind === 'error' ? 'alert' : 'status'}
+            onMouseEnter={() => setPaused(true)}
+            onMouseLeave={() => setPaused(false)}
+            onFocus={() => setPaused(true)}
+            onBlur={() => setPaused(false)}
             initial={reduced ? false : { opacity: 0, y: 8 }}
             animate={{ opacity: 1, y: 0 }}
             exit={{ opacity: 0, y: reduced ? 0 : 6 }}

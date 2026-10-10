@@ -24,7 +24,7 @@ export interface AtomEntry {
   hidden: boolean // terminal hydrogen hidden by the "show hydrogens" render toggle
   termH: boolean // hydrogen with exactly one bond, to a non-hydrogen
   valence: 0 | 1 | 2 // 0 ok, 1 under, 2 over
-  partial: number // Gasteiger partial charge (approximate) when charge colouring is on
+  partial: number | null // Gasteiger partial charge (approximate) when charge colouring is on; null = not computable
 }
 
 export interface BondEntry {
@@ -116,7 +116,7 @@ export class SceneModel {
         e = {
           id: a.id, symbol: a.symbol, charge: a.charge,
           p: v3(animate ? start : a.pos), v: [0, 0, 0], t: v3(a.pos),
-          s: animate ? 0 : 1, sv: 0, st: 1, dying: false, hidden: false, termH: false, valence: 0, partial: 0,
+          s: animate ? 0 : 1, sv: 0, st: 1, dying: false, hidden: false, termH: false, valence: 0, partial: null,
         }
         this.liveAtoms.set(a.id, e)
         this.atoms.push(e)
@@ -212,8 +212,8 @@ export class SceneModel {
   }
 
   /** Charge colouring input (approximate Gasteiger charges); null clears it. */
-  setPartialCharges(map: Map<number, number> | null): void {
-    for (const e of this.liveAtoms.values()) e.partial = map?.get(e.id) ?? 0
+  setPartialCharges(map: Map<number, number | null> | null): void {
+    for (const e of this.liveAtoms.values()) e.partial = map ? (map.get(e.id) ?? null) : null
   }
 
   radius(e: AtomEntry): number {
@@ -300,8 +300,8 @@ export class SceneModel {
   /**
    * Nearest atom (sphere) or bond (tube) hit by a ray, using the displayed positions. Atoms win over bonds. Anything whose
    * centre / closest point lies behind the ray origin is ignored. With `floors`, targets that are smaller than the
-   * on-screen minimum on screen (SPEC B.1: 12 / 22 px atoms, 4 px bonds) are still hit: a true hit on the visible sphere
-   * wins, otherwise the atom nearest the cursor inside its floor radius.
+   * on-screen minimum on screen (SPEC B.1: 12 / 22 px atoms, 4 px bonds) are still hit. Priority: a true hit on the visible
+   * sphere, a true hit on the visible bond tube, the atom nearest the cursor inside its floor radius, a bond inside its floor.
    */
   pick(ox: number, oy: number, oz: number, dx: number, dy: number, dz: number, floors?: PickFloors): Pick {
     let bestAtom: AtomEntry | null = null
@@ -328,33 +328,44 @@ export class SceneModel {
       }
     }
     if (bestAtom) return { kind: 'atom', id: bestAtom.id, t: bestT }
-    if (nearAtom) return { kind: 'atom', id: nearAtom.id, t: nearT }
 
-    if (this.params.bondR < 0.02 && this.params.wire < 0.5) return null // bonds are not drawn (space filling)
-    let bestBond: BondEntry | null = null
-    let bestS = Infinity
-    for (const b of this.bonds) {
-      if (b.dying || b.st === 0 || b.s < 0.5) continue
-      const vis = Math.max(bondOuterRadius(this.params, b.order, b.aromatic) * b.s, PICK_MIN_BOND_RADIUS)
-      const ax = b.a.p[0], ay = b.a.p[1], az = b.a.p[2]
-      const ux = b.b.p[0] - ax, uy = b.b.p[1] - ay, uz = b.b.p[2] - az
-      const wx = ox - ax, wy = oy - ay, wz = oz - az
-      const bb = dx * ux + dy * uy + dz * uz
-      const cc = ux * ux + uy * uy + uz * uz
-      if (cc < 1e-9) continue
-      const dd = dx * wx + dy * wy + dz * wz
-      const ee = ux * wx + uy * wy + uz * wz
-      const den = cc - bb * bb
-      let tq = den < 1e-9 ? ee / cc : (ee - bb * dd) / den
-      tq = tq < 0 ? 0 : tq > 1 ? 1 : tq
-      const sq = bb * tq - dd
-      if (sq <= 0) continue // closest point is behind the eye
-      const thr = floors ? Math.max(vis, (floors.bondPx * sq) / floors.kPx) : vis
-      const px = ox + dx * sq - (ax + ux * tq)
-      const py = oy + dy * sq - (ay + uy * tq)
-      const pz = oz + dz * sq - (az + uz * tq)
-      if (px * px + py * py + pz * pz <= thr * thr && sq < bestS) { bestS = sq; bestBond = b }
+    // Priority: true atom hit > true bond hit (the ray really crosses the drawn tube) > atom floor > bond floor. A floor-only
+    // atom match must not hide a bond the ray actually hits, or bonds would be unreachable at the fitted view of big molecules.
+    let trueBond: BondEntry | null = null
+    let trueS = Infinity
+    let floorBond: BondEntry | null = null
+    let floorS = Infinity
+    if (this.params.bondR >= 0.02 || this.params.wire >= 0.5) { // bonds are not drawn in space filling
+      for (const b of this.bonds) {
+        if (b.dying || b.st === 0 || b.s < 0.5) continue
+        const vis = Math.max(bondOuterRadius(this.params, b.order, b.aromatic) * b.s, PICK_MIN_BOND_RADIUS)
+        const ax = b.a.p[0], ay = b.a.p[1], az = b.a.p[2]
+        const ux = b.b.p[0] - ax, uy = b.b.p[1] - ay, uz = b.b.p[2] - az
+        const wx = ox - ax, wy = oy - ay, wz = oz - az
+        const bb = dx * ux + dy * uy + dz * uz
+        const cc = ux * ux + uy * uy + uz * uz
+        if (cc < 1e-9) continue
+        const dd = dx * wx + dy * wy + dz * wz
+        const ee = ux * wx + uy * wy + uz * wz
+        const den = cc - bb * bb
+        let tq = den < 1e-9 ? ee / cc : (ee - bb * dd) / den
+        tq = tq < 0 ? 0 : tq > 1 ? 1 : tq
+        const sq = bb * tq - dd
+        if (sq <= 0) continue // closest point is behind the eye
+        const px = ox + dx * sq - (ax + ux * tq)
+        const py = oy + dy * sq - (ay + uy * tq)
+        const pz = oz + dz * sq - (az + uz * tq)
+        const d2 = px * px + py * py + pz * pz
+        if (d2 <= vis * vis) {
+          if (sq < trueS) { trueS = sq; trueBond = b }
+        } else if (floors) {
+          const thr = (floors.bondPx * sq) / floors.kPx
+          if (d2 <= thr * thr && sq < floorS) { floorS = sq; floorBond = b }
+        }
+      }
     }
-    return bestBond ? { kind: 'bond', id: bestBond.id, t: bestS } : null
+    if (trueBond) return { kind: 'bond', id: trueBond.id, t: trueS }
+    if (nearAtom) return { kind: 'atom', id: nearAtom.id, t: nearT }
+    return floorBond ? { kind: 'bond', id: floorBond.id, t: floorS } : null
   }
 }

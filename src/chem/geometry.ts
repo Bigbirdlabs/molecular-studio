@@ -49,13 +49,17 @@ const TETRA = Math.acos(-1 / 3) // 109.4712206 deg
 // Electron-domain analysis
 // ===================================================================================================================
 
-/** Lowest allowed valence >= used (or the largest one when the atom is over-saturated). */
+/**
+ * `target`  lowest allowed valence >= used (or the largest one when the atom is over-saturated): used for lone pairs.
+ * `missing` hydrogens still to add, counted against the LOWEST valence only (SPEC A1.3): an S or P that already has more
+ * bonds than its lowest valence never receives an extra H (same rule as missingHydrogens in molecule.ts).
+ */
 function targetFor(a: Atom, used: number): { target: number; missing: number } {
   const list = allowedValences(a)
   if (!list.length) return { target: 0, missing: 0 }
   let target = list[list.length - 1]
   for (const v of list) if (used <= v) { target = v; break }
-  return { target, missing: Math.max(0, target - used) }
+  return { target, missing: Math.max(0, list[0] - used) }
 }
 
 /** Raw non-bonding electron count on the atom at valence `target`: valence electrons − formal charge − bonds. */
@@ -505,7 +509,11 @@ function idealizeAtom(m: Molecule, A: Atom) {
     const dir = unitFrom(A.pos, f.n.atom.pos)
     if (dir) fixed.push({ atom: f.n.atom, dir })
   }
-  const slots = freeSlots(m, A, fixed, g.D, g.lp)
+  // bond slots (real neighbours + implicit hydrogens) come first, lone-pair slots last: only the bond slots may be
+  // taken by the moving neighbours, otherwise e.g. NH3 could end up with H-N-H 107 / 107 / 121 degrees
+  const allSlots = freeSlots(m, A, fixed, g.D, g.lp)
+  // (with two or more fixed neighbours the remaining slots are mirror images, so all of them stay available)
+  const slots = fixed.length === 1 && g.D <= 4 ? allSlots.slice(0, Math.max(movable.length, g.D - 1 - g.lp)) : allSlots
   const usedSlot = new Set<number>()
   const dirsSoFar = fixed.map((f) => f.dir)
   const rot = (d: Vec3, s: Vec3) => {
