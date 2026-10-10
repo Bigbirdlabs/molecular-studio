@@ -1,5 +1,5 @@
-import { useDeferredValue, useMemo, useState } from 'react'
-import { Search } from 'lucide-react'
+import { useCallback, useDeferredValue, useEffect, useLayoutEffect, useMemo, useRef, useState } from 'react'
+import { ChevronLeft, ChevronRight, Search } from 'lucide-react'
 import { LIBRARY, CATEGORY_EN, type LibraryEntry } from '../chem/library'
 import { formula } from '../chem/molecule'
 import { useStudio } from '../store'
@@ -32,6 +32,30 @@ export default function LibraryBody() {
   const [query, setQuery] = useState('')
   const [category, setCategory] = useState<string | null>(null)
   const deferred = useDeferredValue(query)
+  const searchRef = useRef<HTMLInputElement>(null)
+  const chipsRef = useRef<HTMLDivElement>(null)
+  // Which edges of the chip row hide more chips: drives chevron hints so the clipped chip reads as scrollable.
+  const [edges, setEdges] = useState({ start: false, end: false })
+  const measure = useCallback(() => {
+    const el = chipsRef.current
+    if (!el) return
+    const start = el.scrollLeft > 2
+    const end = el.scrollLeft + el.clientWidth < el.scrollWidth - 2
+    setEdges((e) => (e.start === start && e.end === end ? e : { start, end }))
+  }, [])
+  useLayoutEffect(() => {
+    measure()
+    const el = chipsRef.current
+    if (!el || typeof ResizeObserver === 'undefined') return
+    const ro = new ResizeObserver(measure)
+    ro.observe(el)
+    return () => ro.disconnect()
+  }, [measure, lang])
+  // The body is lazy-loaded after the dialog has focused itself: move focus to the search field once it exists.
+  useEffect(() => { searchRef.current?.focus({ preventScroll: true }) }, [])
+  useEffect(() => {
+    chipsRef.current?.querySelector<HTMLElement>('[aria-pressed="true"]')?.scrollIntoView({ block: 'nearest', inline: 'nearest' })
+  }, [category])
 
   const rows = useMemo(() => {
     const q = fold(deferred.trim())
@@ -61,6 +85,7 @@ export default function LibraryBody() {
           <span className="sr-only">{t('lib.search')}</span>
           <Search size={15} aria-hidden className="pointer-events-none absolute left-2.5 top-1/2 -translate-y-1/2 text-ink-faint" />
           <input
+            ref={searchRef}
             data-autofocus
             type="search"
             value={query}
@@ -71,11 +96,21 @@ export default function LibraryBody() {
             className="h-(--hit) w-full rounded-ctl border border-line-ctl bg-surface-0 pl-8 pr-3 text-ui text-ink placeholder:text-ink-faint hover:border-line-strong focus:border-accent-dim"
           />
         </label>
-        <div role="group" aria-label={t('lib.categories')} className="no-scrollbar -mx-4 flex gap-1.5 overflow-x-auto px-4">
+        <div className="relative">
+        <div
+          ref={chipsRef}
+          onScroll={measure}
+          role="group"
+          aria-label={t('lib.categories')}
+          className="no-scrollbar -mx-4 flex gap-1.5 overflow-x-auto px-4"
+        >
           <button type="button" aria-pressed={category === null} onClick={() => setCategory(null)} className={chip(category === null)}>{t('lib.all')}</button>
           {CATEGORIES.map((c) => (
             <button key={c} type="button" aria-pressed={category === c} onClick={() => setCategory(c)} className={chip(category === c)}>{catLabel(c)}</button>
           ))}
+        </div>
+        {edges.start && <ChevronLeft aria-hidden size={14} strokeWidth={1.75} className="pointer-events-none absolute -left-3 top-1/2 -translate-y-1/2 text-ink-faint" />}
+        {edges.end && <ChevronRight aria-hidden size={14} strokeWidth={1.75} className="pointer-events-none absolute -right-3 top-1/2 -translate-y-1/2 text-ink-faint" />}
         </div>
         <div className="text-label text-ink-faint" aria-live="polite">{t('lib.count', { n: rows.length })}</div>
       </div>

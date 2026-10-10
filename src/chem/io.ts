@@ -24,6 +24,8 @@ export type IoErrorCode =
   | 'v3000Unsupported'
   | 'unsupportedElement'
   | 'unsupportedIsotope'
+  | 'unsupportedRadical'
+  | 'chargeOutOfRange'
   | 'invalidXYZ'
   | 'noAtoms'
   | 'tooLarge'
@@ -225,8 +227,11 @@ export function parseMolfile(text: string): Molecule {
       massDiff = Number.isFinite(Number(t[4])) ? Math.trunc(Number(t[4])) : 0
       if (![x, y, z].every(Number.isFinite)) throw new ChemIOError('invalidMolfile')
     }
-    const charge = Number.isFinite(chargeCode) ? CHARGE_CODES[chargeCode] ?? 0 : 0
     const symbol = normaliseSymbol(symRaw)
+    // Atom-block charge code 4 means "doublet radical", not neutral. Open-shell species are not modelled (every atom is closed-shell),
+    // so the file is rejected instead of silently loading a different, neutral species.
+    if (chargeCode === 4) throw new ChemIOError('unsupportedRadical', { symbol, atom: i + 1 })
+    const charge = Number.isFinite(chargeCode) ? CHARGE_CODES[chargeCode] ?? 0 : 0
     // The atom-block mass-difference field is an isotope label (13C = +1, D written as H +1, ...). Isotopes are not modelled, so
     // the file is rejected instead of silently loading the natural-abundance mass (SPEC A1.1).
     if (Number.isFinite(massDiff) && massDiff !== 0) {
@@ -266,6 +271,15 @@ export function parseMolfile(text: string): Molecule {
     const l = lines[i]
     if (l.startsWith('M  END')) break
     if (l.startsWith('M  CHG')) chargeLines.push(l)
+    else if (l.startsWith('M  RAD')) {
+      // M  RAD nn aaa mmm ...: 1 = singlet, 2 = doublet, 3 = triplet radical (0 = none). Any open-shell label is unsupported.
+      const n = Math.trunc(num(l.slice(6, 9)))
+      for (let k = 0; k < n; k++) {
+        const at = Math.trunc(num(l.slice(9 + k * 8, 13 + k * 8)))
+        const rad = Math.trunc(num(l.slice(13 + k * 8, 17 + k * 8)))
+        if (at >= 1 && at <= nAtoms && Number.isFinite(rad) && rad !== 0) throw new ChemIOError('unsupportedRadical', { symbol: atoms[at - 1].symbol, atom: at })
+      }
+    }
     else if (l.startsWith('M  ISO')) {
       // M  ISO nn aaa vvv ...: absolute mass numbers (vvv = 0 clears a label). Any real label is an unsupported isotope.
       const n = Math.trunc(num(l.slice(6, 9)))
@@ -289,6 +303,12 @@ export function parseMolfile(text: string): Molecule {
       }
     }
   }
+
+  // The model supports formal charges -2 ... +2 (SPEC B.12). Say so here, with the atom and the value, instead of failing later with a
+  // generic "invalid molecule".
+  atoms.forEach((a, i) => {
+    if (Math.abs(a.charge) > 2) throw new ChemIOError('chargeOutOfRange', { symbol: a.symbol, atom: i + 1, charge: a.charge })
+  })
 
   if (aromaticIds.size) kekulize(m, aromaticIds)
   return perceiveAromaticity(m)
@@ -484,6 +504,26 @@ function perceiveBonds(m: Molecule): void {
     }
   }
 
+  // hypervalent centres: a terminal O on S / P / Cl / Br / I is an oxo group (S=O, P=O, Cl=O), not a singly bonded O-. The deficiency
+  // above is counted at the LOWEST fitting valence, which would leave sulfuric acid as S(O)4 with two O- and an invented charge.
+  // Raise the centre to the highest listed valence its terminal oxygens can reach (shortest bonds first): H2SO4 and SO3 give S(VI) with
+  // no charge, DMSO / sulfones / phosphates / perchlorate likewise. Anything left over stays single (and may become O- below).
+  for (let i = 0; i < n; i++) {
+    if (!['S', 'P', 'Cl', 'Br', 'I'].includes(atoms[i].symbol)) continue
+    const list = allowedValences({ id: 0, symbol: atoms[i].symbol, pos: [0, 0, 0], charge: 0 })
+    if (!list.length) continue
+    const terminals = bondsAt(i).filter((b) => b.order === 1 && atoms[otherIdx(b, i)].symbol === 'O' && deg[otherIdx(b, i)] === 1 && ratio(b) < 0.95)
+    if (!terminals.length) continue
+    terminals.sort((p, q) => ratio(p) - ratio(q))
+    let k = Math.min(terminals.length, Math.max(...list) - sums[i])
+    while (k > 0 && !list.includes(sums[i] + k)) k--
+    for (let j = 0; j < k; j++) {
+      terminals[j].order = 2
+      sums[i]++
+      sums[otherIdx(terminals[j], i)]++
+    }
+  }
+
   // 3. simple formal charges (only meaningful when hydrogens are present in the file)
   const hasH = atoms.some((a) => a.symbol === 'H')
   const terminalO = (i: number) => atoms[i].symbol === 'O' && deg[i] === 1
@@ -522,6 +562,27 @@ export interface PubChemOptions {
   /** injectable for tests */
   fetchImpl?: typeof fetch
   timeoutMs?: number
+  /** BCP-47 language of the UI ('tr' | 'en'); drives the first-letter capitalisation of the compound name (tr: i -> İ). Default: document language, else 'tr'. */
+  locale?: string
+}
+
+/**
+ * Upper-cases the first letter of a user-typed name with the active locale's rules (Turkish: 'iyot' -> 'İyot',
+ * 'ısı' -> 'Isı'; English: 'iodine' -> 'Iodine'). Never uses the locale-blind toUpperCase for text shown to the user.
+ */
+export function capitalizeName(name: string, locale?: string): string {
+  if (!name) return name
+  let loc = locale
+  if (!loc && typeof document !== 'undefined') loc = document.documentElement?.lang || undefined
+  loc = loc || 'tr'
+  const chars = Array.from(name) // keep surrogate pairs whole
+  let first: string
+  try {
+    first = chars[0].toLocaleUpperCase(loc)
+  } catch {
+    first = chars[0].toUpperCase()
+  }
+  return first + chars.slice(1).join('')
 }
 
 const PUG = 'https://pubchem.ncbi.nlm.nih.gov/rest/pug/compound'
@@ -587,6 +648,6 @@ export async function fetchPubChem(nameOrCid: string | number, opts: PubChemOpti
     if (e instanceof ChemIOError && (e.code === 'unsupportedElement' || e.code === 'unsupportedIsotope')) throw e
     throw new ChemIOError('pubchemBadResponse')
   }
-  mol.name = isCid ? `PubChem CID ${query}` : query.charAt(0).toUpperCase() + query.slice(1)
+  mol.name = isCid ? `PubChem CID ${query}` : capitalizeName(query, opts.locale)
   return mol
 }

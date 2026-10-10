@@ -1,4 +1,4 @@
-import { allowedValences, type Atom, type BondOrder, type Molecule, type Vec3 } from '../chem/molecule'
+import { valenceState, type BondOrder, type Molecule, type Vec3 } from '../chem/molecule'
 import type { RenderStyle } from '../store'
 import {
   BOND_GROW_TAU, BOND_SHRINK_SECONDS, MAX_DT, PICK_MIN_ATOM_RADIUS, PICK_MIN_BOND_RADIUS, POP_DAMPING, POP_STIFFNESS,
@@ -80,11 +80,9 @@ export class SceneModel {
     if (loadChanged) this.retireAll()
 
     const oldIds = new Set(this.liveAtoms.keys())
-    const used = new Map<number, number>()
     const deg = new Map<number, number>()
     const bump = (m: Map<number, number>, id: number, n: number) => m.set(id, (m.get(id) ?? 0) + n)
     for (const b of mol.bonds) {
-      bump(used, b.a, b.order); bump(used, b.b, b.order)
       bump(deg, b.a, 1); bump(deg, b.b, 1)
     }
 
@@ -126,9 +124,9 @@ export class SceneModel {
         e.charge = a.charge
         if (!animate) e.p = v3(a.pos)
       }
-      const u = used.get(a.id) ?? 0
-      const list = allowedValences(a as Atom)
-      e.valence = list.includes(u) ? 0 : u > Math.max(0, ...list) ? 2 : 1
+      // one classifier for the whole app (inspector, warnings, rings): SPEC A1.3 incl. the S / P / halogen rule
+      const vs = valenceState(mol, a)
+      e.valence = vs === 'ok' ? 0 : vs === 'over' ? 2 : 1
     }
     for (const [id, e] of this.liveAtoms) {
       if (seen.has(id)) continue

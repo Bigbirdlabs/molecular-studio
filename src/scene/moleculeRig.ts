@@ -2,7 +2,7 @@ import * as THREE from 'three'
 import { el } from '../chem/elements'
 import type { Vec3 } from '../chem/molecule'
 import type { Tool } from '../store'
-import { buildAdjacency, bondStrands } from './bondLayout'
+import { bondColourSplit, buildAdjacency, bondStrands } from './bondLayout'
 import { GlyphLabels, tintOf } from './glyphLabels'
 import { InstancePool, PointCloud, writeCylinder, writeSphere } from './instancing'
 import { buildMeasureViz, dashSegments } from './measureGeometry'
@@ -198,13 +198,16 @@ export class MoleculeRig {
         const ar = ca.r, ag = ca.g, ab = ca.b
         const cb = this.atomColor(b.b, v.showCharges)
         const br = cb.r, bg = cb.g, bb = cb.b
+        // SPEC C1: the two colours meet halfway between the two sphere SURFACES, not at the centre midpoint
+        const dx = b.b.p[0] - b.a.p[0], dy = b.b.p[1] - b.a.p[1], dz = b.b.p[2] - b.a.p[2]
+        const t = bondColourSplit(Math.hypot(dx, dy, dz), model.radius(b.a) * b.a.s, model.radius(b.b) * b.b.s)
         for (let i = 0; i < n; i++) {
           const s = strands[i]
           const r = s.r * b.s
           if (r < 0.003) continue
           const ax = b.a.p[0] + s.ox, ay = b.a.p[1] + s.oy, az = b.a.p[2] + s.oz
           const bx = b.b.p[0] + s.ox, by = b.b.p[1] + s.oy, bz = b.b.p[2] + s.oz
-          const mx = (ax + bx) / 2, my = (ay + by) / 2, mz = (az + bz) / 2
+          const mx = ax + (bx - ax) * t, my = ay + (by - ay) * t, mz = az + (bz - az) * t
           if (writeCylinder(mats, B.count, ax, ay, az, mx, my, mz, r)) {
             const o = B.count * 3
             cols[o] = ar; cols[o + 1] = ag; cols[o + 2] = ab
@@ -338,9 +341,12 @@ export class MoleculeRig {
       L.add(String(i + 1), e.p[0], e.p[1], e.p[2], { px: 13, tint: ACCENT_TINT, disc: true, shift: [r * 0.7 * side, r * 0.8] })
     }
     if (pts.length === v.measure.length && pts.length >= 2) {
-      const viz = buildMeasureViz(pts)
+      const vertex = pts.length >= 3 ? model.liveAtom(v.measure[1]) : undefined
+      const viz = buildMeasureViz(pts, 28, vertex ? model.radius(vertex) * vertex.s + 0.15 : 0)
       for (const [a, b] of viz.lines) for (const [d0, d1] of dashSegments(a, b)) lineSegs.push({ a: d0, b: d1, col: DASH_TINT })
       for (let i = 1; i < viz.arc.length; i++) arcSegs.push({ a: viz.arc[i - 1], b: viz.arc[i], col: ACCENT_TINT })
+      for (let i = 1; i < viz.angleArc.length; i++) arcSegs.push({ a: viz.angleArc[i - 1], b: viz.angleArc[i], col: ACCENT_TINT })
+      if (viz.angleLabel) L.add(viz.angleLabel.text, viz.angleLabel.pos[0], viz.angleLabel.pos[1], viz.angleLabel.pos[2], { px: 14, tint: LABEL_TINT })
       if (viz.label) L.add(viz.label.text, viz.label.pos[0], viz.label.pos[1], viz.label.pos[2], { px: 14, tint: LABEL_TINT })
       for (const [a, b] of viz.radials) for (const [d0, d1] of dashSegments(a, b, 0.09, 0.07)) lineSegs.push({ a: d0, b: d1, col: ACCENT_TINT })
       // pair-distance labels: pushed outwards from the chain (so two midpoints that project close together separate in

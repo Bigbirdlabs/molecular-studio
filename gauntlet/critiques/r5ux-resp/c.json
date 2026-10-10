@@ -1,0 +1,835 @@
+{
+ "t820": {
+  "launch": {
+   "aside": null,
+   "canvas": {
+    "x": 48,
+    "y": 45,
+    "w": 772,
+    "h": 1109,
+    "label": "3B molekül görünümü"
+   },
+   "small": [
+    {
+     "n": "Top-Çubuk",
+     "x": 63,
+     "y": 1101,
+     "w": 74,
+     "h": 38
+    },
+    {
+     "n": "Uzay Dolgulu",
+     "x": 137,
+     "y": 1101,
+     "w": 87,
+     "h": 38
+    },
+    {
+     "n": "Çubuk",
+     "x": 224,
+     "y": 1101,
+     "w": 50,
+     "h": 38
+    },
+    {
+     "n": "Tel Kafes",
+     "x": 274,
+     "y": 1101,
+     "w": 62,
+     "h": 38
+    }
+   ]
+  },
+  "longPress": {
+   "aside": {
+    "x": 500,
+    "y": 45,
+    "w": 320,
+    "h": 1109,
+    "op": "1",
+    "tf": "none"
+   },
+   "change": "none",
+   "canvas": {
+    "x": 48,
+    "y": 45,
+    "w": 452,
+    "h": 1109,
+    "label": "3B molekül görünümü"
+   },
+   "menus": 0,
+   "scrim": 0
+  },
+  "railTip": [
+   "SeçV"
+  ]
+ },
+ "t700": {
+  "aside": {
+   "x": 380,
+   "y": 45,
+   "w": 320,
+   "h": 929,
+   "op": "1",
+   "tf": "none"
+  },
+  "canvas": {
+   "x": 48,
+   "y": 45,
+   "w": 332,
+   "h": 929,
+   "label": "3B molekül görünümü"
+  },
+  "layout": "tablet"
+ },
+ "t1024": {
+  "small": [
+   {
+    "n": "Top-Çubuk",
+    "x": 63,
+    "y": 689,
+    "w": 74,
+    "h": 38
+   },
+   {
+    "n": "Uzay Dolgulu",
+    "x": 137,
+    "y": 689,
+    "w": 87,
+    "h": 38
+   },
+   {
+    "n": "Çubuk",
+    "x": 224,
+    "y": 689,
+    "w": 50,
+    "h": 38
+   },
+   {
+    "n": "Tel Kafes",
+    "x": 274,
+    "y": 689,
+    "w": 62,
+    "h": 38
+   }
+  ],
+  "aside": {
+   "x": 704,
+   "y": 45,
+   "w": 320,
+   "h": 697,
+   "op": "1",
+   "tf": "none"
+  }
+ },
+ "l844": {
+  "layout": "tablet",
+  "hit": "40px",
+  "small": [
+   {
+    "n": "Proje adı",
+    "x": 59,
+    "y": 0,
+    "w": 144,
+    "h": 40
+   },
+   {
+    "n": "Geri al",
+    "x": 510,
+    "y": 0,
+    "w": 40,
+    "h": 40
+   },
+   {
+    "n": "Yinele",
+    "x": 550,
+    "y": 0,
+    "w": 40,
+    "h": 40
+   },
+   {
+    "n": "Kütüphane",
+    "x": 607,
+    "y": 0,
+    "w": 40,
+    "h": 40
+   },
+   {
+    "n": "Dosya",
+    "x": 651,
+    "y": 0,
+    "w": 40,
+    "h": 40
+   },
+   {
+    "n": "Görünüm",
+    "x": 695,
+    "y": 0,
+    "w": 40,
+    "h": 40
+   },
+   {
+    "n": "Ayarlar",
+    "x": 752,
+    "y": 0,
+    "w": 40,
+    "h": 40
+   },
+   {
+    "n": "Molekül bilgisini kapat",
+    "x": 796,
+    "y": 0,
+    "w": 40,
+    "h": 40
+   },
+   {
+    "n": "Seç",
+    "x": 9,
+    "y": 45,
+    "w": 40,
+    "h": 40
+   },
+   {
+    "n": "Döndür",
+    "x": 51,
+    "y": 45,
+    "w": 40,
+    "h": 40
+   },
+   {
+    "n": "Kaydır",
+    "x": 9,
+    "y": 87,
+    "w": 40,
+    "h": 40
+   },
+   {
+    "n": "Yakınlaştır",
+    "x": 51,
+    "y": 87,
+    "w": 40,
+    "h": 40
+   },
+   {
+    "n": "Atom Ekle",
+    "x": 9,
+    "y": 140,
+    "w": 40,
+    "h": 40
+   },
+   {
+    "n": "Bağ Ekle",
+    "x": 51,
+    "y": 140,
+    "w": 40,
+    "h": 40
+   },
+   {
+    "n": "Sil",
+    "x": 9,
+    "y": 182,
+    "w": 40,
+    "h": 40
+   },
+   {
+    "n": "Ölç",
+    "x": 51,
+    "y": 182,
+    "w": 40,
+    "h": 40
+   },
+   {
+    "n": "Geometriyi düzenle (basit kuvvet alanı, yaklaşık)",
+    "x": 9,
+    "y": 235,
+    "w": 40,
+    "h": 40
+   },
+   {
+    "n": "Hidrojen ekle",
+    "x": 51,
+    "y": 235,
+    "w": 40,
+    "h": 40
+   },
+   {
+    "n": "Hidrojenleri kaldır",
+    "x": 9,
+    "y": 277,
+    "w": 40,
+    "h": 40
+   },
+   {
+    "n": "Yeni molekül",
+    "x": 51,
+    "y": 277,
+    "w": 40,
+    "h": 40
+   },
+   {
+    "n": "Top-Çubuk",
+    "x": 111,
+    "y": 249,
+    "w": 87,
+    "h": 26
+   },
+   {
+    "n": "Uzay Dolgulu",
+    "x": 111,
+    "y": 275,
+    "w": 87,
+    "h": 26
+   },
+   {
+    "n": "Çubuk",
+    "x": 111,
+    "y": 301,
+    "w": 87,
+    "h": 26
+   },
+   {
+    "n": "Tel Kafes",
+    "x": 111,
+    "y": 327,
+    "w": 87,
+    "h": 26
+   },
+   {
+    "n": "Yakınlaş",
+    "x": 481,
+    "y": 225,
+    "w": 32,
+    "h": 32
+   },
+   {
+    "n": "Uzaklaş",
+    "x": 481,
+    "y": 257,
+    "w": 32,
+    "h": 32
+   },
+   {
+    "n": "Sığdır",
+    "x": 481,
+    "y": 289,
+    "w": 32,
+    "h": 32
+   },
+   {
+    "n": "Kamerayı sıfırla",
+    "x": 481,
+    "y": 321,
+    "w": 32,
+    "h": 32
+   },
+   {
+    "n": "Paneli kapat",
+    "x": 800,
+    "y": 41,
+    "w": 40,
+    "h": 40
+   },
+   {
+    "n": "Genel",
+    "x": 525,
+    "y": 234,
+    "w": 319,
+    "h": 40
+   }
+  ],
+  "aside": {
+   "x": 524,
+   "y": 41,
+   "w": 320,
+   "h": 323,
+   "op": "1",
+   "tf": "none"
+  },
+  "ov": {
+   "sw": 844,
+   "iw": 844,
+   "bsw": 844
+  }
+ },
+ "walk": [
+  {
+   "tag": "INPUT",
+   "n": "Proje adı",
+   "role": null,
+   "fv": true,
+   "ol": "solid 2px rgb(94, 200, 229)",
+   "region": "top",
+   "x": 169,
+   "y": 6,
+   "w": 224,
+   "h": 32
+  },
+  {
+   "tag": "BUTTON",
+   "n": "Geri al",
+   "role": null,
+   "fv": true,
+   "ol": "solid 2px rgb(94, 200, 229)",
+   "region": "top",
+   "x": 881,
+   "y": 6,
+   "w": 32,
+   "h": 32
+  },
+  {
+   "tag": "BUTTON",
+   "n": "Yinele",
+   "role": null,
+   "fv": true,
+   "ol": "solid 2px rgb(94, 200, 229)",
+   "region": "top",
+   "x": 913,
+   "y": 6,
+   "w": 32,
+   "h": 32
+  },
+  {
+   "tag": "BUTTON",
+   "n": "Kütüphane",
+   "role": null,
+   "fv": true,
+   "ol": "solid 2px rgb(154, 161, 171)",
+   "region": "top",
+   "x": 962,
+   "y": 6,
+   "w": 101,
+   "h": 32
+  },
+  {
+   "tag": "BUTTON",
+   "n": "Dosya",
+   "role": null,
+   "fv": true,
+   "ol": "solid 2px rgb(94, 200, 229)",
+   "region": "top",
+   "x": 1068,
+   "y": 6,
+   "w": 91,
+   "h": 32
+  },
+  {
+   "tag": "BUTTON",
+   "n": "Görünüm",
+   "role": null,
+   "fv": true,
+   "ol": "solid 2px rgb(94, 200, 229)",
+   "region": "top",
+   "x": 1163,
+   "y": 6,
+   "w": 110,
+   "h": 32
+  },
+  {
+   "tag": "BUTTON",
+   "n": "Ayarlar",
+   "role": null,
+   "fv": true,
+   "ol": "solid 2px rgb(94, 200, 229)",
+   "region": "top",
+   "x": 1290,
+   "y": 6,
+   "w": 32,
+   "h": 32
+  },
+  {
+   "tag": "BUTTON",
+   "n": "Molekül bilgisini kapat",
+   "role": null,
+   "fv": true,
+   "ol": "solid 2px rgb(94, 200, 229)",
+   "region": "top",
+   "x": 1326,
+   "y": 6,
+   "w": 32,
+   "h": 32
+  },
+  {
+   "tag": "BUTTON",
+   "n": "Seç",
+   "role": null,
+   "fv": true,
+   "ol": "solid 2px rgb(94, 200, 229)",
+   "region": "rail",
+   "x": 8,
+   "y": 53,
+   "w": 32,
+   "h": 32
+  },
+  {
+   "tag": "CANVAS",
+   "n": "3B molekül görünümü",
+   "role": null,
+   "fv": true,
+   "ol": "solid 2px rgb(94, 200, 229)",
+   "region": "canvas",
+   "x": 48,
+   "y": 45,
+   "w": 998,
+   "h": 697
+  },
+  {
+   "tag": "BUTTON",
+   "n": "Top-Çubuk",
+   "role": "radio",
+   "fv": true,
+   "ol": "solid 2px rgb(94, 200, 229)",
+   "region": "other",
+   "x": 63,
+   "y": 701,
+   "w": 74,
+   "h": 26
+  },
+  {
+   "tag": "BUTTON",
+   "n": "Yakınlaş",
+   "role": null,
+   "fv": true,
+   "ol": "solid 2px rgb(94, 200, 229)",
+   "region": "other",
+   "x": 903,
+   "y": 695,
+   "w": 32,
+   "h": 32
+  },
+  {
+   "tag": "BUTTON",
+   "n": "Uzaklaş",
+   "role": null,
+   "fv": true,
+   "ol": "solid 2px rgb(94, 200, 229)",
+   "region": "other",
+   "x": 935,
+   "y": 695,
+   "w": 32,
+   "h": 32
+  },
+  {
+   "tag": "BUTTON",
+   "n": "Sığdır",
+   "role": null,
+   "fv": true,
+   "ol": "solid 2px rgb(94, 200, 229)",
+   "region": "other",
+   "x": 967,
+   "y": 695,
+   "w": 32,
+   "h": 32
+  },
+  {
+   "tag": "BUTTON",
+   "n": "Kamerayı sıfırla",
+   "role": null,
+   "fv": true,
+   "ol": "solid 2px rgb(94, 200, 229)",
+   "region": "other",
+   "x": 999,
+   "y": 695,
+   "w": 32,
+   "h": 32
+  },
+  {
+   "tag": "BUTTON",
+   "n": "Paneli daralt",
+   "role": null,
+   "fv": true,
+   "ol": "solid 2px rgb(94, 200, 229)",
+   "region": "insp",
+   "x": 1330,
+   "y": 49,
+   "w": 32,
+   "h": 32
+  },
+  {
+   "tag": "BUTTON",
+   "n": "Genel",
+   "role": null,
+   "fv": true,
+   "ol": "solid 2px rgb(94, 200, 229)",
+   "region": "insp",
+   "x": 1047,
+   "y": 238,
+   "w": 319,
+   "h": 32
+  },
+  {
+   "tag": "BUTTON",
+   "n": "Yapı",
+   "role": null,
+   "fv": true,
+   "ol": "solid 2px rgb(94, 200, 229)",
+   "region": "insp",
+   "x": 1047,
+   "y": 478,
+   "w": 319,
+   "h": 32
+  },
+  {
+   "tag": "BUTTON",
+   "n": "Hidrojen bağı",
+   "role": null,
+   "fv": true,
+   "ol": "solid 2px rgb(94, 200, 229)",
+   "region": "insp",
+   "x": 1047,
+   "y": 662,
+   "w": 319,
+   "h": 32
+  },
+  {
+   "tag": "BUTTON",
+   "n": "Kütlece yüzde bileşim",
+   "role": null,
+   "fv": true,
+   "ol": "solid 2px rgb(94, 200, 229)",
+   "region": "insp",
+   "x": 1047,
+   "y": 499,
+   "w": 319,
+   "h": 32
+  },
+  {
+   "tag": "BUTTON",
+   "n": "Fonksiyonel gruplarTahmini",
+   "role": null,
+   "fv": true,
+   "ol": "solid 2px rgb(94, 200, 229)",
+   "region": "insp",
+   "x": 1047,
+   "y": 585,
+   "w": 319,
+   "h": 32
+  },
+  {
+   "tag": "BUTTON",
+   "n": "Lipinski kuralları",
+   "role": null,
+   "fv": true,
+   "ol": "solid 2px rgb(94, 200, 229)",
+   "region": "insp",
+   "x": 1047,
+   "y": 647,
+   "w": 319,
+   "h": 32
+  },
+  {
+   "tag": "BUTTON",
+   "n": "Bağ sayısı sorunları",
+   "role": null,
+   "fv": true,
+   "ol": "solid 2px rgb(94, 200, 229)",
+   "region": "insp",
+   "x": 1047,
+   "y": 679,
+   "w": 319,
+   "h": 32
+  },
+  null,
+  {
+   "tag": "INPUT",
+   "n": "Proje adı",
+   "role": null,
+   "fv": true,
+   "ol": "solid 2px rgb(94, 200, 229)",
+   "region": "top",
+   "x": 169,
+   "y": 6,
+   "w": 224,
+   "h": 32
+  },
+  {
+   "tag": "BUTTON",
+   "n": "Geri al",
+   "role": null,
+   "fv": true,
+   "ol": "solid 2px rgb(94, 200, 229)",
+   "region": "top",
+   "x": 881,
+   "y": 6,
+   "w": 32,
+   "h": 32
+  },
+  {
+   "tag": "BUTTON",
+   "n": "Yinele",
+   "role": null,
+   "fv": true,
+   "ol": "solid 2px rgb(94, 200, 229)",
+   "region": "top",
+   "x": 913,
+   "y": 6,
+   "w": 32,
+   "h": 32
+  },
+  {
+   "tag": "BUTTON",
+   "n": "Kütüphane",
+   "role": null,
+   "fv": true,
+   "ol": "solid 2px rgb(94, 200, 229)",
+   "region": "top",
+   "x": 962,
+   "y": 6,
+   "w": 101,
+   "h": 32
+  },
+  {
+   "tag": "BUTTON",
+   "n": "Dosya",
+   "role": null,
+   "fv": true,
+   "ol": "solid 2px rgb(94, 200, 229)",
+   "region": "top",
+   "x": 1068,
+   "y": 6,
+   "w": 91,
+   "h": 32
+  },
+  {
+   "tag": "BUTTON",
+   "n": "Görünüm",
+   "role": null,
+   "fv": true,
+   "ol": "solid 2px rgb(94, 200, 229)",
+   "region": "top",
+   "x": 1163,
+   "y": 6,
+   "w": 110,
+   "h": 32
+  },
+  {
+   "tag": "BUTTON",
+   "n": "Ayarlar",
+   "role": null,
+   "fv": true,
+   "ol": "solid 2px rgb(94, 200, 229)",
+   "region": "top",
+   "x": 1290,
+   "y": 6,
+   "w": 32,
+   "h": 32
+  },
+  {
+   "tag": "BUTTON",
+   "n": "Molekül bilgisini kapat",
+   "role": null,
+   "fv": true,
+   "ol": "solid 2px rgb(94, 200, 229)",
+   "region": "top",
+   "x": 1326,
+   "y": 6,
+   "w": 32,
+   "h": 32
+  },
+  {
+   "tag": "BUTTON",
+   "n": "Seç",
+   "role": null,
+   "fv": true,
+   "ol": "solid 2px rgb(94, 200, 229)",
+   "region": "rail",
+   "x": 8,
+   "y": 53,
+   "w": 32,
+   "h": 32
+  },
+  {
+   "tag": "CANVAS",
+   "n": "3B molekül görünümü",
+   "role": null,
+   "fv": true,
+   "ol": "solid 2px rgb(94, 200, 229)",
+   "region": "canvas",
+   "x": 48,
+   "y": 45,
+   "w": 998,
+   "h": 697
+  },
+  {
+   "tag": "BUTTON",
+   "n": "Top-Çubuk",
+   "role": "radio",
+   "fv": true,
+   "ol": "solid 2px rgb(94, 200, 229)",
+   "region": "other",
+   "x": 63,
+   "y": 701,
+   "w": 74,
+   "h": 26
+  },
+  {
+   "tag": "BUTTON",
+   "n": "Yakınlaş",
+   "role": null,
+   "fv": true,
+   "ol": "solid 2px rgb(94, 200, 229)",
+   "region": "other",
+   "x": 903,
+   "y": 695,
+   "w": 32,
+   "h": 32
+  },
+  {
+   "tag": "BUTTON",
+   "n": "Uzaklaş",
+   "role": null,
+   "fv": true,
+   "ol": "solid 2px rgb(94, 200, 229)",
+   "region": "other",
+   "x": 935,
+   "y": 695,
+   "w": 32,
+   "h": 32
+  },
+  {
+   "tag": "BUTTON",
+   "n": "Sığdır",
+   "role": null,
+   "fv": true,
+   "ol": "solid 2px rgb(94, 200, 229)",
+   "region": "other",
+   "x": 967,
+   "y": 695,
+   "w": 32,
+   "h": 32
+  },
+  {
+   "tag": "BUTTON",
+   "n": "Kamerayı sıfırla",
+   "role": null,
+   "fv": true,
+   "ol": "solid 2px rgb(94, 200, 229)",
+   "region": "other",
+   "x": 999,
+   "y": 695,
+   "w": 32,
+   "h": 32
+  },
+  {
+   "tag": "BUTTON",
+   "n": "Paneli daralt",
+   "role": null,
+   "fv": true,
+   "ol": "solid 2px rgb(94, 200, 229)",
+   "region": "insp",
+   "x": 1330,
+   "y": 49,
+   "w": 32,
+   "h": 32
+  }
+ ],
+ "help": {
+  "label": "_r_2_",
+  "focusIn": true
+ },
+ "helpEsc": false,
+ "collapsed": {
+  "aside": null,
+  "edge": []
+ },
+ "logs": []
+}

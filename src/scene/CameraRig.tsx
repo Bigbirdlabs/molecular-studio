@@ -191,7 +191,7 @@ export function CameraRig() {
 
     /** Pixels at the bottom of the canvas hidden by the mobile molecule-info sheet at its current snap (0 elsewhere). */
     const sheetCover = (): number => {
-      if (!useStudio.getState().inspectorOpen || typeof window.matchMedia !== 'function' || !window.matchMedia('(max-width: 767.98px)').matches) return 0
+      if (!useStudio.getState().inspectorOpen || typeof window.matchMedia !== 'function' || !window.matchMedia('(max-width: 639.98px)').matches) return 0 // phone layout only (SPEC D.8: 640-1023 px is the tablet layout with an in-flow drawer, no sheet)
       const vh = window.visualViewport?.height ?? window.innerHeight
       const { infoSnap: snap, chromeBottom } = useUI.getState()
       // mirrors BottomSheet: a non-modal sheet rests on top of the bottom chrome and its detents are fractions of what is left
@@ -262,6 +262,8 @@ export function CameraRig() {
     const s = st.current
     const c = s.controls
     if (!c) return
+    // While an atom is dragged the molecule changes every frame; the limits stay frozen so c.update() cannot clamp (move) the camera mid-drag.
+    if (ctx.model.snap && s.limitMol !== null) return
     const store = useStudio.getState()
     const hide = !store.showHydrogens
     if (s.limitMol === store.mol && s.limitAspect === camera.aspect && s.limitHide === hide) return
@@ -299,6 +301,9 @@ export function CameraRig() {
     // Default framing uses the space-filling radii (the largest style) so that a style switch, which never moves the camera,
     // cannot clip the molecule; ball-and-stick then sits comfortably inside the frame with room for edits.
     ctx.model.collectFit('spacefill', pts)
+    // SPEC B.5: an empty canvas has nothing to frame; a fit (new / cleared molecule) must leave the camera where it is.
+    // An explicit "reset view" still returns to the default view.
+    if (kind === 'fit' && pts.length === 0) return
     const fit = computeFit(pts, dirTuple(dir), FOV, camera.aspect, FIT_FILL_DEFAULT)
     s.fitW = gl.domElement.clientWidth || width
     s.fitH = gl.domElement.clientHeight || height
@@ -381,7 +386,10 @@ export function CameraRig() {
     // own fit, an atom drag never re-frames, and atoms that were already there are ignored (the user may have zoomed in on purpose).
     if (s.initialized && (store.mol !== s.checkedMol || store.loadNonce !== s.checkedNonce)) {
       const prev = s.checkedMol
-      const loaded = store.loadNonce !== s.checkedNonce
+      // a different molecule identity (undo / redo across a library load) is a load: it gets the same animated re-frame
+      const swapped = prev !== null && prev.id !== store.mol.id
+      const loaded = store.loadNonce !== s.checkedNonce || swapped
+      if (swapped && s.pendingFit === 'none') s.pendingFit = 'fit'
       s.checkedMol = store.mol
       s.checkedNonce = store.loadNonce
       if (prev && !loaded && s.pendingFit === 'none' && !store.relaxing && !ctx.model.snap && store.mol.atoms.length > prev.atoms.length) {
@@ -398,8 +406,20 @@ export function CameraRig() {
 
     if (!s.initialized) {
       s.initialized = true
-      frame('reset', true)
-      s.pristineUntil = performance.now() + PRISTINE_MS
+      const saved = ctx.savedView
+      ctx.savedView = null
+      if (saved) {
+        // canvas remount after a lost context: come back to the same viewpoint instead of the default one
+        refreshLimits()
+        setView(new THREE.Vector3(...saved.target), new THREE.Vector3(...saved.position).sub(new THREE.Vector3(...saved.target)).normalize(),
+          clamp(new THREE.Vector3(...saved.position).distanceTo(new THREE.Vector3(...saved.target)), c.minDistance, c.maxDistance))
+        s.fitW = gl.domElement.clientWidth || width
+        s.fitH = gl.domElement.clientHeight || height
+        s.pristineUntil = 0
+      } else {
+        frame('reset', true)
+        s.pristineUntil = performance.now() + PRISTINE_MS
+      }
       s.pendingFit = 'none'
       s.checkedMol = store.mol
       s.checkedNonce = store.loadNonce

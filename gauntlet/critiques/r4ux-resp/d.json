@@ -1,0 +1,152 @@
+{
+ "longPress": {
+  "sheet": {
+   "role": "complementary",
+   "label": "Molekül",
+   "top": 76,
+   "visH": 687
+  },
+  "grab": "Panel yüksekliği: yarım. Değiştirmek için Enter veya yukarı/aşağı ok tuşları",
+  "text": "Molekül | Karbon #1 | · | CH4 | · | 16,04 g/mol | · | 5 atom | · | 4 bağ | C | Karbon (C) | #1 · Ametal | Element | Atom numarası | 6 | Atom kütlesi | 12,",
+  "change": "none"
+ },
+ "tabs": [
+  {
+   "n": "Top-Çubuk",
+   "fv": true,
+   "ol": "solid 2px",
+   "inSheet": false,
+   "x": 11,
+   "y": 56,
+   "w": 92,
+   "h": 38
+  },
+  {
+   "n": "Yakınlaş",
+   "fv": true,
+   "ol": "solid 2px",
+   "inSheet": false,
+   "x": 335,
+   "y": 108,
+   "w": 44,
+   "h": 44
+  },
+  {
+   "n": "Uzaklaş",
+   "fv": true,
+   "ol": "solid 2px",
+   "inSheet": false,
+   "x": 335,
+   "y": 152,
+   "w": 44,
+   "h": 44
+  },
+  {
+   "n": "Sığdır",
+   "fv": true,
+   "ol": "solid 2px",
+   "inSheet": false,
+   "x": 335,
+   "y": 196,
+   "w": 44,
+   "h": 44
+  },
+  {
+   "n": "Kamerayı sıfırla",
+   "fv": true,
+   "ol": "solid 2px",
+   "inSheet": false,
+   "x": 335,
+   "y": 240,
+   "w": 44,
+   "h": 44
+  },
+  {
+   "n": "Seç",
+   "fv": true,
+   "ol": "solid 2px",
+   "inSheet": false,
+   "x": 14,
+   "y": 796,
+   "w": 44,
+   "h": 44
+  },
+  {
+   "n": "Panel yüksekliği: özet. Değiştirmek için",
+   "fv": true,
+   "ol": "solid 2px",
+   "inSheet": true,
+   "x": 163,
+   "y": 335,
+   "w": 64,
+   "h": 24
+  }
+ ],
+ "libItem": [
+  258,
+  77
+ ],
+ "library": {
+  "x": 0,
+  "y": 84,
+  "w": 390,
+  "h": 760,
+  "label": "Molekül kütüphanesi",
+  "modal": "true",
+  "small": [
+   {
+    "n": "Top-Çubuk",
+    "x": 11,
+    "y": 56,
+    "w": 92,
+    "h": 38
+   },
+   {
+    "n": "Uzay Dolgulu",
+    "x": 103,
+    "y": 56,
+    "w": 92,
+    "h": 38
+   },
+   {
+    "n": "Çubuk",
+    "x": 195,
+    "y": 56,
+    "w": 92,
+    "h": 38
+   },
+   {
+    "n": "Tel Kafes",
+    "x": 287,
+    "y": 56,
+    "w": 92,
+    "h": 38
+   },
+   {
+    "n": "Panel yüksekliği: özet. Değiştirmek için Enter veya yukarı/aşağı ok tuşları",
+    "x": 163,
+    "y": 335,
+    "w": 64,
+    "h": 24
+   },
+   {
+    "n": "Panel yüksekliği: tam. Değiştirmek için Enter veya yukarı/aşağı ok tuşları",
+    "x": 163,
+    "y": 93,
+    "w": 64,
+    "h": 24
+   }
+  ],
+  "ov": {
+   "sw": 390,
+   "iw": 390,
+   "bsw": 390
+  },
+  "focusIn": false
+ },
+ "afterLibEsc": {
+  "dialog": false,
+  "focus": null
+ },
+ "logs": []
+}

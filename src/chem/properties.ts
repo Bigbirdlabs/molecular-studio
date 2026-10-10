@@ -64,7 +64,22 @@ export interface AtomInfo {
   /** English VSEPR geometry name (additive, for the English UI) */
   geometryEn: string
   stericNumber: number
+  /** lone pairs that count as VSEPR electron domains: steric number = sigma + lonePairs (drives AX_nE_m, ideal angle) */
   lonePairs: number
+  /**
+   * ALL lone pairs by the A4.2 formula LP = (VE - q - sum of bond orders) / 2. Equals lonePairs except where one pair is
+   * delocalised into a pi system (aniline / amide / pyrrole N, furan O, thiophene S): there lonePairsTotal - lonePairs pairs
+   * are not counted as domains. The Inspector should show lonePairsTotal and qualify the difference.
+   */
+  lonePairsTotal: number
+  /** lone pairs delocalised into pi (lonePairsTotal - lonePairs); 0 for ordinary centres */
+  lonePairsDelocalised: number
+  /**
+   * Ready-to-render lone pair label that follows the A4.2 formula (total pairs) and qualifies delocalised pairs, e.g. aniline N
+   * "1 (π sistemine delokalize)", furan O "2 (1 tanesi π sistemine delokalize)", water O "2". "—" when not computable.
+   */
+  lonePairsText: string
+  lonePairsTextEn: string
   valenceUsed: number
   valence: number
   formalCharge: number
@@ -141,6 +156,14 @@ export interface MolProperties {
 
 export interface IssueDetail {
   code: 'valenceOver' | 'valenceUnder' | 'valenceInvalid' | 'overlap'
+  /**
+   * Refines 'valenceInvalid'. 'needsOF': the bond count is numerically one of the element's valences but a hypervalent S / P /
+   * halogen needs an O or F neighbour (SPEC A1.3); `allowed` then lists only the valence(s) that ARE valid for this atom, and
+   * `message` / `messageEn` carry ready-made text (the UI can show them instead of the generic 'invalid valence' sentence).
+   */
+  reason?: 'needsOF'
+  message?: string
+  messageEn?: string
   atomId: number
   symbol: string
   used?: number
@@ -179,7 +202,10 @@ interface GeoInfo {
   /** VSEPR rows (steric number, lone pairs, geometry) are meaningful */
   vsepr: boolean
   sn: number
+  /** lone pairs that count as VSEPR domains (sn = sigma + lp) */
   lp: number
+  /** all lone pairs by the A4.2 formula LP = (VE - q - sum of bond orders) / 2 (includes pairs delocalised into pi) */
+  lpTotal: number
   geometry: string
   geometryEn: string
   incomplete: boolean
@@ -203,6 +229,8 @@ interface Analysis {
   /** topology-only molecule view built lazily for geometry.ts electronDomains */
   mol?: Molecule
   charges: Map<number, number> | null
+  /** atoms whose PEOE charge is not computable (whole connected components containing a blocked atom), built lazily */
+  chargeBlockedIds?: Set<number>
   /** ids of bonds that lie on a ring (union of the SSSR bonds) */
   ringBonds: Set<number>
   /** number of connected components (over all atoms) */
@@ -568,6 +596,18 @@ function topologyMolecule(an: Analysis): Molecule {
   return an.mol
 }
 
+/** Lone pair label from the A4.2 total with the pi-delocalised part qualified (one rule for N, aromatic O and aromatic S). */
+function lonePairLabels(g: GeoInfo): { lonePairsText: string; lonePairsTextEn: string } {
+  if (g.incomplete) return { lonePairsText: '—', lonePairsTextEn: '—' }
+  const deloc = Math.max(0, g.lpTotal - g.lp)
+  if (deloc === 0) return { lonePairsText: String(g.lpTotal), lonePairsTextEn: String(g.lpTotal) }
+  const all = deloc === g.lpTotal
+  return {
+    lonePairsText: `${g.lpTotal} (${all ? '' : `${deloc} tanesi `}π sistemine delokalize)`,
+    lonePairsTextEn: `${g.lpTotal} (${all ? '' : `${deloc} of them `}delocalised into the π system)`,
+  }
+}
+
 function geoOf(an: Analysis, id: number): GeoInfo {
   const hit = an.geo.get(id)
   if (hit) return hit
@@ -580,6 +620,9 @@ function geoOf(an: Analysis, id: number): GeoInfo {
   const dom = electronDomains(topologyMolecule(an), a)
   let sn = dom.sn
   let lp = dom.lp
+  // all lone pairs by the A4.2 formula (geometry.ts forces 0 for a conjugated N: its pair is counted as pi there)
+  const ve = VALENCE_ELECTRONS[a.symbol]
+  const lpTotal = dom.lpExact && ve !== undefined ? Math.max(0, Math.floor((ve - a.charge - dom.target) / 2)) : lp
   let g: GeoInfo
   const metal = a.symbol === 'Na' || a.symbol === 'Mg'
   // Missing H / under- or over-valent: hybridization, geometry and lone pairs cannot be derived honestly.
@@ -595,13 +638,13 @@ function geoOf(an: Analysis, id: number): GeoInfo {
   const hypervalent = (a.symbol === 'S' && used > 2 + Math.abs(a.charge)) || (a.symbol === 'P' && used > 3 + Math.abs(a.charge))
 
   if (metal) {
-    g = { hyb: '—', hybShown: '—', vsepr: false, sn, lp, geometry: 'Metal (iyonik)', geometryEn: 'Metal (ionic)', incomplete }
+    g = { hyb: '—', hybShown: '—', vsepr: false, sn, lp, lpTotal, geometry: 'Metal (iyonik)', geometryEn: 'Metal (ionic)', incomplete }
   } else if (deg === 0) {
-    g = { hyb: a.symbol === 'H' ? 's' : '—', hybShown: '—', vsepr: false, sn, lp, geometry: 'Tek atom', geometryEn: 'Single atom', incomplete }
+    g = { hyb: a.symbol === 'H' ? 's' : '—', hybShown: '—', vsepr: false, sn, lp, lpTotal, geometry: 'Tek atom', geometryEn: 'Single atom', incomplete }
   } else if (a.symbol === 'H') {
-    g = { hyb: 's', hybShown: '—', vsepr: false, sn, lp, geometry: 'Uç atom (tek komşu)', geometryEn: 'Terminal atom (one neighbour)', incomplete }
+    g = { hyb: 's', hybShown: '—', vsepr: false, sn, lp, lpTotal, geometry: 'Uç atom (tek komşu)', geometryEn: 'Terminal atom (one neighbour)', incomplete }
   } else if (incomplete) {
-    g = { hyb: '—', hybShown: '—', vsepr: false, sn: deg, lp: 0, geometry: 'hesaplanamadı (yapı eksik)', geometryEn: 'not computable (incomplete structure)', incomplete }
+    g = { hyb: '—', hybShown: '—', vsepr: false, sn: deg, lp: 0, lpTotal: 0, geometry: 'hesaplanamadı (yapı eksik)', geometryEn: 'not computable (incomplete structure)', incomplete }
   } else {
     let tr: string, en: string
     if (deg === 1) {
@@ -634,7 +677,7 @@ function geoOf(an: Analysis, id: number): GeoInfo {
     if (hypervalent) hyb = '—'
     // Hybridisation is only reported for C, N, O and B (SPEC A4.2); sp3 for Cl / F / S / P would be wrong or meaningless.
     const hybShown: Hyb = (a.symbol === 'C' || a.symbol === 'N' || a.symbol === 'O' || a.symbol === 'B') && (hyb === 'sp' || hyb === 'sp2' || hyb === 'sp3') ? hyb : '—'
-    g = { hyb, hybShown, vsepr: deg >= 2, sn, lp, geometry: tr, geometryEn: en, incomplete }
+    g = { hyb, hybShown, vsepr: deg >= 2, sn, lp, lpTotal, geometry: tr, geometryEn: en, incomplete }
   }
   an.geo.set(id, g)
   return g
@@ -664,11 +707,38 @@ function peoeParams(a: Atom, geo: GeoInfo, aromatic: boolean): Peoe | null {
   }
 }
 
-/** true when the PEOE charge of this atom is not computable (no parameters / incomplete / blocked by such a partner) */
+/**
+ * true when the PEOE charge of this atom is not computable. Charge equalisation spreads over the WHOLE connected component, so
+ * if any atom in it lacks parameters (or is incomplete) every atom of that component is blocked: a truncated network would
+ * silently show the charge of an isolated fragment (e.g. the H of H2SO4 as if it were an OH group).
+ */
 function chargeBlocked(an: Analysis, id: number): boolean {
-  const bad = (x: number) => peoeParams(an.byId.get(x)!, geoOf(an, x), an.aromaticAtoms.has(x)) === null || geoOf(an, x).incomplete
-  if (bad(id)) return true
-  return an.adj.get(id)!.some((nb) => bad(nb.id))
+  if (!an.chargeBlockedIds) {
+    const bad = (x: number) => peoeParams(an.byId.get(x)!, geoOf(an, x), an.aromaticAtoms.has(x)) === null || geoOf(an, x).incomplete
+    const blocked = new Set<number>()
+    const seen = new Set<number>()
+    for (const start of an.byId.keys()) {
+      if (seen.has(start)) continue
+      const comp: number[] = []
+      const stack = [start]
+      seen.add(start)
+      let anyBad = false
+      while (stack.length) {
+        const x = stack.pop()!
+        comp.push(x)
+        if (bad(x)) anyBad = true
+        for (const nb of an.adj.get(x)!) {
+          if (!seen.has(nb.id)) {
+            seen.add(nb.id)
+            stack.push(nb.id)
+          }
+        }
+      }
+      if (anyBad) for (const x of comp) blocked.add(x)
+    }
+    an.chargeBlockedIds = blocked
+  }
+  return an.chargeBlockedIds.has(id)
 }
 
 function gasteiger(an: Analysis): Map<number, number> {
@@ -736,6 +806,9 @@ export function atomInfo(m: Molecule, id: number): AtomInfo | null {
     geometryEn: g.geometryEn,
     stericNumber: g.sn,
     lonePairs: g.lp,
+    lonePairsTotal: g.lpTotal,
+    lonePairsDelocalised: Math.max(0, g.lpTotal - g.lp),
+    ...lonePairLabels(g),
     valenceUsed: used,
     valence,
     formalCharge: a.charge,
@@ -1062,6 +1135,14 @@ function computeTopo(m: Molecule, an: Analysis): TopoProps {
     } else if (allowed.some((v) => v > used) && !allowed.some((v) => v < used)) {
       issueDetails.push({ code: 'valenceUnder', atomId: a.id, symbol: a.symbol, used, allowed })
       issues.push(`Eksik değerlik: ${a.symbol} ${used} bağ yapıyor, ${allowed.join(' veya ')} olmalı (atom ${a.id})`)
+    } else if (allowed.includes(used)) {
+      // SH4 / PH5 / (CH3)3SH: the count is a listed valence but S / P / halogen above the lowest valence needs an O or F neighbour,
+      // so without one only the lowest valence is valid. Never print "4 bonds is invalid; valid: 2 / 4 / 6".
+      const valid = [allowed[0]]
+      const message = `${a.symbol} #${a.id}: ${used} bağ yalnızca O veya F komşusu varsa geçerli; bu atom için geçerli değerlik: ${valid.join(' / ')}`
+      const messageEn = `${a.symbol} #${a.id}: ${used} bonds is only valid with an O or F neighbour; valid valence for this atom: ${valid.join(' / ')}`
+      issueDetails.push({ code: 'valenceInvalid', reason: 'needsOF', atomId: a.id, symbol: a.symbol, used, allowed: valid, message, messageEn })
+      issues.push(`Geçersiz değerlik: ${a.symbol} ${used} bağ yapıyor; O veya F komşusu olmadan yalnızca ${valid.join(' / ')} geçerli (atom ${a.id})`)
     } else {
       issueDetails.push({ code: 'valenceInvalid', atomId: a.id, symbol: a.symbol, used, allowed })
       issues.push(`Geçersiz değerlik: ${a.symbol} ${used} bağ yapıyor; geçerli değerlikler ${allowed.join(' veya ')} (atom ${a.id})`)

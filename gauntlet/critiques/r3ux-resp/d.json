@@ -1,0 +1,131 @@
+{
+ "rm": "true",
+ "sel": {
+  "sheet": {
+   "role": "complementary",
+   "label": "Molecule",
+   "top": 527,
+   "visH": 213
+  },
+  "text": "Molecule | Carbon #1 | · | CH4 | · | 16.04 g/mol | · | 5 atoms | · | 4 bonds | C | Carbon (C) | #1 · Nonmetal | Elem",
+  "ann": "Autosave on"
+ },
+ "cleared": {
+  "sheet": {
+   "role": "complementary",
+   "label": "Molecule",
+   "top": 527,
+   "visH": 213
+  },
+  "text": "Molecule | CH4 | · | 16.04 g/mol | · | 5 atoms | · | 4 bonds | Methane | Molecular formula | CH4 | General | Molar"
+ },
+ "half": {
+  "sheet": {
+   "role": "complementary",
+   "label": "Molecule",
+   "top": 329,
+   "visH": 411
+  },
+  "canvas": {
+   "x": 0,
+   "y": 45,
+   "w": 360,
+   "h": 614,
+   "label": "3D molecule view"
+  }
+ },
+ "sheetButtons": [
+  {
+   "n": "Close panel",
+   "x": 299,
+   "y": 350,
+   "w": 44,
+   "h": 44
+  },
+  {
+   "n": "General",
+   "x": 1,
+   "y": 522,
+   "w": 358,
+   "h": 44
+  },
+  {
+   "n": "Structure",
+   "x": 1,
+   "y": 775,
+   "w": 358,
+   "h": 44
+  },
+  {
+   "n": "Hydrogen bonding",
+   "x": 1,
+   "y": 972,
+   "w": 358,
+   "h": 44
+  },
+  {
+   "n": "Mass composition",
+   "x": 1,
+   "y": 1126,
+   "w": 358,
+   "h": 44
+  },
+  {
+   "n": "Functional groupsEstimated",
+   "x": 1,
+   "y": 1225,
+   "w": 358,
+   "h": 44
+  }
+ ],
+ "atom": {
+  "ov": {
+   "sw": 360,
+   "iw": 360,
+   "bsw": 360
+  },
+  "groups": [
+   {
+    "l": "Display style",
+    "x": 8,
+    "y": 53,
+    "w": 344,
+    "h": 44,
+    "btns": "85x38 85x38 85x38 85x38"
+   },
+   {
+    "l": "Bond order",
+    "x": 120,
+    "y": 511,
+    "w": 120,
+    "h": 44,
+    "btns": "38x38 38x38 38x38"
+   },
+   {
+    "l": "Element",
+    "x": 14,
+    "y": 561,
+    "w": 332,
+    "h": 92,
+    "btns": "44x44 44x44 44x44 44x44 44x44 44x44 44x44 44x44 44x44 44x44 44x44 44x44 44x44 44x44"
+   }
+  ],
+  "canvas": {
+   "x": 0,
+   "y": 45,
+   "w": 360,
+   "h": 459,
+   "label": "3D molecule view"
+  }
+ },
+ "toast": [
+  {
+   "t": "Autosave on",
+   "x": 138,
+   "y": 0,
+   "w": 30,
+   "h": 44
+  }
+ ],
+ "logs": []
+}

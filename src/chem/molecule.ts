@@ -98,15 +98,23 @@ export function targetValence(m: Molecule, a: Atom): number {
 }
 
 export type ValenceState = 'ok' | 'under' | 'over'
-/** Elements whose higher valences only make sense next to O or F (SPEC A1.3): S, P and the halogens. */
+/** Elements whose higher valences only make sense next to O or a halogen (SPEC A1.3): S, P and the halogens. */
 const NEEDS_OF_ABOVE_LOWEST = new Set(['S', 'P', 'F', 'Cl', 'Br', 'I'])
+/**
+ * Neighbours that make a raised S / P valence plausible: O (SO₂, H₂SO₄, H₃PO₄) and the halogens (SF₆, PF₅, PCl₅, PBr₅,
+ * SCl₄). SPEC A1.3 literally says "O or F"; Cl / Br / I are admitted too because PCl₅, PBr₅ and SCl₄ are real
+ * compounds (and CONVENTIONAL_FORMULA lists Cl₅P). SH₄, PH₅ and (CH₃)₃SH, with no such neighbour, stay 'under'.
+ * DELIBERATE DEVIATION from SPEC A1.3 (recorded here; SPEC.md should be amended to "O or a halogen"): the wording of the
+ * hypervalence message in properties.ts still says "O or F" and should follow this rule.
+ */
+const HYPERVALENT_PARTNERS = new Set(['O', 'F', 'Cl', 'Br', 'I'])
 
 export function valenceState(m: Molecule, a: Atom): ValenceState {
   const used = valenceUsed(m, a.id)
   const list = allowedValences(a)
   if (list.includes(used)) {
-    // SH4, PH5, (CH3)3SH: allowed numerically, but an S / P / halogen above its lowest valence needs O or F neighbours
-    if (NEEDS_OF_ABOVE_LOWEST.has(a.symbol) && used > list[0] && !neighbours(m, a.id).some((n) => n.atom.symbol === 'O' || n.atom.symbol === 'F')) return 'under'
+    // SH4, PH5, (CH3)3SH: allowed numerically, but an S / P / halogen above its lowest valence needs O or halogen neighbours
+    if (NEEDS_OF_ABOVE_LOWEST.has(a.symbol) && used > list[0] && !neighbours(m, a.id).some((n) => HYPERVALENT_PARTNERS.has(n.atom.symbol))) return 'under'
     return 'ok'
   }
   if (used > Math.max(0, ...list)) return 'over'
@@ -261,12 +269,18 @@ export function bondLength(m: Molecule, b: Bond): number {
 
 /** Source family of a reference-length row. */
 type LengthSource = 'A' | 'C' | 'T'
-const LENGTH_SOURCE_TEXT: Record<LengthSource, string> = {
-  A: 'Allen 1987 (rounded)', // Allen et al., J. Chem. Soc. Perkin Trans. 2 1987, S1
-  C: 'CCCBDB gas-phase', // NIST Computational Chemistry Comparison and Benchmark Database, experimental geometry page
-  T: 'typical reference value (no single table source, about ±0.05 Å)', // textbook-typical value rounded to 0.01 Å; CCCBDB has no usable entry for this bond type
+/**
+ * Display text per source family and language. The strings that reach the UI go through here (never hard-coded English
+ * in a Turkish interface). The 'T' text deliberately starts with "typical": Inspector swaps that row for its own
+ * translated t('bond.refSrc.typical') label.
+ */
+const LENGTH_SOURCE_TEXT: Record<LengthSource, { tr: string; en: string }> = {
+  A: { tr: 'Allen 1987 (yuvarlatılmış)', en: 'Allen 1987 (rounded)' }, // Allen et al., J. Chem. Soc. Perkin Trans. 2 1987, S1
+  C: { tr: 'CCCBDB gaz fazı', en: 'CCCBDB gas-phase' }, // NIST Computational Chemistry Comparison and Benchmark Database, experimental geometry page
+  T: { tr: 'typical (tek tablo kaynağı yok, yaklaşık ±0,05 Å)', en: 'typical reference value (no single table source, about ±0.05 Å)' }, // textbook-typical value rounded to 0.01 Å; CCCBDB has no usable entry for this bond type
 }
-
+/** UI language as the store publishes it on <html lang>; Turkish (the default language) when there is no document. */
+const uiLang = (): 'tr' | 'en' => (typeof document !== 'undefined' && document.documentElement.lang === 'en' ? 'en' : 'tr')
 /**
  * [a, b, order (4 = aromatic), length in Å, source]. Typical reference lengths rounded to 0.01 Å. Each row carries its
  * source family (A = Allen 1987 rounded, C = CCCBDB experimental gas-phase, T = typical value without a single table source).
@@ -277,6 +291,7 @@ const LENGTH_SOURCE_TEXT: Record<LengthSource, string> = {
  *   P–F 1.56 PF3 rFP 1.561 · P–Cl 2.04 PCl3 rPCl 2.043 · Si–Cl 2.02 SiCl4 rSiCl 2.019 · Si–F 1.55 SiF4 rSiF 1.554
  *   S–Cl 2.01 SCl2 rSCl 2.013 · B–Cl 1.74 BCl3 rBCl 1.742 · N–F 1.36 NF3 rNF 1.365 · Mg–Cl 2.18 MgCl2 rMgCl 2.180
  *   C–Si 1.87 CH3SiH3 rSiC 1.869 · C–B 1.58 B(CH3)3 rBC 1.578 · B–H 1.20 B2H6 terminal rBH 1.200
+ *   C=S 1.61 H2C=S rCS 1.611 (CCCBDB; Allen 1987 gives about 1.67, so this row is tagged C, not A)
  * Rows still tagged T had no usable CCCBDB entry (page empty or defaulted to another molecule).
  */
 const LENGTHS: [string, string, number, number, LengthSource][] = [
@@ -284,7 +299,7 @@ const LENGTHS: [string, string, number, number, LengthSource][] = [
   ['C', 'C', 4, 1.39, 'A'], ['C', 'H', 1, 1.09, 'A'], ['C', 'N', 1, 1.47, 'A'],
   ['C', 'N', 2, 1.28, 'A'], ['C', 'N', 3, 1.16, 'C'], ['C', 'N', 4, 1.34, 'A'],
   ['C', 'O', 1, 1.43, 'A'], ['C', 'O', 2, 1.21, 'A'], ['C', 'O', 3, 1.13, 'C'],
-  ['C', 'O', 4, 1.36, 'A'], ['C', 'S', 1, 1.82, 'A'], ['C', 'S', 2, 1.61, 'A'],
+  ['C', 'O', 4, 1.36, 'A'], ['C', 'S', 1, 1.82, 'A'], ['C', 'S', 2, 1.61, 'C'],
   ['C', 'S', 4, 1.72, 'A'], ['C', 'F', 1, 1.35, 'A'], ['C', 'Cl', 1, 1.77, 'A'],
   ['C', 'Br', 1, 1.94, 'A'], ['C', 'I', 1, 2.14, 'A'], ['C', 'P', 1, 1.84, 'T'],
   ['C', 'P', 2, 1.67, 'T'], ['C', 'Si', 1, 1.87, 'C'], ['C', 'B', 1, 1.58, 'C'],
@@ -325,10 +340,36 @@ export function bondTargetLength(sa: string, sb: string, order: number, aromatic
   return LEN.get(lenKey(sa, sb, order))?.length ?? covalentEstimate(sa, sb, order)
 }
 
-/** Source text of the reference-length row used for this bond, or null when the covalent-radius fallback applies. */
-export function bondLengthSource(sa: string, sb: string, order: number, aromatic = false): string | null {
+/**
+ * Reference length (Å) of a concrete bond in a molecule. Same table as bondTargetLength, plus one context rule: in a
+ * nitro-type group the two N–O bonds are resonance-equivalent (about 1.22 Å in real nitro compounds), so an N⁺–O⁻
+ * single bond whose N⁺ also carries an N⁺=O double bond gets the N=O length instead of the isolated N–O single (1.40 Å).
+ */
+export function bondLengthFor(m: Molecule, b: Bond): number {
+  const A = atomById(m, b.a)
+  const B = atomById(m, b.b)
+  if (!A || !B) return 0
+  const aromatic = !!b.aromatic
+  if (!aromatic && b.order === 1) {
+    const N = A.symbol === 'N' && A.charge === 1 && B.symbol === 'O' && B.charge === -1 ? A
+      : B.symbol === 'N' && B.charge === 1 && A.symbol === 'O' && A.charge === -1 ? B : null
+    if (N) {
+      const O = N === A ? B : A
+      if (neighbours(m, N.id).some((n) => n.atom.id !== O.id && n.atom.symbol === 'O' && n.bond.order === 2 && !n.bond.aromatic)) {
+        return bondTargetLength('N', 'O', 2)
+      }
+    }
+  }
+  return bondTargetLength(A.symbol, B.symbol, b.order, aromatic)
+}
+
+/**
+ * Source text of the reference-length row used for this bond, or null when the covalent-radius fallback applies.
+ * Localised: `lang` defaults to the active UI language (<html lang>, kept in sync by the store).
+ */
+export function bondLengthSource(sa: string, sb: string, order: number, aromatic = false, lang: 'tr' | 'en' = uiLang()): string | null {
   const row = LEN.get(lenKey(sa, sb, aromatic ? 4 : order))
-  return row ? LENGTH_SOURCE_TEXT[row.source] : null
+  return row ? LENGTH_SOURCE_TEXT[row.source][lang] : null
 }
 
 /** Ideal bond length (Å): delegates to the single reference table (bondTargetLength). */

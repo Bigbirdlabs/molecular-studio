@@ -1,0 +1,223 @@
+{
+ "lp": {
+  "sheet": {
+   "role": "complementary",
+   "label": "Molekül",
+   "top": 76,
+   "visH": 687
+  },
+  "grab": {
+   "label": "Panel yüksekliği: tam",
+   "x": 163,
+   "y": 77,
+   "w": 64,
+   "h": 44
+  },
+  "wraps": [
+   {
+    "role": "complementary",
+    "wrapST": 0,
+    "top": 76
+   }
+  ],
+  "change": {
+   "exp": "true",
+   "x": 1,
+   "y": 615,
+   "w": 388,
+   "h": 44
+  },
+  "text": "Molekül | Karbon #1 | · | CH4 | · | 16,04 g/mol | · | 5 atom | · | 4 bağ | C | Karbon (C) | #1 · Ametal | Element | Atom numarası | 6 | Atom kütlesi | 12,011 u | Elektronegatif",
+  "ov": {
+   "sw": 390,
+   "iw": 390,
+   "bsw": 390
+  }
+ },
+ "lpEsc": {
+  "sheet": {
+   "role": "complementary",
+   "label": "Molekül",
+   "top": 631,
+   "visH": 213
+  },
+  "grab": {
+   "label": "Panel yüksekliği: özet",
+   "x": 163,
+   "y": 632,
+   "w": 64,
+   "h": 44
+  },
+  "wraps": [
+   {
+    "role": "complementary",
+    "wrapST": 0,
+    "top": 631
+   }
+  ]
+ },
+ "full": {
+  "sheet": {
+   "role": "complementary",
+   "label": "Molekül",
+   "top": 76,
+   "visH": 687
+  },
+  "grab": {
+   "label": "Panel yüksekliği: tam",
+   "x": 163,
+   "y": 77,
+   "w": 64,
+   "h": 44
+  },
+  "scrim": [
+   {
+    "x": 0,
+    "y": 45,
+    "w": 390,
+    "h": 718
+   }
+  ],
+  "header": {
+   "x": 0,
+   "y": 0,
+   "w": 390,
+   "h": 45
+  }
+ },
+ "afterScrimTap": {
+  "sheet": {
+   "role": "complementary",
+   "label": "Molekül",
+   "top": 381,
+   "visH": 463
+  },
+  "grab": {
+   "label": "Panel yüksekliği: yarım",
+   "x": 163,
+   "y": 382,
+   "w": 64,
+   "h": 44
+  }
+ },
+ "lib": {
+  "x": 0,
+  "y": 84,
+  "w": 390,
+  "h": 760,
+  "label": "Molekül kütüphanesi",
+  "wraps": [
+   {
+    "role": "dialog",
+    "wrapST": 0,
+    "top": 84
+   }
+  ],
+  "small": [
+   "Top-Çubuk 92x38",
+   "Uzay Dolgulu 92x38",
+   "Çubuk 92x38",
+   "Tel Kafes 92x38"
+  ],
+  "ov": {
+   "sw": 390,
+   "iw": 390,
+   "bsw": 390
+  },
+  "focus": "INPUT:Molekül ara…",
+  "focusIn": true,
+  "chips": [
+   "Tümü 54x44",
+   "Hidrokarbonlar 109x44",
+   "Temel Moleküller 120x44",
+   "Özel Geometriler 119x44"
+  ]
+ },
+ "libChip": {
+  "wraps": [
+   {
+    "role": "dialog",
+    "wrapST": 0,
+    "top": 84
+   }
+  ],
+  "ov": {
+   "sw": 390,
+   "iw": 390,
+   "bsw": 390
+  }
+ },
+ "libEsc": {
+  "dialog": false,
+  "focus": "Diğer seçenekler"
+ },
+ "motionLaunch": {
+  "rm": "false"
+ },
+ "libMotion": {
+  "x": 0,
+  "y": 84,
+  "w": 390,
+  "h": 760,
+  "wraps": [
+   {
+    "role": "dialog",
+    "wrapST": 0,
+    "top": 84
+   }
+  ]
+ },
+ "motionTap": {
+  "sheet": {
+   "role": "complementary",
+   "label": "Molekül",
+   "top": 631,
+   "visH": 213
+  },
+  "wraps": [
+   {
+    "role": "complementary",
+    "wrapST": 0,
+    "top": 631
+   }
+  ]
+ },
+ "m360": {
+  "layout": "mobile",
+  "sheet": null,
+  "ov": {
+   "sw": 360,
+   "iw": 360,
+   "bsw": 360
+  },
+  "canvas": {
+   "x": 0,
+   "y": 45,
+   "w": 360,
+   "h": 614,
+   "label": "3B molekül görünümü"
+  }
+ },
+ "m360tap": {
+  "sheet": {
+   "role": "complementary",
+   "label": "Molekül",
+   "top": 527,
+   "visH": 213
+  },
+  "grab": {
+   "label": "Panel yüksekliği: özet",
+   "x": 148,
+   "y": 528,
+   "w": 64,
+   "h": 44
+  },
+  "text": "Molekül | Karbon #1 | · | CH4 | · | 16,04 g/mol | · | 5 atom | · | 4 bağ | C | Karbon (C) | #1 · Ametal | Element | Atom numarası | 6 | Atom kütlesi | 12,011 u | Elektronegatif",
+  "ov": {
+   "sw": 360,
+   "iw": 360,
+   "bsw": 360
+  }
+ },
+ "logs": []
+}

@@ -3,6 +3,7 @@ import { methane, type Molecule } from '../chem/molecule'
 import * as lib from '../chem/library'
 import { BG_CENTER } from '../scene/theme'
 import { t, type Params, type TrKey } from './i18n'
+import { markImportedMolecule } from './inspector/source'
 
 /**
  * UI-level actions that are not pure store operations: file import / export, screenshot, PubChem.
@@ -62,7 +63,12 @@ export async function importFile(file: File): Promise<void> {
     const stem = file.name.replace(/\.[^.]+$/, '')
     const named = { ...parsed, name: parsed.name?.trim() ? parsed.name : stem }
     const st = useStudio.getState()
+    const before = st.loadNonce
+    markImportedMolecule(named.id) // the file's coordinates are the file's, not editor-placed constants
     st.loadMolecule(named)
+    // The store rejects an invalid molecule (unknown element, impossible charge...) and raises its own error toast:
+    // that toast stays, the project is not renamed and no success is reported.
+    if (useStudio.getState().loadNonce === before) return
     if (st.projectName === DEFAULT_PROJECT_NAME) st.setProjectName(named.name)
     notify(t('toast.imported', { name: named.name }), 'success')
   } catch (e) {

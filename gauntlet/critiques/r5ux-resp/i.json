@@ -1,0 +1,85 @@
+{
+ "d": {
+  "library": {
+   "found": true,
+   "tr": [],
+   "open": [
+    null
+   ],
+   "focusBack": "Library"
+  },
+  "file": {
+   "found": true,
+   "tr": [],
+   "open": [
+    "File"
+   ],
+   "focusBack": "File"
+  },
+  "view": {
+   "found": true,
+   "tr": [],
+   "open": [
+    "View"
+   ],
+   "focusBack": "View"
+  },
+  "settings": {
+   "found": true,
+   "tr": [
+    "Türkçe"
+   ],
+   "open": [
+    null
+   ],
+   "focusBack": "Settings"
+  },
+  "help": {
+   "tr": [],
+   "open": [
+    null
+   ]
+  },
+  "atom": {
+   "tr": []
+  },
+  "measure": {
+   "tr": []
+  },
+  "atomTool": {
+   "tr": []
+  }
+ },
+ "m": {
+  "dockMore": {
+   "tr": [],
+   "items": [
+    "Rotate 44",
+    "Pan 44",
+    "Zoom 44",
+    "Tidy geometry (simple force fi 44",
+    "Add hydrogens 44",
+    "Remove hydrogens 44",
+    "New molecule 44"
+   ]
+  },
+  "settings": {
+   "tr": [
+    "Türkçe"
+   ],
+   "small": [
+    "Ball & Stick 92x38",
+    "Space Filling 92x38",
+    "Stick 92x38",
+    "Wireframe 92x38",
+    "Türkçe 58x38",
+    "English 61x38",
+    "Follow system 101x38",
+    "Reduced 70x38",
+    "Full 40x38",
+    "Automatic hydrogens 36x20"
+   ]
+  }
+ },
+ "logs": []
+}

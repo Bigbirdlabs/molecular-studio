@@ -25,6 +25,8 @@ export interface SceneContext {
   failure: { current: unknown }
   /** Set by the Viewport: surfaces a frame-loop error to the React error boundary (React cannot catch useFrame errors). */
   onFailure?: (error: unknown) => void
+  /** Viewpoint to adopt on the next camera initialisation (set before a canvas remount so the view survives it); consumed once. */
+  savedView: { position: [number, number, number]; target: [number, number, number] } | null
   /** Record a frame-loop error exactly once and hand it to the boundary instead of throwing on every frame. */
   fail(error: unknown): void
 }
@@ -33,6 +35,9 @@ export function createSceneContext(): SceneContext {
   const model = new SceneModel()
   let lastMol: Molecule | null = null
   let lastNonce = -1
+  let lastId: string | null = null
+  /** Scene-side load counter: bumps on a store load AND whenever the molecule identity changes (undo / redo across a library load). */
+  let sceneNonce = 0
   let chargeKey: number | null = null
   let charges: Map<number, number | null> | null = null
   let chargesOn = false
@@ -42,9 +47,13 @@ export function createSceneContext(): SceneContext {
     let changed = false
     const first = lastMol === null
     if (s.mol !== lastMol || s.loadNonce !== lastNonce) {
-      model.sync(s.mol, s.loadNonce, !s.reducedMotion)
+      // Undo / redo that crosses a library load swaps in a different molecule whose atom ids coincide with the old one's: the old
+      // entries must be retired (not morphed in place), exactly as for a load, so the identity change counts as one here.
+      if (s.loadNonce !== lastNonce || (lastId !== null && s.mol.id !== lastId)) sceneNonce++
+      model.sync(s.mol, sceneNonce, !s.reducedMotion)
       lastMol = s.mol
       lastNonce = s.loadNonce
+      lastId = s.mol.id
       changed = true
     }
     model.setHideH(!s.showHydrogens)
@@ -70,6 +79,7 @@ export function createSceneContext(): SceneContext {
   const ctx: SceneContext = {
     model, controls: { current: null }, dirty: { current: true }, shellDirty: { current: true }, sync,
     failure: { current: null },
+    savedView: null,
     fail(error: unknown) {
       if (ctx.failure.current !== null) return
       ctx.failure.current = error ?? new Error('Scene failure')

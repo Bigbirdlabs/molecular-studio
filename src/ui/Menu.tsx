@@ -101,6 +101,8 @@ export function Menu({ anchor, open, onClose, items, placement = 'bottom-start',
         onClick={() => {
           if (it.disabled) return
           onClose()
+          // The item is about to unmount: park focus on the trigger so a dialog opened by this item can return focus there.
+          anchor.current?.focus({ preventScroll: true })
           it.onSelect()
         }}
         className={`flex min-h-(--hit) w-full items-center gap-2.5 px-3 text-left text-ui transition-colors duration-100 ${

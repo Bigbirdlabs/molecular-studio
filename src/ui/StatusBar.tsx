@@ -5,8 +5,6 @@ import { atomById, bondById } from '../chem/molecule'
 import { fmtNum, useT, type TrKey } from './i18n'
 import type { Layout } from './layout'
 
-/** Keys that move the camera when the 3D view has focus. */
-const CAMERA_KEYS = new Set(['ArrowLeft', 'ArrowRight', 'ArrowUp', 'ArrowDown', '+', '-', '=', '_', 'PageUp', 'PageDown'])
 /** Tools whose primary-button drag edits the molecule rather than moving the camera. */
 const EDIT_TOOLS = new Set(['atom', 'bond', 'erase', 'measure'])
 const DRAG_PX = 4
@@ -14,7 +12,7 @@ const DRAG_PX = 4
 /**
  * Camera status: "reset" until the user actually moves the camera. The state is decided by what the user did, never
  * by timing: it returns to "reset" on every reset / fit / load (a fresh fit is the default pose) and flips to "custom"
- * on a wheel turn, a camera drag (> 4 px), a camera key, or a zoom command.
+ * on a wheel turn, a camera drag (> 4 px) or a zoom command. There is no keyboard camera, so no key ever flips it.
  */
 function useCameraState(): 'reset' | 'custom' {
   const resetNonce = useStudio((s) => s.cameraResetNonce)
@@ -46,22 +44,17 @@ function useCameraState(): 'reset' | 'custom' {
       if (Math.hypot(e.clientX - down.x, e.clientY - down.y) > DRAG_PX) { down = null; custom() }
     }
     const onUp = (e: PointerEvent) => { if (down && e.pointerId === down.id) down = null }
-    const onKey = (e: KeyboardEvent) => {
-      if (e.target instanceof HTMLCanvasElement && CAMERA_KEYS.has(e.key) && !e.altKey) custom()
-    }
     host.addEventListener('wheel', custom, { passive: true, capture: true })
     host.addEventListener('pointerdown', onDown, true)
     host.addEventListener('pointermove', onMove, true)
     host.addEventListener('pointerup', onUp, true)
     host.addEventListener('pointercancel', onUp, true)
-    host.addEventListener('keydown', onKey, true)
     return () => {
       host.removeEventListener('wheel', custom, true)
       host.removeEventListener('pointerdown', onDown, true)
       host.removeEventListener('pointermove', onMove, true)
       host.removeEventListener('pointerup', onUp, true)
       host.removeEventListener('pointercancel', onUp, true)
-      host.removeEventListener('keydown', onKey, true)
     }
   }, [])
   return state

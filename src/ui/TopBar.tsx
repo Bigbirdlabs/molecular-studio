@@ -1,6 +1,6 @@
 import { useEffect, useRef, useState, type ReactNode } from 'react'
 import {
-  AlertTriangle, Check, ChevronDown, CircleDot, EllipsisVertical, FileText, Info, Library, Redo2, ScanEye, Settings, Undo2,
+  AlertTriangle, Check, ChevronDown, CircleDot, EllipsisVertical, FileText, Info, Library, Redo2, Save, ScanEye, Settings, Undo2,
 } from 'lucide-react'
 import { DEFAULT_PROJECT_NAME, useStudio } from '../store'
 import { useT } from './i18n'
@@ -41,7 +41,7 @@ function SaveStatus({ compact }: { compact: boolean }) {
     label = t('save.saved')
     title = t('save.at', { time: new Date(savedAt).toLocaleTimeString(lang === 'tr' ? 'tr-TR' : 'en-GB') })
   } else {
-    icon = <Check size={14} aria-hidden className="text-ink-faint" />
+    icon = <Save size={14} aria-hidden className="text-ink-faint" />
     label = t('save.ready')
   }
   const text = <span className={compact ? 'sr-only' : 'whitespace-nowrap'}>{label}</span>
@@ -92,6 +92,7 @@ function ProjectName({ className = '' }: { className?: string }) {
       aria-label={t('top.project')}
       value={draft}
       placeholder={t('top.untitled')}
+      title={draft || t('top.untitled')}
       maxLength={80}
       spellCheck={false}
       onFocus={(e) => { editing.current = true; e.currentTarget.select() }}
@@ -101,7 +102,7 @@ function ProjectName({ className = '' }: { className?: string }) {
         if (e.key === 'Enter') e.currentTarget.blur()
         else if (e.key === 'Escape') { e.stopPropagation(); setDraft(shown); editing.current = false; e.currentTarget.blur() }
       }}
-      className={`h-(--hit) min-w-0 rounded-ctl border border-transparent bg-transparent px-2 text-ui text-ink placeholder:text-ink-dim hover:border-line hover:bg-surface-2 focus:border-accent-dim focus:bg-surface-2 ${className}`}
+      className={`h-(--hit) min-w-0 rounded-ctl border border-transparent bg-transparent px-2 text-ui text-ink text-ellipsis placeholder:text-ink-dim hover:border-line hover:bg-surface-2 focus:border-accent-dim focus:bg-surface-2 ${className}`}
     />
   )
 }
@@ -178,7 +179,7 @@ export function TopBar({ layout }: { layout: Layout }) {
       { type: 'group', label: t('top.view'), icon: <ScanEye size={15} aria-hidden />, items: phoneViewItems },
     ]
     return (
-      <header className={`flex shrink-0 items-center gap-1 border-b border-line bg-surface-1 pl-3 pr-1 pt-[env(safe-area-inset-top)] box-content ${short ? 'h-10' : 'h-11'}`}>
+      <header data-app-header className={`flex shrink-0 items-center gap-1 border-b border-line bg-surface-1 pl-3 pr-1 pt-[env(safe-area-inset-top)] box-content ${short ? 'h-10' : 'h-11'}`}>
         <LogoMark size={22} />
         <ProjectName className="flex-1" />
         <SaveStatus compact />
@@ -191,7 +192,7 @@ export function TopBar({ layout }: { layout: Layout }) {
   }
 
   return (
-    <header className={`flex shrink-0 items-center gap-1 border-b border-line bg-surface-1 px-2 box-content ${short ? 'h-10' : 'h-11'}`}>
+    <header data-app-header className={`flex shrink-0 items-center gap-1 border-b border-line bg-surface-1 px-2 box-content ${short ? 'h-10' : 'h-11'}`}>
       <div className="flex shrink-0 items-center gap-2 pl-1 pr-2">
         <LogoMark size={22} />
         {desktop && <span className="text-ui font-medium tracking-[0.01em] text-ink">{t('app.name')}</span>}

@@ -119,3 +119,14 @@ export function bondStrands(bond: BondEntry, adj: Adjacency, p: StyleParams): { 
   setStrand(POOL[2], p.multiOff * 1.4, DIR, p.multiR)
   return { strands: POOL, n: 3 }
 }
+
+/**
+ * Where the two colour halves of a bond meet, as a fraction t (0 = atom A centre, 1 = atom B centre) of the centre
+ * distance `len`: halfway between the two sphere SURFACES (SPEC C1), t = (rA + (len - rA - rB) / 2) / len, so a C-H bond
+ * shows equal C and H lengths outside the spheres. Overlapping or degenerate spheres fall back to a clamped value.
+ */
+export function bondColourSplit(len: number, rA: number, rB: number): number {
+  if (!(len > 1e-9)) return 0.5
+  const t = (rA + (len - rA - rB) / 2) / len
+  return t < 0 ? 0 : t > 1 ? 1 : t
+}

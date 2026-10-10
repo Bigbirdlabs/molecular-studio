@@ -36,6 +36,7 @@ import {
   sub,
   valenceUsed,
   bondTargetLength,
+  bondLengthFor,
 } from './molecule'
 import { VALENCE_ELECTRONS } from './elements'
 
@@ -390,7 +391,7 @@ function fixBondLengths(m: Molecule, ids: Set<number>) {
     const A = atomById(m, b.a)
     const B = atomById(m, b.b)
     if (!A || !B) continue
-    const target = bondTargetLength(A.symbol, B.symbol, b.order, !!b.aromatic)
+    const target = bondLengthFor(m, b)
     const cur = dist(A.pos, B.pos)
     if (cur < 1e-6 || Math.abs(cur - target) <= 0.04) continue
     const sideB = componentWithout(m, b.b, b)
@@ -541,7 +542,7 @@ function idealizeAtom(m: Molecule, A: Atom) {
     let s: Vec3
     if (bi >= 0) { usedSlot.add(bi); s = slots[bi] } else s = bestFreeDirection(dirsSoFar)
     dirsSoFar.push(s)
-    const L = bondTargetLength(A.symbol, x.n.atom.symbol, x.n.bond.order, !!x.n.bond.aromatic)
+    const L = bondLengthFor(m, x.n.bond)
     const R = rot(cur, s)
     const curLen = dist(A.pos, x.n.atom.pos)
     for (const at of m.atoms) {
@@ -658,7 +659,7 @@ function buildSystem(m: Molecule, x: Float64Array): System {
     seenPair.add(key)
     adj[i].push(j)
     adj[j].push(i)
-    bonds.push({ i, j, r0: bondTargetLength(m.atoms[i].symbol, m.atoms[j].symbol, b.order, !!b.aromatic) })
+    bonds.push({ i, j, r0: bondLengthFor(m, b) })
     bondInfo.push({ i, j, b })
   }
 

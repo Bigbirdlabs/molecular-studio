@@ -113,6 +113,7 @@ export interface StudioState {
   endDrag: () => void
 
   loadMolecule: (m: Molecule) => void // undoable (library pick, import, new)
+  restoreBackup: (index: number) => void // undoable; index into listProjectBackups() (0 = newest)
   replaceMolecule: (m: Molecule) => void // NOT undoable, clears history (App startup, ?m=<id>)
   newMolecule: () => void
   setName: (name: string) => void
@@ -124,7 +125,7 @@ export interface StudioState {
   deleteSelection: () => void
   addHydrogens: () => void
   removeHydrogens: () => void
-  cleanUp: () => void // animated geometry optimisation
+  cleanUp: () => void // animated geometry clean-up (tidying)
   recenter: () => void
   clearMeasure: () => void
   undo: () => void
@@ -240,6 +241,49 @@ type Restored =
  * first autosave overwrites it.
  */
 let backupRaw: unknown = null
+const BACKUPS_KEY = `${PROJECT_KEY}:backups`
+const BACKUP_LIMIT = 5
+/** A project that a ?m= deep link (or anything else) is about to overwrite, kept with the time it was set aside. */
+export interface ProjectBackup { backedUpAt: number; projectName: string; savedAt: number | null; mol: Molecule }
+/** Newest first. Every record is re-validated, so a damaged entry is simply skipped. */
+export function listProjectBackups(): ProjectBackup[] {
+  const raw = readJSON(BACKUPS_KEY)
+  if (!Array.isArray(raw)) return []
+  const out: ProjectBackup[] = []
+  for (const r of raw as { backedUpAt?: unknown; projectName?: unknown; savedAt?: unknown; mol?: unknown }[]) {
+    if (!r || typeof r !== 'object') continue
+    const v = validateMolecule(r.mol)
+    if (!v.ok) continue
+    out.push({
+      backedUpAt: typeof r.backedUpAt === 'number' ? r.backedUpAt : 0,
+      projectName: typeof r.projectName === 'string' && r.projectName.trim() ? r.projectName : DEFAULT_PROJECT_NAME,
+      savedAt: typeof r.savedAt === 'number' ? r.savedAt : null,
+      mol: v.mol,
+    })
+  }
+  return out
+}
+/** Prepend a timestamped backup (ring of BACKUP_LIMIT); the stored mol is kept verbatim. */
+function pushBackup(raw: unknown): void {
+  const r = raw as { mol?: unknown; projectName?: unknown; savedAt?: unknown }
+  const prev = readJSON(BACKUPS_KEY)
+  const list = Array.isArray(prev) ? prev : []
+  // the same stored record is never backed up twice (e.g. two deep-link visits before the first edit)
+  if (typeof r.savedAt === 'number' && list.some((x) => x && typeof x === 'object' && (x as { savedAt?: unknown }).savedAt === r.savedAt)) return
+  writeJSON(BACKUPS_KEY, [{ backedUpAt: Date.now(), projectName: r.projectName, savedAt: r.savedAt, mol: r.mol }, ...list].slice(0, BACKUP_LIMIT))
+}
+/** Drop ?m= from the address bar once the deep link has been applied, so a reload restores the saved project instead of the pristine library entry. */
+function stripDeepLink(): void {
+  try {
+    if (!hasWindow) return
+    const url = new URL(window.location.href)
+    if (!url.searchParams.has('m')) return
+    url.searchParams.delete('m')
+    window.history.replaceState(window.history.state, '', url.pathname + url.search + url.hash)
+  } catch {
+    /* no history API (tests, sandboxed frame): the deep link simply stays */
+  }
+}
 let deepLinkPending = urlSpecifiesMolecule // true until the first replaceMolecule (the ?m= library molecule) has happened
 let deepLinkReplaced = false
 
@@ -314,10 +358,38 @@ export const useStudio = create<StudioState>((set, get) => {
     writeJSON(SETTINGS_KEY, { language: s.language, reducedMotionOverride: s.reducedMotionOverride, showHydrogens: s.showHydrogens })
   }
 
-  /** Push the current molecule onto the undo stack and install `next`. */
-  const commit = (next: Molecule, extra: Partial<StudioState> = {}) => {
+  /** Molecule name chosen by the user (setName) is never replaced automatically. */
+  let userNamed = false
+  const PLACEHOLDER_NAMES = new Set(['Yeni molekül', 'New molecule'])
+  /**
+   * A drag that has moved atoms is one history entry (the pre-drag molecule). Close it before anything else is committed
+   * or a clean-up starts while the mouse is still held, so history stays chronological (SPEC B.8: one entry per intent).
+   * The drag then continues from the current molecule.
+   */
+  const settleDrag = () => {
+    if (!dragBase) return
+    if (dragMoved) set({ past: [...get().past, dragBase].slice(-HISTORY_LIMIT), future: [] })
+    dragBase = get().mol
+    dragMoved = false
+  }
+  /**
+   * A library / formula name describes the structure it was given for. After a structural edit it would label a
+   * different molecule, so an automatic name follows the structure (conventional formula); a name the user typed
+   * (setName) and the blank placeholder are never replaced. Every edit path goes through commit, so they all agree.
+   */
+  const structureKey = (m: Molecule) =>
+    m.atoms.map((a) => `${a.id}:${a.symbol}:${a.charge}`).sort().join(',') + '|' + m.bonds.map((b) => `${Math.min(b.a, b.b)}-${Math.max(b.a, b.b)}:${b.order}${b.aromatic ? 'a' : ''}`).sort().join(',')
+  const autoNamed = (prev: Molecule, next: Molecule): Molecule => {
+    if (userNamed || PLACEHOLDER_NAMES.has(next.name) || structureKey(prev) === structureKey(next)) return next
+    return { ...next, name: next.atoms.length ? conventionalFormula(next) : tx('Yeni molekül', 'New molecule') }
+  }
+  /** Push the current molecule onto the undo stack and install `next`. `rename: false` keeps next.name as given (loads, renames). */
+  const commit = (next: Molecule, extra: Partial<StudioState> = {}, rename = true) => {
+    settleDrag()
     const { mol, past } = get()
-    set({ mol: next, past: [...past, mol].slice(-HISTORY_LIMIT), future: [], ...extra })
+    const named = rename ? autoNamed(mol, next) : next
+    if (dragBase) dragBase = named // a drag that keeps going after this commit starts from the committed molecule
+    set({ mol: named, past: [...past, mol].slice(-HISTORY_LIMIT), future: [], ...extra })
   }
   const fixH = (m: Molecule, ids: number[]) => (get().autoH ? adjustHydrogens(m, ids) : m)
   const prune = (m: Molecule, s: Partial<StudioState> = {}) => {
@@ -353,9 +425,6 @@ export const useStudio = create<StudioState>((set, get) => {
     relaxBase = null
     set(base ? { mol: base, relaxing: false } : { relaxing: false })
   }
-  /** Molecule name chosen by the user (setName) is never replaced automatically. */
-  let userNamed = false
-  const PLACEHOLDER_NAMES = new Set(['Yeni molekül', 'New molecule'])
 
   /** Reject an unsupported / unknown element symbol with the standard message. Returns true when rejected. */
   const rejectElement = (symbol: string): boolean => {
@@ -402,7 +471,7 @@ export const useStudio = create<StudioState>((set, get) => {
     const mol = get().relaxing && relaxBase ? relaxBase : get().mol
     const savedAt = Date.now()
     if (backupRaw !== null) {
-      if (deepLinkReplaced) writeJSON(`${PROJECT_KEY}:backup`, backupRaw) // the previous project is about to be overwritten
+      if (deepLinkReplaced) pushBackup(backupRaw) // the previous project is about to be overwritten
       backupRaw = null
     }
     const ok = writeJSON(PROJECT_KEY, { v: 1, mol, projectName, savedAt })
@@ -530,8 +599,8 @@ export const useStudio = create<StudioState>((set, get) => {
     setProjectName: (name) => set({ projectName: name.trim() || DEFAULT_PROJECT_NAME }),
     saveNow: () => writeProject(),
     setLanguage: (language) => {
+      if (typeof document !== 'undefined') document.documentElement.lang = language // first: chem text (bondLengthSource) reads it while subscribers re-render
       set({ language })
-      if (typeof document !== 'undefined') document.documentElement.lang = language
       persistSettings()
     },
     setReducedMotion: (v) => {
@@ -659,7 +728,8 @@ export const useStudio = create<StudioState>((set, get) => {
       set({ mol: m })
     },
     endDrag: () => {
-      // one undo step per completed drag, and none for a click without movement
+      // one undo step per completed drag, and none for a click without movement; ignored while a clean-up owns the molecule
+      if (locked()) { dragBase = null; dragMoved = false; return }
       if (dragBase && dragMoved) set({ past: [...get().past, dragBase].slice(-HISTORY_LIMIT), future: [] })
       dragBase = null
       dragMoved = false
@@ -670,14 +740,21 @@ export const useStudio = create<StudioState>((set, get) => {
       if (!v.ok) return reject(v) // unknown element / broken structure: the current molecule stays untouched
       cancelRelax() // history must receive the molecule the clean-up started from, not a mid-relax snapshot
       relaxToken++
-      dragBase = null
       userNamed = false
       const next = centerMolecule(v.mol)
       reserveMoleculeId(next.id)
       commit(next, {
         selection: [], selectedBond: null, measure: [], pendingBondFrom: null, hovered: null, hoveredBond: null,
         relaxing: false, fitNonce: get().fitNonce + 1, loadNonce: get().loadNonce + 1,
-      })
+      }, false)
+      dragBase = null // a load ends any drag in progress
+      dragMoved = false
+    },
+    restoreBackup: (index) => {
+      const b = listProjectBackups()[index]
+      if (!b) return
+      get().loadMolecule(b.mol) // validated already, so it is accepted; undoable like any load
+      set({ projectName: b.projectName })
     },
     replaceMolecule: (m) => {
       const v = validateMolecule(m)
@@ -690,9 +767,11 @@ export const useStudio = create<StudioState>((set, get) => {
       reserveMoleculeId(next.id)
       suppressSave = true
       const deepLink = deepLinkPending
-      if (deepLink) { deepLinkPending = false; deepLinkReplaced = true }
+      if (deepLink) { deepLinkPending = false; deepLinkReplaced = true; stripDeepLink() }
       set({
-        ...(deepLink ? { projectName: DEFAULT_PROJECT_NAME } : {}), // the ?m= molecule is a new document, not the stored project
+        // the ?m= molecule is a new document, not the stored project: it was never written, so it has no save time yet
+        // (the indicator reads "not saved yet" until the first real write; storage still holds the previous project)
+        ...(deepLink ? { projectName: DEFAULT_PROJECT_NAME, lastSavedAt: null } : {}),
         mol: next, past: [], future: [],
         selection: [], selectedBond: null, measure: [], pendingBondFrom: null, hovered: null, hoveredBond: null,
         relaxing: false, fitNonce: get().fitNonce + 1, loadNonce: get().loadNonce + 1,
@@ -703,7 +782,7 @@ export const useStudio = create<StudioState>((set, get) => {
       const cur = get().mol
       if (name === cur.name) return // no-op: no undo entry, no autosave
       userNamed = true
-      commit({ ...cloneMolecule(cur), name })
+      commit({ ...cloneMolecule(cur), name }, {}, false)
     },
 
     changeElement: (id, symbol) => {
@@ -721,8 +800,6 @@ export const useStudio = create<StudioState>((set, get) => {
       }
       const ids = [id, ...nb.map((n) => n.atom.id)]
       const fixed = idealizeAround(fixH(m, ids), ids)
-      // an automatic / library name no longer describes the changed structure: name it after its formula
-      if (!userNamed && !PLACEHOLDER_NAMES.has(fixed.name)) fixed.name = conventionalFormula(fixed)
       commit(fixed, prune(fixed))
     },
 
@@ -825,8 +902,9 @@ export const useStudio = create<StudioState>((set, get) => {
     cleanUp: () => {
       const st = get()
       if (st.relaxing || st.mol.atoms.length < 2) return
+      settleDrag() // a drag still held is committed first; endDrag is ignored while relaxing
       const token = ++relaxToken
-      const base = st.mol
+      const base = get().mol
       relaxBase = base
       const reduced = st.reducedMotion
       const SLICE_MS = 10 // reduced motion: work in time slices so the main thread is never blocked for long

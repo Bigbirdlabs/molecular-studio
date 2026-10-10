@@ -12,8 +12,15 @@ export function useNum(): NumFmt {
 /** Signed integer with an ASCII hyphen-minus (charges). */
 export const signedInt = (n: number): string => (n > 0 ? `+${n}` : n < 0 ? `-${Math.abs(n)}` : '0')
 
-/** Decimals of a tabulated constant as it is written in the table (12.011 -> 3, 32.06 -> 2): no invented precision. */
-export function tabulatedDecimals(n: number): number {
+/**
+ * Tabulated digits that a JS number literal cannot carry: the table writes Na as 22.990 (IUPAC 2021, 22.98976928 rounded to
+ * the table's 3 decimals), but the literal 22.990 reads back as 22.99.
+ */
+const TABLE_DECIMALS: Record<string, number> = { Na: 3 }
+
+/** Decimals of a tabulated constant as it is written in the table (12.011 -> 3, 32.06 -> 2, Na 22.990 -> 3): no invented precision. */
+export function tabulatedDecimals(n: number, symbol?: string): number {
+  if (symbol && symbol in TABLE_DECIMALS) return TABLE_DECIMALS[symbol]
   const s = String(n)
   const i = s.indexOf('.')
   return i < 0 ? 0 : Math.min(4, s.length - i - 1)

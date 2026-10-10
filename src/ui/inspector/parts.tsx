@@ -20,9 +20,9 @@ export function IRow({ label, children, hint, mono = true, sub }: { label: React
   return (
     <div className="flex min-h-7 items-baseline justify-between gap-3 py-1" title={hint}>
       <dt className="min-w-0 text-label text-ink-dim">{label}</dt>
-      <dd className={`m-0 min-w-0 text-right text-ui text-ink ${mono ? 'tabular-nums' : ''}`}>
+      <dd className={`m-0 min-w-0 text-right text-ui text-ink ${mono ? 'whitespace-nowrap tabular-nums' : ''}`}>
         {children}
-        {sub && <span className="block text-label text-ink-dim">{sub}</span>}
+        {sub && <span className="block whitespace-normal text-label text-ink-dim">{sub}</span>}
       </dd>
     </div>
   )

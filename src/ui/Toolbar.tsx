@@ -162,7 +162,7 @@ export function Dock() {
         {DOCK_TOOLS.map((id) => <ToolButton key={id} tool={id} tip={false} bar="bottom" />)}
         <IconButton
           buttonRef={moreRef}
-          label={t('top.more')}
+          label={t('dock.more')}
           tip={false}
           icon={<Ellipsis size={ICON_SIZE} aria-hidden />}
           active={moreActive}
@@ -172,7 +172,7 @@ export function Dock() {
           onClick={() => setMoreOpen((o) => !o)}
         />
       </div>
-      <Menu anchor={moreRef} open={moreOpen} onClose={() => setMoreOpen(false)} items={items} placement="top-end" ariaLabel={t('top.more')} minWidth={236} />
+      <Menu anchor={moreRef} open={moreOpen} onClose={() => setMoreOpen(false)} items={items} placement="top-end" ariaLabel={t('dock.more')} minWidth={236} />
     </div>
   )
 }

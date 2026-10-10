@@ -175,7 +175,10 @@ export function PubChemDialog() {
     setBusy(false)
     if (res.ok) {
       markPubChemMolecule(res.mol.id) // the molecule card attributes the coordinates to PubChem
+      const before = useStudio.getState().loadNonce
       useStudio.getState().loadMolecule(res.mol)
+      // A molecule the store rejects keeps its own error toast: no success message, the dialog stays open.
+      if (useStudio.getState().loadNonce === before) return
       useStudio.getState().notify(t('toast.pubchemOk', { name: res.mol.name }), 'success')
       setQuery('')
       close()

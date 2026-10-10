@@ -78,7 +78,7 @@ export function Segmented<T extends string | number>({
 }: { value: T; options: SegOption<T>[]; onChange: (v: T) => void; ariaLabel: string; className?: string; fill?: boolean; iconOnly?: boolean; hud?: boolean; vertical?: boolean }) {
   const roving = useRoving<HTMLDivElement>({ orientation: 'both', select: true })
   return (
-    <div ref={roving.ref} onKeyDown={roving.onKeyDown} onFocus={roving.onFocus} role="radiogroup" aria-label={ariaLabel} className={`flex ${vertical ? 'flex-col' : ''} rounded-ctl border border-line-ctl p-0.5 ${hud ? 'bg-hud' : 'bg-surface-0'} ${fill ? 'w-full' : 'w-fit max-w-full'} ${className}`}>
+    <div ref={roving.ref} onKeyDown={roving.onKeyDown} onFocus={roving.onFocus} role="radiogroup" aria-label={ariaLabel} className={`flex ${vertical ? 'flex-col' : ''} p-0.5 ${hud ? 'rounded-panel border border-hud-line bg-hud' : 'rounded-ctl border border-line-ctl bg-surface-0'} ${fill ? 'w-full' : 'w-fit max-w-full'} ${className}`}>
       {options.map((o) => {
         const on = o.value === value
         return (

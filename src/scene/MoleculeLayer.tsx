@@ -6,9 +6,14 @@ import { useSceneContext } from './sceneContext'
 import { installTestHook } from './testHook'
 
 /** Store fields that change what is drawn. Anything else (camera status, toasts, save status...) is ignored. */
-const WATCHED: (keyof StudioState)[] = ['mol', 'style', 'showLabels', 'showCharges', 'showHydrogens', 'reducedMotion', 'loadNonce', 'language']
+const WATCHED: (keyof StudioState)[] = ['mol', 'style', 'showCharges', 'showHydrogens', 'loadNonce']
 /** Fields that only change the overlays (shells, rings, measurement, labels); the atom / bond buffers are not rewritten. */
-const OVERLAY_ONLY: (keyof StudioState)[] = ['selection', 'selectedBond', 'hovered', 'hoveredBond', 'pendingBondFrom', 'measure', 'tool', 'autoH']
+const OVERLAY_ONLY: (keyof StudioState)[] = [
+  'selection', 'selectedBond', 'hovered', 'hoveredBond', 'pendingBondFrom', 'measure', 'tool', 'autoH',
+  // labels and language only change the overlay text; reduced motion only changes how the next change is animated (an
+  // in-flight animation keeps the model active, so its frames still rewrite the bodies): none of them touch the atom / bond buffers (SPEC C4)
+  'showLabels', 'language', 'reducedMotion',
+]
 
 /**
  * Bridges the store to the THREE objects without React re-renders: a store subscription marks the rig dirty and asks

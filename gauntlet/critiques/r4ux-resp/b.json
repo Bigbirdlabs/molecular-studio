@@ -1,0 +1,532 @@
+{
+ "launch": {
+  "layout": "mobile",
+  "rm": "true",
+  "sheet": null,
+  "canvas": {
+   "x": 0,
+   "y": 45,
+   "w": 390,
+   "h": 718,
+   "label": "3B molekül görünümü"
+  },
+  "ov": {
+   "sw": 390,
+   "iw": 390,
+   "bsw": 390
+  },
+  "text": null,
+  "grab": null,
+  "small": [
+   {
+    "n": "Top-Çubuk",
+    "x": 11,
+    "y": 56,
+    "w": 92,
+    "h": 38
+   },
+   {
+    "n": "Uzay Dolgulu",
+    "x": 103,
+    "y": 56,
+    "w": 92,
+    "h": 38
+   },
+   {
+    "n": "Çubuk",
+    "x": 195,
+    "y": 56,
+    "w": 92,
+    "h": 38
+   },
+   {
+    "n": "Tel Kafes",
+    "x": 287,
+    "y": 56,
+    "w": 92,
+    "h": 38
+   }
+  ],
+  "anims": 0
+ },
+ "tapC_40ms": {
+  "sheet": {
+   "role": "complementary",
+   "label": "Molekül",
+   "top": 631,
+   "visH": 213
+  }
+ },
+ "tapC": {
+  "sheet": {
+   "role": "complementary",
+   "label": "Molekül",
+   "top": 631,
+   "visH": 213
+  },
+  "grab": {
+   "role": "button",
+   "tab": 0,
+   "label": "Panel yüksekliği: özet. Değiştirmek için Enter veya yukarı/aşağı ok tuşları",
+   "x": 163,
+   "y": 640,
+   "w": 64,
+   "h": 24
+  },
+  "text": "Molekül | Karbon #1 | · | CH4 | · | 16,04 g/mol | · | 5 atom | · | 4 bağ | C | Karbon (C) | #1 · Ametal | Element | Atom numarası | 6 | Atom kütlesi | 12,011 u | Elektronegatiflik (Pauling) | 2,55 | K",
+  "scrim": [],
+  "focus": "CANVAS:3B molekül görünümü"
+ },
+ "clear": {
+  "sheet": {
+   "role": "complementary",
+   "label": "Molekül",
+   "top": 631,
+   "visH": 213
+  },
+  "text": "Molekül | CH4 | · | 16,04 g/mol | · | 5 atom | · | 4 bağ | Metan | Molekül formülü (kapalı formül) | CH4 | Koordinatlar: İdealize geometri (enerji minimizasyonu değil); açı ve uzunlu"
+ },
+ "grabKeys": [
+  {
+   "k": "ArrowUp",
+   "sheet": {
+    "role": "complementary",
+    "label": "Molekül",
+    "top": 381,
+    "visH": 463
+   },
+   "grab": "Panel yüksekliği: yarım. Değiştirmek için Enter veya yukarı/aşağı ok tuşları",
+   "scrim": 0
+  },
+  {
+   "k": "ArrowUp",
+   "sheet": {
+    "role": "complementary",
+    "label": "Molekül",
+    "top": 76,
+    "visH": 687
+   },
+   "grab": "Panel yüksekliği: tam. Değiştirmek için Enter veya yukarı/aşağı ok tuşları",
+   "scrim": 1
+  },
+  {
+   "k": "ArrowUp",
+   "sheet": {
+    "role": "complementary",
+    "label": "Molekül",
+    "top": 76,
+    "visH": 687
+   },
+   "grab": "Panel yüksekliği: tam. Değiştirmek için Enter veya yukarı/aşağı ok tuşları",
+   "scrim": 1
+  },
+  {
+   "k": "ArrowDown",
+   "sheet": {
+    "role": "complementary",
+    "label": "Molekül",
+    "top": 381,
+    "visH": 463
+   },
+   "grab": "Panel yüksekliği: yarım. Değiştirmek için Enter veya yukarı/aşağı ok tuşları",
+   "scrim": 0
+  },
+  {
+   "k": "Enter",
+   "sheet": {
+    "role": "complementary",
+    "label": "Molekül",
+    "top": 76,
+    "visH": 687
+   },
+   "grab": "Panel yüksekliği: tam. Değiştirmek için Enter veya yukarı/aşağı ok tuşları",
+   "scrim": 1
+  },
+  {
+   "k": "Enter",
+   "sheet": {
+    "role": "complementary",
+    "label": "Molekül",
+    "top": 631,
+    "visH": 213
+   },
+   "grab": "Panel yüksekliği: özet. Değiştirmek için Enter veya yukarı/aşağı ok tuşları",
+   "scrim": 0
+  }
+ ],
+ "grabFocus": {
+  "label": "Panel yüksekliği: özet. Değiştirmek için Enter veya yukarı/aşağı ok tuşları",
+  "fv": false,
+  "outline": "none 3px"
+ },
+ "full": {
+  "sheet": {
+   "role": "complementary",
+   "label": "Molekül",
+   "top": 76,
+   "visH": 687
+  },
+  "grab": {
+   "role": "button",
+   "tab": 0,
+   "label": "Panel yüksekliği: tam. Değiştirmek için Enter veya yukarı/aşağı ok tuşları",
+   "x": 163,
+   "y": 85,
+   "w": 64,
+   "h": 24
+  },
+  "scrim": [
+   {
+    "bg": "oklab(0 0 0 / 0.45)",
+    "x": 0,
+    "y": 0,
+    "w": 390,
+    "h": 763
+   }
+  ]
+ },
+ "afterScrim": {
+  "sheet": {
+   "role": "complementary",
+   "label": "Molekül",
+   "top": 381,
+   "visH": 463
+  },
+  "grab": "Panel yüksekliği: yarım. Değiştirmek için Enter veya yukarı/aşağı ok tuşları",
+  "scrim": 0
+ },
+ "esc1": {
+  "sheet": {
+   "role": "complementary",
+   "label": "Molekül",
+   "top": 631,
+   "visH": 213
+  },
+  "grab": "Panel yüksekliği: özet. Değiştirmek için Enter veya yukarı/aşağı ok tuşları"
+ },
+ "esc2": {
+  "sheet": {
+   "role": "complementary",
+   "label": "Molekül",
+   "top": 631,
+   "visH": 213
+  },
+  "grab": "Panel yüksekliği: özet. Değiştirmek için Enter veya yukarı/aşağı ok tuşları"
+ },
+ "swipeDown": {
+  "sheet": {
+   "role": "complementary",
+   "label": "Molekül",
+   "top": 631,
+   "visH": 213
+  },
+  "grab": "Panel yüksekliği: özet. Değiştirmek için Enter veya yukarı/aşağı ok tuşları"
+ },
+ "flingUp": {
+  "sheet": {
+   "role": "complementary",
+   "label": "Molekül",
+   "top": 381,
+   "visH": 463
+  },
+  "grab": "Panel yüksekliği: yarım. Değiştirmek için Enter veya yukarı/aşağı ok tuşları"
+ },
+ "longPress": {
+  "sheet": {
+   "role": "complementary",
+   "label": "Molekül",
+   "top": 631,
+   "visH": 213
+  },
+  "text": "Molekül | CH4 | · | 16,04 g/mol | · | 5 atom | · | 4 bağ | Metan | Molekül formülü (kapalı formül) | CH4 | Koordinatlar: İdealize geometri (enerji minimizasyonu değil); açı ve uzunlu",
+  "change": "none",
+  "menus": 0
+ },
+ "sheetSmall": [
+  {
+   "n": "Top-Çubuk",
+   "x": 11,
+   "y": 56,
+   "w": 92,
+   "h": 38
+  },
+  {
+   "n": "Uzay Dolgulu",
+   "x": 103,
+   "y": 56,
+   "w": 92,
+   "h": 38
+  },
+  {
+   "n": "Çubuk",
+   "x": 195,
+   "y": 56,
+   "w": 92,
+   "h": 38
+  },
+  {
+   "n": "Tel Kafes",
+   "x": 287,
+   "y": 56,
+   "w": 92,
+   "h": 38
+  },
+  {
+   "n": "Panel yüksekliği: özet. Değiştirmek için Enter veya yukarı/aşağı ok tuşları",
+   "x": 163,
+   "y": 640,
+   "w": 64,
+   "h": 24
+  }
+ ],
+ "infoBtn": [
+  {
+   "n": "Geri al",
+   "pressed": null,
+   "x": 202,
+   "y": 0,
+   "w": 44,
+   "h": 44
+  },
+  {
+   "n": "Yinele",
+   "pressed": null,
+   "x": 246,
+   "y": 0,
+   "w": 44,
+   "h": 44
+  },
+  {
+   "n": "Molekül bilgisini kapat",
+   "pressed": "true",
+   "x": 294,
+   "y": 0,
+   "w": 44,
+   "h": 44
+  },
+  {
+   "n": "Diğer seçenekler",
+   "pressed": null,
+   "x": 342,
+   "y": 0,
+   "w": 44,
+   "h": 44
+  }
+ ],
+ "atomTool": {
+  "groups": [
+   {
+    "l": "Gösterim biçimi",
+    "x": 8,
+    "y": 53,
+    "w": 374,
+    "h": 44,
+    "btns": "92x38 92x38 92x38 92x38"
+   },
+   {
+    "l": "Bağ derecesi",
+    "x": 135,
+    "y": 615,
+    "w": 120,
+    "h": 44,
+    "btns": "38x38 38x38 38x38"
+   },
+   {
+    "l": "Element",
+    "x": 29,
+    "y": 665,
+    "w": 332,
+    "h": 92,
+    "btns": "44x44 44x44 44x44 44x44 44x44 44x44 44x44 44x44 44x44 44x44 44x44 44x44 44x44 44x44"
+   }
+  ],
+  "small": [
+   {
+    "n": "Top-Çubuk",
+    "x": 11,
+    "y": 56,
+    "w": 92,
+    "h": 38
+   },
+   {
+    "n": "Uzay Dolgulu",
+    "x": 103,
+    "y": 56,
+    "w": 92,
+    "h": 38
+   },
+   {
+    "n": "Çubuk",
+    "x": 195,
+    "y": 56,
+    "w": 92,
+    "h": 38
+   },
+   {
+    "n": "Tel Kafes",
+    "x": 287,
+    "y": 56,
+    "w": 92,
+    "h": 38
+   },
+   {
+    "n": "Tekli",
+    "x": 138,
+    "y": 618,
+    "w": 38,
+    "h": 38
+   },
+   {
+    "n": "Çift",
+    "x": 176,
+    "y": 618,
+    "w": 38,
+    "h": 38
+   },
+   {
+    "n": "Üçlü",
+    "x": 214,
+    "y": 618,
+    "w": 38,
+    "h": 38
+   },
+   {
+    "n": "Panel yüksekliği: özet. Değiştirmek için Enter veya yukarı/aşağı ok tuşları",
+    "x": 163,
+    "y": 625,
+    "w": 64,
+    "h": 24
+   }
+  ],
+  "ov": {
+   "sw": 390,
+   "iw": 390,
+   "bsw": 390
+  },
+  "sheet": {
+   "role": "complementary",
+   "label": "Molekül",
+   "top": 616,
+   "visH": 228
+  },
+  "canvas": {
+   "x": 0,
+   "y": 45,
+   "w": 390,
+   "h": 718,
+   "label": "3B molekül görünümü"
+  }
+ },
+ "overflow": [
+  {
+   "l": "Diğer seçenekler",
+   "x": 134,
+   "y": 50,
+   "w": 248,
+   "h": 186,
+   "items": [
+    {
+     "n": "Kütüphane",
+     "h": 44
+    },
+    {
+     "n": "Ayarlar",
+     "h": 44
+    },
+    {
+     "n": "Dosya",
+     "h": 44
+    },
+    {
+     "n": "Görünüm",
+     "h": 44
+    }
+   ]
+  }
+ ],
+ "settings": {
+  "x": 0,
+  "y": 422,
+  "w": 390,
+  "h": 760,
+  "ctrls": [
+   {
+    "n": "Türkçe",
+    "r": "radio",
+    "x": 20,
+    "y": 553,
+    "w": 57,
+    "h": 38
+   },
+   {
+    "n": "English",
+    "r": "radio",
+    "x": 77,
+    "y": 553,
+    "w": 61,
+    "h": 38
+   },
+   {
+    "n": "Sistemi izle",
+    "r": "radio",
+    "x": 20,
+    "y": 639,
+    "w": 84,
+    "h": 38
+   },
+   {
+    "n": "Azalt",
+    "r": "radio",
+    "x": 104,
+    "y": 639,
+    "w": 48,
+    "h": 38
+   },
+   {
+    "n": "Tam",
+    "r": "radio",
+    "x": 152,
+    "y": 639,
+    "w": 43,
+    "h": 38
+   },
+   {
+    "n": "Otomatik hidrojen",
+    "r": "switch",
+    "x": 337,
+    "y": 741,
+    "w": 36,
+    "h": 20
+   }
+  ]
+ },
+ "liveEN": {
+  "lang": "en",
+  "tr": [],
+  "dialog": false,
+  "canvas": "3D molecule view"
+ },
+ "enSheet": {
+  "sheet": {
+   "role": "complementary",
+   "label": "Molecule",
+   "top": 76,
+   "visH": 687
+  },
+  "grab": "Panel height: full. Press Enter or the up/down arrow keys to change",
+  "tr": [],
+  "text": "Molecule | CH4 | · | 16.04 g/mol | · | 5 atoms | · | 4 bonds | Methane | Molecular formula | CH4 | Coordinates: idealised geometry (not an energy minimisation); angles and lengths ar"
+ },
+ "library": null,
+ "afterLibEsc": {
+  "dialog": false,
+  "sheet": {
+   "role": "complementary",
+   "label": "Molecule",
+   "top": 631,
+   "visH": 213
+  },
+  "focus": "More options"
+ },
+ "logs": []
+}

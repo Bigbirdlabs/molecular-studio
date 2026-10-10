@@ -2,9 +2,11 @@ import { useEffect, useRef, useState, type RefObject } from 'react'
 import { el } from '../chem/elements'
 import { allowedValences, dist, type Atom, type Molecule } from '../chem/molecule'
 import { useStudio } from '../store'
+import { bondInfo } from '../chem/properties'
 import { bondOrderName, fmtNum } from '../ui/i18n'
 
 const DELAY_MS = 350
+const MOVE_TO_REVEAL_PX = 4
 
 function usedValence(m: Molecule, id: number): number {
   let n = 0
@@ -30,7 +32,10 @@ function describe(): string | null {
     const a = b && mol.atoms.find((x) => x.id === b.a)
     const c = b && mol.atoms.find((x) => x.id === b.b)
     if (!b || !a || !c) return null
-    return `${a.symbol}–${c.symbol} · ${bondOrderName(b.order, lang)} · ${fmtNum(lang, dist(a.pos, c.pos), 3)} Å`
+    // the same aromaticity-aware name the inspector shows (an aromatic bond is neither "single" nor "double")
+    const info = bondInfo(mol, b.id)
+    const name = info ? (lang === 'en' ? info.orderNameEn : info.orderName) : bondOrderName(b.order, lang)
+    return `${a.symbol}–${c.symbol} · ${name} · ${fmtNum(lang, dist(a.pos, c.pos), 3)} Å`
   }
   return null
 }
@@ -48,6 +53,9 @@ export function HoverTip({ host }: { host: RefObject<HTMLElement | null> }) {
   const tip = useRef<HTMLDivElement>(null)
   const pointer = useRef({ x: 0, y: 0 })
   const pressed = useRef(false)
+  /** Pointer position of the last press: the tip stays away from the atom just clicked (it would cover its measurement label) until the pointer moves. */
+  const downAt = useRef<{ x: number; y: number } | null>(null)
+  const [suppressed, setSuppressed] = useState(false)
 
   const place = () => {
     const t = tip.current, h = host.current
@@ -64,9 +72,16 @@ export function HoverTip({ host }: { host: RefObject<HTMLElement | null> }) {
     if (!h) return
     const onMove = (e: PointerEvent) => {
       pointer.current = { x: e.clientX, y: e.clientY }
+      const d = downAt.current
+      if (d && Math.hypot(e.clientX - d.x, e.clientY - d.y) > MOVE_TO_REVEAL_PX) { downAt.current = null; setSuppressed(false) }
       place()
     }
-    const onDown = () => { pressed.current = true; setShown(false) }
+    const onDown = (e: PointerEvent) => {
+      pressed.current = true
+      downAt.current = { x: e.clientX, y: e.clientY }
+      setSuppressed(true)
+      setShown(false)
+    }
     const onUp = () => { pressed.current = false }
     h.addEventListener('pointermove', onMove)
     h.addEventListener('pointerdown', onDown, true)
@@ -83,10 +98,10 @@ export function HoverTip({ host }: { host: RefObject<HTMLElement | null> }) {
 
   useEffect(() => {
     setShown(false)
-    if ((hovered === null && hoveredBond === null) || pressed.current) return
+    if ((hovered === null && hoveredBond === null) || pressed.current || suppressed) return
     const id = window.setTimeout(() => setShown(true), DELAY_MS)
     return () => window.clearTimeout(id)
-  }, [hovered, hoveredBond])
+  }, [hovered, hoveredBond, suppressed])
 
   const text = shown ? describe() : null
   useEffect(() => { if (text) place() })

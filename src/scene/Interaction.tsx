@@ -5,6 +5,7 @@ import { centroid, type Vec3 } from '../chem/molecule'
 import { useStudio, type Tool } from '../store'
 import { useUI } from '../ui/uiStore'
 import { CLICK_SLOP_PX, CLICK_SLOP_TOUCH_PX, PICK_FLOOR_ATOM_COARSE_PX, PICK_FLOOR_ATOM_FINE_PX, PICK_FLOOR_BOND_PX } from './theme'
+import { cancelInertia } from './controlsUtil'
 import { useSceneContext } from './sceneContext'
 import { ATOM_LONG_PRESS_EVENT, registerPicker, type AtomLongPressDetail } from './pickApi'
 import type { Pick, PickFloors } from './sceneModel'
@@ -214,6 +215,7 @@ export function Interaction() {
       }
       if (candidate !== null) {
         if (ctx.controls.current) ctx.controls.current.enabled = false // before OrbitControls sees this press
+        cancelInertia(ctx.controls.current) // leftover orbit damping must not nudge the camera while an atom is grabbed
         try { canvas.setPointerCapture(e.pointerId) } catch { /* pointer already gone */ }
       } else if (isCameraTool(st.tool)) setCursor(cursorFor(st.tool, null, true))
     }

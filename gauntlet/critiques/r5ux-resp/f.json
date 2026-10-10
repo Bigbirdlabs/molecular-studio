@@ -1,0 +1,137 @@
+{
+ "t820": {
+  "pick": {
+   "g": {
+    "x": 517,
+    "y": 884,
+    "w": 287,
+    "h": 140
+   },
+   "host": {
+    "x": 500,
+    "y": 45,
+    "w": 320,
+    "h": 1109
+   },
+   "clipped": [],
+   "scrollers": []
+  },
+  "sheet": null,
+  "wrapScroll": null,
+  "docScroll": [],
+  "ov": {
+   "sw": 820,
+   "iw": 820,
+   "bsw": 820
+  }
+ },
+ "t1024": {
+  "pick": {
+   "g": {
+    "x": 721,
+    "y": 590,
+    "w": 287,
+    "h": 140
+   },
+   "host": {
+    "x": 704,
+    "y": 45,
+    "w": 320,
+    "h": 697
+   },
+   "clipped": [],
+   "scrollers": []
+  },
+  "sheet": null,
+  "wrapScroll": null,
+  "docScroll": [],
+  "ov": {
+   "sw": 1024,
+   "iw": 1024,
+   "bsw": 1024
+  }
+ },
+ "m360": {
+  "pick": {
+   "g": {
+    "x": 17,
+    "y": 507,
+    "w": 326,
+    "h": 140
+   },
+   "host": {
+    "x": 0,
+    "y": 66,
+    "w": 360,
+    "h": 593
+   },
+   "clipped": [],
+   "scrollers": []
+  },
+  "sheet": {
+   "role": "complementary",
+   "label": "Molekül",
+   "top": 66,
+   "visH": 593
+  },
+  "wrapScroll": 0,
+  "docScroll": [],
+  "ov": {
+   "sw": 360,
+   "iw": 360,
+   "bsw": 360
+  },
+  "afterEsc": {
+   "sheet": {
+    "role": "complementary",
+    "label": "Molekül",
+    "top": 527,
+    "visH": 213
+   },
+   "grab": "Panel yüksekliği: özet",
+   "wrapScroll": 0
+  }
+ },
+ "m390": {
+  "pick": {
+   "g": {
+    "x": 17,
+    "y": 659,
+    "w": 356,
+    "h": 92
+   },
+   "host": {
+    "x": 0,
+    "y": 76,
+    "w": 390,
+    "h": 687
+   },
+   "clipped": [],
+   "scrollers": []
+  },
+  "sheet": {
+   "role": "complementary",
+   "label": "Molekül",
+   "top": 76,
+   "visH": 687
+  },
+  "wrapScroll": 0,
+  "docScroll": [],
+  "ov": {
+   "sw": 390,
+   "iw": 390,
+   "bsw": 390
+  },
+  "afterEsc": {
+   "sheet": {
+    "role": "complementary",
+    "label": "Molekül",
+    "top": 631,
+    "visH": 213
+   },
+   "grab": "Panel yüksekliği: özet",
+   "wrapScroll": 0
+  }
+ },
+ "logs": []
+}

@@ -1,0 +1,83 @@
+{
+ "carbon_held": {
+  "sheet": {
+   "role": "complementary",
+   "label": "Molekül",
+   "top": 381,
+   "visH": 463
+  },
+  "grab": {
+   "label": "Panel yüksekliği: yarım",
+   "x": 163,
+   "y": 382,
+   "w": 64,
+   "h": 44
+  }
+ },
+ "carbon": {
+  "at": [
+   195,
+   404
+  ],
+  "sheet": {
+   "role": "complementary",
+   "label": "Molekül",
+   "top": 76,
+   "visH": 687
+  },
+  "grab": {
+   "label": "Panel yüksekliği: tam",
+   "x": 163,
+   "y": 77,
+   "w": 64,
+   "h": 44
+  },
+  "ev": [
+   "pointerdown:3B molekül görünümü",
+   "pointerup:3B molekül görünümü",
+   "click:SPAN"
+  ],
+  "sel": "Molekül\nKarbon #1\n·\nCH4\n·\n16,04 g/mol\n·\n5 atom\n·\n4 bağ\nC\nKar"
+ },
+ "topH_held": {
+  "sheet": {
+   "role": "complementary",
+   "label": "Molekül",
+   "top": 381,
+   "visH": 463
+  },
+  "grab": {
+   "label": "Panel yüksekliği: yarım",
+   "x": 163,
+   "y": 382,
+   "w": 64,
+   "h": 44
+  }
+ },
+ "topH": {
+  "at": [
+   164,
+   342
+  ],
+  "sheet": {
+   "role": "complementary",
+   "label": "Molekül",
+   "top": 381,
+   "visH": 463
+  },
+  "grab": {
+   "label": "Panel yüksekliği: yarım",
+   "x": 163,
+   "y": 382,
+   "w": 64,
+   "h": 44
+  },
+  "ev": [
+   "pointerdown:3B molekül görünümü",
+   "pointerup:3B molekül görünümü",
+   "click:3B molekül görünümü"
+  ],
+  "sel": "Molekül\nHidrojen #4\n·\nCH4\n·\n16,04 g/mol\n·\n5 atom\n·\n4 bağ\nH\nH"
+ },
+ "logs": []
+}

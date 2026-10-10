@@ -1,4 +1,4 @@
-import { useDeferredValue, useEffect, useMemo, useState, type ReactNode } from 'react'
+import { useDeferredValue, useEffect, useMemo, useRef, useState, type ReactNode } from 'react'
 import { motion } from 'motion/react'
 import { AlertTriangle, Check, CircleAlert, Library, Minus, Plus, Ruler, Trash2, X } from 'lucide-react'
 import { useStudio } from '../store'
@@ -13,14 +13,16 @@ import {
   elementCategory, elementName, groupLabel, hybridLabel, translate, useT, type TFn, type TrKey,
 } from './i18n'
 import { Badge, PrimaryButton, Section, Segmented } from './controls'
-import { ElementPicker } from './ElementPicker'
 import { Formula } from './Formula'
 import { useUI } from './uiStore'
 import { AtomPlusIcon } from './icons'
 import { idealAngle, signedInt, tabulatedDecimals, useNum, vseprNotation } from './inspector/format'
 import { InspectorBoundary } from './inspector/InspectorBoundary'
 import { IRow as Row, LockNote, LockableGroup, ProvTag as Prov, useEditLocked } from './inspector/parts'
-import { useCoordSource } from './inspector/source'
+import { FittedElementPicker } from './inspector/FittedElementPicker'
+import { revealSoon } from './inspector/reveal'
+import { experimentalAngle, useCoordSource, useGeometryOrigin, useImportedEdited, type GeometryOrigin } from './inspector/source'
+import { longPressIsFresh, useLongPressTick } from './inspector/longPress'
 
 // ---------- localised molecule title ----------
 let englishNames: Map<string, string> | null = null
@@ -47,8 +49,17 @@ function useMoleculeTitle(name: string): string {
 
 const signed = signedInt
 
+/** Row labels of the geometry numbers by where they come from (A3.2: placed / relaxed geometry is never called measured). */
+function geometryLabels(origin: GeometryOrigin): { angle: TrKey; length: TrKey; tip: TrKey } {
+  switch (origin) {
+    case 'idealized': return { angle: 'atom.idealizedAngle', length: 'bond.lengthIdealized', tip: 'prov.tipIdealized' }
+    case 'moved': return { angle: 'atom.modelAngle', length: 'bond.lengthModel', tip: 'prov.tipModel' }
+    default: return { angle: 'atom.measAngle', length: 'bond.lengthM', tip: 'prov.tipMeas' }
+  }
+}
+
 // ---------- section open-state memory (per session, per section) ----------
-function useOpen(key: string, initial: boolean): [boolean, () => void] {
+function useOpen(key: string, initial: boolean): [boolean, () => void, () => void] {
   const [open, setOpen] = useState(() => {
     try {
       const v = sessionStorage.getItem('ms:sec:' + key)
@@ -60,16 +71,32 @@ function useOpen(key: string, initial: boolean): [boolean, () => void] {
   return [open, () => setOpen((o) => {
     try { sessionStorage.setItem('ms:sec:' + key, o ? '0' : '1') } catch { /* storage unavailable */ }
     return !o
-  })]
+  }), () => setOpen(true)]
 }
 
-function Sec({ id, title, initial = true, trailing, children }: { id: string; title: string; initial?: boolean; trailing?: ReactNode; children: ReactNode }) {
-  const [open, toggle] = useOpen(id, initial)
-  return <Section title={title} open={open} onToggle={toggle} trailing={trailing}>{children}</Section>
+function Sec({ id, title, initial = true, trailing, revealOnLongPress, children }: { id: string; title: string; initial?: boolean; trailing?: ReactNode; revealOnLongPress?: boolean; children: ReactNode }) {
+  const [open, toggle, forceOpen] = useOpen(id, initial)
+  const tick = useLongPressTick()
+  const seen = useRef(0)
+  const box = useRef<HTMLDivElement>(null)
+  // B.12: a touch long-press on an atom opens the quick actions (change element) without persisting the open state.
+  useEffect(() => {
+    if (!revealOnLongPress || tick === seen.current) return
+    seen.current = tick
+    if (!longPressIsFresh()) return
+    forceOpen()
+    revealSoon(box.current)
+  }, [tick, revealOnLongPress, forceOpen])
+  // opening a section by hand also brings it fully into view (the element picker opens below the fold)
+  const onToggle = () => {
+    toggle()
+    if (!open) revealSoon(box.current)
+  }
+  return <div ref={box}><Section title={title} open={open} onToggle={onToggle} trailing={trailing}>{children}</Section></div>
 }
 
 // ---------- molecule summary ----------
-function CompositionBars({ items }: { items: MolProperties['composition'] }) {
+function CompositionList({ items }: { items: MolProperties['composition'] }) {
   const fix = useNum()
   const lang = useStudio((s) => s.language)
   return (
@@ -80,9 +107,7 @@ function CompositionBars({ items }: { items: MolProperties['composition'] }) {
             <span aria-hidden="true" className="inline-block size-2 shrink-0 rounded-full" style={{ background: el(c.symbol).color }} />
             {c.symbol}
           </span>
-          <span aria-hidden="true" className="h-1 overflow-hidden rounded-full bg-surface-3">
-            <span className="block h-full rounded-full" style={{ width: `${Math.max(2, c.percent)}%`, background: el(c.symbol).color }} />
-          </span>
+          <span aria-hidden="true" />
           <span className="text-right tabular-nums text-ink-dim">
             {c.count} · {fix(c.percent, 2)}{lang === 'tr' ? ' %' : '%'}
           </span>
@@ -106,10 +131,10 @@ function issueText(t: TFn, fix: (n: number, d: number) => string, d: MolProperti
   const base = { symbol: d.symbol, id: d.atomId }
   const allowed = d.allowed ?? []
   switch (d.code) {
-    case 'valenceOver': return t('issue.over', { ...base, used: d.used ?? 0, allowed: allowed.length ? Math.max(...allowed) : 0 })
-    case 'valenceUnder': return t('issue.under', { ...base, used: d.used ?? 0, allowed: allowed.join(' / ') })
-    case 'valenceInvalid': return t('issue.invalid', { ...base, used: d.used ?? 0, allowed: allowed.join(' / ') })
-    case 'overlap': return t('issue.overlap', { ...base, other: d.otherAtomId ?? '?', d: fix(d.distance ?? 0, 2) })
+    case 'valenceOver': return t('issue.overA6', { ...base, used: d.used ?? 0, allowed: allowed.length ? Math.max(...allowed) : 0 })
+    case 'valenceUnder': return t('issue.underA6', { ...base, used: d.used ?? 0, allowed: allowed.join(' / ') })
+    case 'valenceInvalid': return t('issue.invalidA6', { ...base, used: d.used ?? 0, allowed: allowed.join(' / ') })
+    case 'overlap': return t('issue.overlap', { ...base, other: d.otherAtomId ?? '?', d: fix(d.distance ?? 0, 3) })
   }
 }
 
@@ -124,6 +149,8 @@ function MoleculeSummary({ mol, layout }: { mol: Molecule; layout: 'panel' | 'sh
   const hill = useMemo(() => formula(mol, true), [mol])
   const missingTotal = useMemo(() => mol.atoms.reduce((s, a) => s + missingHydrogens(mol, a), 0), [mol])
   const source = useCoordSource(mol)
+  const origin = useGeometryOrigin(mol)
+  const importedEdited = useImportedEdited(mol)
 
   if (!props) {
     return (
@@ -157,11 +184,16 @@ function MoleculeSummary({ mol, layout }: { mol: Molecule; layout: 'panel' | 'sh
         <div className="mt-0.5 break-words text-formula font-medium text-ink" title={t('mol.formulaHillTip', { hill })}>
           <Formula text={conventional} />
         </div>
-        {source && (
+        {source ? (
           <div className="mt-2 flex flex-col gap-0.5 text-label text-ink-dim">
             <span>{source.entry ? (lang === 'en' ? source.entry.coordSourceTextEn : source.entry.coordSourceText) : t('mol.src.pubchemCoords')}</span>
             {source.pubchem && <span>{t('mol.src.pubchem')}</span>}
             {source.edited && <span>{t('mol.src.edited')}</span>}
+          </div>
+        ) : (
+          <div className="mt-2 flex flex-col gap-0.5 text-label text-ink-dim">
+            <span>{t(origin === 'moved' ? 'mol.src.moved' : origin === 'idealized' && !importedEdited ? 'mol.src.idealized' : 'mol.src.imported')}</span>
+            {importedEdited && <span>{t('mol.src.edited')}</span>}
           </div>
         )}
         {(missingTotal > 0 || overValent.length > 0) && (
@@ -175,7 +207,7 @@ function MoleculeSummary({ mol, layout }: { mol: Molecule; layout: 'panel' | 'sh
             {overValent.map((d) => (
               <p key={d.atomId} className="m-0 flex items-start gap-2 text-danger">
                 <CircleAlert size={14} aria-hidden className="mt-0.5 shrink-0" />
-                <span>{t('mol.invalidValence', { symbol: d.symbol, used: d.used ?? 0, max: d.allowed?.length ? Math.max(...d.allowed) : 0 })}</span>
+                <span>{t('mol.invalidValenceA6', { symbol: d.symbol, used: d.used ?? 0, max: d.allowed?.length ? Math.max(...d.allowed) : 0 })}</span>
               </p>
             ))}
           </div>
@@ -201,7 +233,7 @@ function MoleculeSummary({ mol, layout }: { mol: Molecule; layout: 'panel' | 'sh
           {bc.double > 0 && <Row label={t('mol.double')}>{bc.double}</Row>}
           {bc.triple > 0 && <Row label={t('mol.triple')}>{bc.triple}</Row>}
           {bc.aromatic > 0 && <Row label={t('mol.aromatic')}>{bc.aromatic}</Row>}
-          <Row label={t('mol.rings')} hint={t('prov.tipCalc')}>{props.rings}</Row>
+          <Row label={t('mol.ringsA6')} hint={t('prov.tipCalc')}>{props.rings}</Row>
           <Row label={<>{t('mol.aromaticRings')}<Prov kind="est" /></>}>{props.aromaticRings}</Row>
           {props.unsaturation !== null && props.unsaturation !== undefined && <Row label={t('mol.unsatM')} hint={t('mol.helpUnsatM')}>{props.unsaturation}</Row>}
           <Row label={t('mol.rotatable')} hint={t('mol.helpRotatableM')}>{props.rotatableBonds}</Row>
@@ -217,7 +249,7 @@ function MoleculeSummary({ mol, layout }: { mol: Molecule; layout: 'panel' | 'sh
       </Sec>
 
       <Sec id="mol.composition" title={t('mol.sectionCompositionM')}>
-        <CompositionBars items={props.composition} />
+        <CompositionList items={props.composition} />
       </Sec>
 
       <Sec id="mol.groups" title={t('mol.section.groups')} trailing={<Prov kind="est" />}>
@@ -326,14 +358,17 @@ function AtomPanel({ info, mol }: { info: AtomInfo; mol: Molecule }) {
   const deleteAtoms = useStudio((s) => s.deleteAtoms)
   const locked = useEditLocked()
   const atom = atomById(mol, info.id)
+  const source = useCoordSource(mol)
+  const geomLabels = geometryLabels(useGeometryOrigin(mol))
+  const expAngle = experimentalAngle(source, info.symbol)
   // Only real missing hydrogens count (A1.3): a 3-bonded S or 4-bonded P is "not computable", not "1 H missing".
   const missingH = atom ? missingHydrogens(mol, atom) : 0
   const sn = info.stericNumber
   // VSEPR block (A4.2): absent for H; "structure incomplete" only when H are really missing; "not computable" otherwise outside SN 2-4.
   const vsepr: 'hidden' | 'missingH' | 'na' | 'ok' =
     info.symbol === 'H' ? 'hidden' : missingH > 0 ? 'missingH' : info.incomplete || sn < 2 || sn > 4 ? 'na' : 'ok'
-  // The Turkish name carries an English gloss in parentheses; the Turkish UI shows only the Turkish part.
-  const geometry = lang === 'en' ? info.geometryEn : info.geometry.replace(/\s*\([^)]*\)\s*$/, '')
+  // The parenthesis in the Turkish name is a mandated qualifier (A4.2: bond-angle and hybridisation qualifiers), not a gloss: keep it whole.
+  const geometry = lang === 'en' ? info.geometryEn : info.geometry
   const showHybrid = vsepr === 'ok' && ['C', 'N', 'O', 'B'].includes(info.symbol) && /^sp[23]?$/.test(info.hybridization)
   // A bond angle only exists at an atom with at least two bonds: terminal atoms (F in CH3F, carbonyl O) get no ideal angle / AXE notation.
   const central = vsepr === 'ok' && info.showVsepr
@@ -363,7 +398,7 @@ function AtomPanel({ info, mol }: { info: AtomInfo; mol: Molecule }) {
       <Sec id="atom.element" title={t('atom.section.element')}>
         <dl className="m-0">
           <Row label={t('atom.number')} hint={t('prov.tipMass')}>{info.z}</Row>
-          <Row label={t('atom.mass')} hint={t('prov.tipMass')}>{fix(info.mass, tabulatedDecimals(info.mass))} u</Row>
+          <Row label={t('atom.mass')} hint={t('prov.tipMass')}>{fix(info.mass, tabulatedDecimals(info.mass, info.symbol))} u</Row>
           <Row label={t('atom.en')} hint={t('prov.tipEn')}>{fix(info.en, 2)}</Row>
           <Row label={t('atom.radius')} hint={t('prov.tipRadius')}>{fix(info.covalentRadius, 2)} Å</Row>
         </dl>
@@ -379,7 +414,7 @@ function AtomPanel({ info, mol }: { info: AtomInfo; mol: Molecule }) {
 
       <Sec id="atom.bonding" title={t('atom.section.bonding')}>
         <dl className="m-0">
-          <Row label={t('atom.valence')} hint={t('prov.tipCalc')}>
+          <Row label={t('atom.valenceA6')} hint={t('prov.tipCalc')}>
             <span className="inline-flex flex-wrap items-center justify-end gap-2">{info.valenceUsed}/{info.valence}<ValenceBadge info={info} />{missingH > 0 && <Badge tone="warn" icon={<AlertTriangle size={12} aria-hidden />}>{t('atom.missingH', { n: missingH })}</Badge>}</span>
           </Row>
           {vsepr !== 'hidden' && (
@@ -391,15 +426,16 @@ function AtomPanel({ info, mol }: { info: AtomInfo; mol: Molecule }) {
               {showHybrid && <Row label={t('atom.hybrid')} hint={t('prov.tipHybrid')} mono={false}>{hybridLabel(info.hybridization)}</Row>}
               <Row label={t('atom.geometryShort')} hint={t('prov.tipVsepr')} mono={false}>{vsepr === 'ok' ? geometry : naText}</Row>
               {central && <Row label={t('atom.vsepr')} hint={t('prov.tipVsepr')} mono={false}>{vseprNotation(sn - info.lonePairs, info.lonePairs)}</Row>}
-              <Row label={t('atom.steric')} hint={t('prov.tipVsepr')}>{vsepr === 'ok' ? sn : naText}</Row>
-              <Row label={t('atom.lonePairs')} hint={t('prov.tipVsepr')}>{vsepr === 'ok' ? info.lonePairs : naText}</Row>
+              <Row label={t('atom.stericA6')} hint={t('prov.tipVsepr')}>{vsepr === 'ok' ? sn : naText}</Row>
+              <Row label={t('atom.lonePairsA6')} hint={t('prov.tipVsepr')}>{vsepr === 'ok' ? info.lonePairs : naText}</Row>
               {ideal && <Row label={t('atom.idealAngle')} hint={t('prov.tipVsepr')}>{ideal.lessThan ? '< ' : ''}{fix(ideal.value, ideal.value === 109.5 ? 1 : 0)}°</Row>}
               {measured && (
-                <Row label={t('atom.measAngle')} hint={t('prov.tipMeas')}>
+                <Row label={t(geomLabels.angle)} hint={t(geomLabels.tip)}>
                   {fix(measured.mean, 1)}°
-                  {measured.max - measured.min > 0.5 && <span className="text-label text-ink-dim"> ({fix(measured.min, 1)}–{fix(measured.max, 1)}°)</span>}
+                  {measured.max - measured.min > 0.5 && <span className="whitespace-normal text-label text-ink-dim"> ({fix(measured.min, 1)}–{fix(measured.max, 1)}°)</span>}
                 </Row>
               )}
+              {measured && expAngle !== null && <Row label={t(expAngle.origin === 'gas' ? 'atom.expAngleGas' : 'atom.expAngle')} hint={t('prov.tipExp')} sub={expAngle.qualifier ?? undefined}>{fix(expAngle.angle, 1)}°</Row>}
             </>
           )}
           <Row label={<>{t('atom.gasteigerM')}<Prov kind="est" /></>} hint={t('prov.tipGasteiger')}>
@@ -421,9 +457,9 @@ function AtomPanel({ info, mol }: { info: AtomInfo; mol: Molecule }) {
         </div>
       </Sec>
 
-      <Sec id="atom.change" title={t('atom.section.change')} initial={false}>
+      <Sec id="atom.change" title={t('atom.section.change')} initial={false} revealOnLongPress>
         <LockableGroup locked={locked}>
-          <ElementPicker value={info.symbol} onPick={(s) => changeElement(info.id, s)} ariaLabel={t('atom.section.change')} columns={7} />
+          <FittedElementPicker value={info.symbol} onPick={(s) => changeElement(info.id, s)} ariaLabel={t('atom.section.change')} />
         </LockableGroup>
       </Sec>
 
@@ -477,14 +513,18 @@ function BondPanel({ info, mol }: { info: BondInfo; mol: Molecule }) {
   const setBondOrderOf = useStudio((s) => s.setBondOrderOf)
   const deleteBond = useStudio((s) => s.deleteBond)
   const locked = useEditLocked()
+  const geomLabels = geometryLabels(useGeometryOrigin(mol))
   const bond = bondById(mol, info.id)
   const A = bond ? atomById(mol, bond.a) : undefined
   const B = bond ? atomById(mol, bond.b) : undefined
   const polarity = t(`bond.polClass.${info.polarity}` as TrKey)
   const rowSource = A && B ? bondLengthSource(A.symbol, B.symbol, info.order, info.aromatic) : null
+  // molecule.ts holds the English source text; map it to the dictionary so the Turkish UI never shows English (A6.3)
   const refSource = rowSource === null
     ? t('bond.refSrc.fallback')
-    : rowSource.startsWith('typical') ? t('bond.refSrc.typical') : rowSource
+    : rowSource.startsWith('Allen') ? t('bond.srcAllen')
+      : rowSource.startsWith('CCCBDB') ? t('bond.srcCccbdb')
+        : t('bond.refSrc.typical')
   const tone = info.polarity === 'ionic' ? 'warn' : info.polarity === 'polar' ? 'accent' : 'neutral'
   return (
     <div>
@@ -506,7 +546,7 @@ function BondPanel({ info, mol }: { info: BondInfo; mol: Molecule }) {
               ))}
             </span>
           </Row>
-          <Row label={t('bond.lengthM')} hint={t('prov.tipMeas')}>{fix(info.length, 3)} Å</Row>
+          <Row label={t(geomLabels.length)} hint={t(geomLabels.tip)}>{fix(info.length, 3)} Å</Row>
           <Row label={t('bond.refLength')} hint={`${t('bond.refTip')} ${t('bond.refSrc.label')}: ${refSource}`} sub={refSource}>{fix(info.idealLength, 3)} Å</Row>
           <Row label={t('bond.deltaEN')} hint={t('prov.tipEn')}>{fix(info.deltaEN, 2)}</Row>
           <Row label={t('bond.polarity')} hint={t('bond.polTip')} mono={false}>
@@ -575,15 +615,17 @@ function MeasurePanel({ mol }: { mol: Molecule }) {
         </ol>
       )}
       {readouts.length > 0 && (
-        <div className="mt-3 flex flex-col gap-2 rounded-ctl border border-line-strong bg-surface-2 p-3" role="status">
+        <dl className="m-0 mt-3 border-t border-line" role="status">
           {readouts.map((r) => (
-            <div key={r.key}>
-              <div className="text-label text-ink-dim">{r.label}</div>
-              <div className="text-formula font-medium tabular-nums text-ink">{r.text}</div>
-              {r.note && <div className="text-label text-ink-dim">{r.note}</div>}
+            <div key={r.key} className="flex items-baseline justify-between gap-3 border-b border-line py-1.5">
+              <dt className="min-w-0 text-label text-ink-dim">
+                {r.label}
+                {r.note && <span className="block">{r.note}</span>}
+              </dt>
+              <dd className="m-0 whitespace-nowrap text-right text-title font-medium tabular-nums text-ink">{r.text}</dd>
             </div>
           ))}
-        </div>
+        </dl>
       )}
       <p className="mb-0 mt-2 text-label text-ink-dim">{t('meas.footnote')}</p>
       <PrimaryButton variant="quiet" icon={<X size={15} aria-hidden />} onClick={clear} disabled={ids.length === 0} className="mt-3 w-full">{t('meas.clear')}</PrimaryButton>

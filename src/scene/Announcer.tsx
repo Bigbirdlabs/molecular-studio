@@ -1,7 +1,8 @@
 import { useEffect, useState, type CSSProperties } from 'react'
-import { el } from '../chem/elements'
+import { getElement } from '../chem/elements'
 import type { Molecule } from '../chem/molecule'
-import { useStudio, type Language } from '../store'
+import { useStudio, type Language, type StudioState } from '../store'
+import { bondInfo } from '../chem/properties'
 import { bondOrderName } from '../ui/i18n'
 
 /** Visually hidden but available to assistive technology (the same pattern as Tailwind's `sr-only`). */
@@ -63,8 +64,8 @@ function describeEdit(prev: Molecule, next: Molecule, selection: readonly number
   if (removed.length > 0) return m.removed
   if (retyped.length > 0) {
     const a = retyped.find((x) => selection.includes(x.id)) ?? retyped[0]
-    const e = el(a.symbol)
-    return m.changed(a.symbol, language === 'en' ? e.nameEn : e.name)
+    const e = getElement(a.symbol) // never throws inside the store listener: an unknown symbol is announced by its symbol alone
+    return m.changed(a.symbol, e ? (language === 'en' ? e.nameEn : e.name) : a.symbol)
   }
   const dBonds = next.bonds.length - prev.bonds.length
   if (dBonds > 0) return m.bondAdded
@@ -81,7 +82,7 @@ export function Announcer() {
 
   useEffect(() => {
     let flip = false
-    return useStudio.subscribe((s, p) => {
+    const announce = (s: StudioState, p: StudioState) => {
       if (s.loadNonce !== p.loadNonce) { setText(''); return }
       const m = MSG[s.language]
       let msg: string | null = null
@@ -91,12 +92,17 @@ export function Announcer() {
           const b = s.mol.bonds.find((x) => x.id === s.selectedBond)
           const a = b && s.mol.atoms.find((x) => x.id === b.a)
           const c = b && s.mol.atoms.find((x) => x.id === b.b)
-          if (b && a && c) msg = m.bond(a.symbol, c.symbol, bondOrderName(b.order, s.language))
+          if (b && a && c) {
+            // aromaticity-aware, like the inspector: a benzene bond is announced as aromatic, not as single or double
+            const info = bondInfo(s.mol, b.id)
+            const name = info ? (s.language === 'en' ? info.orderNameEn : info.orderName) : bondOrderName(b.order, s.language)
+            msg = m.bond(a.symbol, c.symbol, name)
+          }
         } else if (s.selection.length === 1) {
           const a = s.mol.atoms.find((x) => x.id === s.selection[0])
           if (a) {
-            const e = el(a.symbol)
-            msg = m.atom(a.symbol, s.language === 'en' ? e.nameEn : e.name, bondCount(s.mol, a.id))
+            const e = getElement(a.symbol)
+            msg = m.atom(a.symbol, e ? (s.language === 'en' ? e.nameEn : e.name) : a.symbol, bondCount(s.mol, a.id))
           }
         } else if (s.selection.length > 1) msg = m.atoms(s.selection.length)
         else if (p.selection.length > 0 || p.selectedBond !== null) msg = m.cleared
@@ -105,6 +111,10 @@ export function Announcer() {
         flip = !flip
         setText(flip ? msg : `${msg}​`) // an identical message still changes the node, so it is announced again
       }
+    }
+    return useStudio.subscribe((s, p) => {
+      // a throwing listener would make zustand skip every listener after it (autosave...): the announcer must never throw
+      try { announce(s, p) } catch { /* nothing sensible to announce */ }
     })
   }, [])
 

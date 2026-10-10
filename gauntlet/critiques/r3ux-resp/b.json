@@ -1,0 +1,403 @@
+{
+ "launch": {
+  "sheet": null,
+  "canvas": {
+   "x": 0,
+   "y": 45,
+   "w": 390,
+   "h": 718,
+   "label": "3B molekül görünümü"
+  },
+  "anims": 0
+ },
+ "tapC_40ms": {
+  "sheet": {
+   "role": "complementary",
+   "label": "Molekül",
+   "top": 631,
+   "visH": 213
+  }
+ },
+ "tapC": {
+  "sheet": {
+   "role": "complementary",
+   "label": "Molekül",
+   "top": 631,
+   "visH": 213
+  },
+  "grab": {
+   "role": null,
+   "hidden": "true",
+   "label": null,
+   "x": 177,
+   "y": 640,
+   "w": 36,
+   "h": 4
+  },
+  "text": "Molekül\nKarbon #1\n·\nCH4\n·\n16,04 g/mol\n·\n5 atom\n·\n4 bağ\nC\nKarbon (C)\n#1 · Ametal\nElement\nAtom numarası\n6\nAtom kütlesi\n12,011 u\nElektronegatiflik (Pauling)\n2,55\nKovalent yarıçap\n0,76 Å\nKonum (Å)\nX0,000\n",
+  "scrim": []
+ },
+ "clear": {
+  "sheet": {
+   "role": "complementary",
+   "label": "Molekül",
+   "top": 631,
+   "visH": 213
+  },
+  "text": "Molekül\nKarbon #1\n·\nCH4\n·\n16,04 g/mol\n·\n5 atom\n·\n4 bağ\nC\nKarbon (C)\n#1 · Ametal\nElement\nAtom numarası\n6\nAtom kütlesi\n12,011 u\nElektronegatiflik (Pauling)\n2,55\nKovalent yarıçap\n0,76 Å\nKonum (Å)\nX0,000\n"
+ },
+ "esc1": {
+  "sheet": null
+ },
+ "info_30ms": {
+  "sheet": {
+   "role": "complementary",
+   "label": "Molekül",
+   "top": 631,
+   "visH": 213
+  }
+ },
+ "info": {
+  "sheet": {
+   "role": "complementary",
+   "label": "Molekül",
+   "top": 631,
+   "visH": 213
+  },
+  "text": "Molekül\nKarbon #1\n·\nCH4\n·\n16,04 g/mol\n·\n5 atom\n·\n4 bağ\nC\nKarbon (C)\n#1 · Ametal\nElement\nAtom numarası\n6\nAtom kütlesi\n12,011 u\nElektronegatiflik (Pauling)\n2,55\nKovalent yarıçap\n0,76 Å\nKonum (Å)\nX0,000\n",
+  "grab": {
+   "role": null,
+   "hidden": "true",
+   "label": null,
+   "x": 177,
+   "y": 640,
+   "w": 36,
+   "h": 4
+  }
+ },
+ "dragUp": {
+  "sheet": {
+   "role": "complementary",
+   "label": "Molekül",
+   "top": 76,
+   "visH": 687
+  },
+  "scrim": []
+ },
+ "escFromUp": {
+  "sheet": null
+ },
+ "swipeDown": {
+  "sheet": null
+ },
+ "moreMenus": [
+  {
+   "l": "Diğer seçenekler",
+   "x": 134,
+   "y": 50,
+   "w": 248,
+   "h": 186,
+   "sh": 184,
+   "ch": 184,
+   "items": [
+    {
+     "n": "Kütüphane",
+     "h": 44
+    },
+    {
+     "n": "Ayarlar",
+     "h": 44
+    },
+    {
+     "n": "Dosya",
+     "h": 44
+    },
+    {
+     "n": "Görünüm",
+     "h": 44
+    }
+   ]
+  }
+ ],
+ "afterMenuEsc": {
+  "menus": 0,
+  "active": "Diğer seçenekler"
+ },
+ "dockMore": [
+  {
+   "l": "Diğer seçenekler",
+   "x": 52,
+   "y": 407,
+   "w": 324,
+   "h": 383,
+   "items": [
+    {
+     "r": "menuitemradio",
+     "n": "Döndür",
+     "h": 44
+    },
+    {
+     "r": "menuitemradio",
+     "n": "Kaydır",
+     "h": 44
+    },
+    {
+     "r": "menuitemradio",
+     "n": "Yakınlaştır",
+     "h": 44
+    },
+    {
+     "r": "separator",
+     "n": "",
+     "h": 1
+    },
+    {
+     "r": "menuitem",
+     "n": "Geometriyi düzenle (basit kuvvet alanı, ",
+     "h": 44
+    },
+    {
+     "r": "menuitem",
+     "n": "Hidrojen ekle",
+     "h": 44
+    },
+    {
+     "r": "menuitem",
+     "n": "Hidrojenleri kaldır",
+     "h": 44
+    },
+    {
+     "r": "menuitem",
+     "n": "Yeni molekül",
+     "h": 44
+    }
+   ]
+  }
+ ],
+ "atomTool": {
+  "opts": [
+   {
+    "l": "Gösterim biçimi",
+    "x": 8,
+    "y": 53,
+    "w": 374,
+    "h": 44,
+    "n": 4
+   },
+   {
+    "l": "Bağ derecesi",
+    "x": 135,
+    "y": 615,
+    "w": 120,
+    "h": 44,
+    "n": 3
+   },
+   {
+    "l": "Element",
+    "x": 29,
+    "y": 665,
+    "w": 332,
+    "h": 92,
+    "n": 14
+   }
+  ],
+  "small": [
+   {
+    "n": "Top-Çubuk",
+    "x": 11,
+    "y": 56,
+    "w": 92,
+    "h": 38
+   },
+   {
+    "n": "Uzay Dolgulu",
+    "x": 103,
+    "y": 56,
+    "w": 92,
+    "h": 38
+   },
+   {
+    "n": "Çubuk",
+    "x": 195,
+    "y": 56,
+    "w": 92,
+    "h": 38
+   },
+   {
+    "n": "Tel Kafes",
+    "x": 287,
+    "y": 56,
+    "w": 92,
+    "h": 38
+   },
+   {
+    "n": "Tekli",
+    "x": 138,
+    "y": 618,
+    "w": 38,
+    "h": 38
+   },
+   {
+    "n": "Çift",
+    "x": 176,
+    "y": 618,
+    "w": 38,
+    "h": 38
+   },
+   {
+    "n": "Üçlü",
+    "x": 214,
+    "y": 618,
+    "w": 38,
+    "h": 38
+   }
+  ],
+  "canvas": {
+   "x": 0,
+   "y": 45,
+   "w": 390,
+   "h": 563,
+   "label": "3B molekül görünümü"
+  },
+  "ov": {
+   "sw": 390,
+   "iw": 390,
+   "bsw": 390
+  }
+ },
+ "settings": {
+  "x": 0,
+  "y": 422,
+  "w": 390,
+  "h": 760,
+  "label": "Ayarlar",
+  "ctrls": [
+   {
+    "n": "Paneli kapat",
+    "r": null,
+    "x": 329,
+    "y": 443,
+    "w": 44,
+    "h": 44
+   },
+   {
+    "n": "Türkçe",
+    "r": "radio",
+    "x": 20,
+    "y": 537,
+    "w": 57,
+    "h": 38
+   },
+   {
+    "n": "English",
+    "r": "radio",
+    "x": 77,
+    "y": 537,
+    "w": 61,
+    "h": 38
+   },
+   {
+    "n": "Sistemi izle",
+    "r": "radio",
+    "x": 20,
+    "y": 623,
+    "w": 84,
+    "h": 38
+   },
+   {
+    "n": "Azalt",
+    "r": "radio",
+    "x": 104,
+    "y": 623,
+    "w": 48,
+    "h": 38
+   },
+   {
+    "n": "Tam",
+    "r": "radio",
+    "x": 152,
+    "y": 623,
+    "w": 43,
+    "h": 38
+   },
+   {
+    "n": "Otomatik hidrojen",
+    "r": "switch",
+    "x": 337,
+    "y": 725,
+    "w": 36,
+    "h": 20
+   },
+   {
+    "n": "Kısayolları göster",
+    "r": null,
+    "x": 250,
+    "y": 793,
+    "w": 123,
+    "h": 44
+   }
+  ]
+ },
+ "liveEN": {
+  "lang": "en",
+  "tr": [],
+  "dialog": false
+ },
+ "library": {
+  "x": 0,
+  "y": 84,
+  "w": 390,
+  "h": 760,
+  "tr": [],
+  "small": [
+   {
+    "n": "Ball & Stick",
+    "x": 11,
+    "y": 56,
+    "w": 92,
+    "h": 38
+   },
+   {
+    "n": "Space Filling",
+    "x": 103,
+    "y": 56,
+    "w": 92,
+    "h": 38
+   },
+   {
+    "n": "Stick",
+    "x": 195,
+    "y": 56,
+    "w": 92,
+    "h": 38
+   },
+   {
+    "n": "Wireframe",
+    "x": 287,
+    "y": 56,
+    "w": 92,
+    "h": 38
+   },
+   {
+    "n": "All",
+    "x": 17,
+    "y": 222,
+    "w": 37,
+    "h": 44
+   }
+  ],
+  "ov": {
+   "sw": 390,
+   "iw": 390,
+   "bsw": 390
+  },
+  "scrim": [
+   "oklab(0 0 0 / 0.55)"
+  ]
+ },
+ "afterLibEsc": {
+  "dialog": false,
+  "sheet": null
+ },
+ "logs": []
+}

@@ -1,0 +1,246 @@
+{
+ "t820": {
+  "pick": {
+   "g": {
+    "x": 517,
+    "y": 884,
+    "w": 287,
+    "h": 92
+   },
+   "host": {
+    "x": 500,
+    "y": 45,
+    "w": 320,
+    "h": 1109
+   },
+   "clipped": [
+    "Kükürt (S, 16)",
+    "Bor (B, 5)"
+   ],
+   "scrollers": [
+    {
+     "cls": "m-0 min-w-0 border-0 p-0 disabled:opacity-50",
+     "sw": 332,
+     "cw": 287,
+     "ox": "visible"
+    },
+    {
+     "cls": "px-4 pb-3",
+     "sw": 348,
+     "cw": 319,
+     "ox": "visible"
+    },
+    {
+     "cls": "border-t border-line first:border-t-0",
+     "sw": 348,
+     "cw": 319,
+     "ox": "visible"
+    },
+    {
+     "cls": "",
+     "sw": 348,
+     "cw": 319,
+     "ox": "visible"
+    },
+    {
+     "cls": "",
+     "sw": 348,
+     "cw": 319,
+     "ox": "visible"
+    },
+    {
+     "cls": "",
+     "sw": 348,
+     "cw": 319,
+     "ox": "visible"
+    },
+    {
+     "cls": "min-h-0 flex-1 overflow-y-auto overscroll-contain",
+     "sw": 348,
+     "cw": 319,
+     "ox": "auto"
+    }
+   ]
+  },
+  "sheet": null,
+  "wrapScroll": null,
+  "docScroll": [],
+  "ov": {
+   "sw": 820,
+   "iw": 820,
+   "bsw": 820
+  }
+ },
+ "t1024": {
+  "pick": {
+   "g": {
+    "x": 721,
+    "y": 742,
+    "w": 287,
+    "h": 92
+   },
+   "host": {
+    "x": 704,
+    "y": 45,
+    "w": 320,
+    "h": 697
+   },
+   "clipped": [
+    "Kükürt (S, 16)",
+    "Bor (B, 5)"
+   ],
+   "scrollers": [
+    {
+     "cls": "m-0 min-w-0 border-0 p-0 disabled:opacity-50",
+     "sw": 332,
+     "cw": 287,
+     "ox": "visible"
+    },
+    {
+     "cls": "px-4 pb-3",
+     "sw": 348,
+     "cw": 319,
+     "ox": "visible"
+    },
+    {
+     "cls": "border-t border-line first:border-t-0",
+     "sw": 348,
+     "cw": 319,
+     "ox": "visible"
+    },
+    {
+     "cls": "",
+     "sw": 348,
+     "cw": 319,
+     "ox": "visible"
+    },
+    {
+     "cls": "",
+     "sw": 348,
+     "cw": 319,
+     "ox": "visible"
+    },
+    {
+     "cls": "",
+     "sw": 348,
+     "cw": 319,
+     "ox": "visible"
+    },
+    {
+     "cls": "min-h-0 flex-1 overflow-y-auto overscroll-contain",
+     "sw": 348,
+     "cw": 319,
+     "ox": "auto"
+    }
+   ]
+  },
+  "sheet": null,
+  "wrapScroll": null,
+  "docScroll": [],
+  "ov": {
+   "sw": 1024,
+   "iw": 1024,
+   "bsw": 1024
+  }
+ },
+ "m360": {
+  "pick": {
+   "g": {
+    "x": 17,
+    "y": 659,
+    "w": 326,
+    "h": 92
+   },
+   "host": {
+    "x": 0,
+    "y": 66,
+    "w": 360,
+    "h": 593
+   },
+   "clipped": [],
+   "scrollers": [
+    {
+     "cls": "m-0 min-w-0 border-0 p-0 disabled:opacity-50",
+     "sw": 332,
+     "cw": 326,
+     "ox": "visible"
+    }
+   ]
+  },
+  "sheet": {
+   "role": "complementary",
+   "label": "Molekül",
+   "top": 66,
+   "visH": 593
+  },
+  "wrapScroll": 263,
+  "docScroll": [
+   {
+    "cls": "pointer-events-none fixed inset-x-0 top-0 overflow-hidden z-",
+    "st": 263
+   }
+  ],
+  "ov": {
+   "sw": 360,
+   "iw": 360,
+   "bsw": 360
+  },
+  "afterEsc": {
+   "sheet": {
+    "role": "complementary",
+    "label": "Molekül",
+    "top": 264,
+    "visH": 476
+   },
+   "grab": "Panel yüksekliği: özet",
+   "wrapScroll": 263
+  }
+ },
+ "m390": {
+  "pick": {
+   "g": {
+    "x": 17,
+    "y": 763,
+    "w": 356,
+    "h": 92
+   },
+   "host": {
+    "x": 0,
+    "y": 76,
+    "w": 390,
+    "h": 687
+   },
+   "clipped": [],
+   "scrollers": []
+  },
+  "sheet": {
+   "role": "complementary",
+   "label": "Molekül",
+   "top": 76,
+   "visH": 687
+  },
+  "wrapScroll": 305,
+  "docScroll": [
+   {
+    "cls": "pointer-events-none fixed inset-x-0 top-0 overflow-hidden z-",
+    "st": 305
+   }
+  ],
+  "ov": {
+   "sw": 390,
+   "iw": 390,
+   "bsw": 390
+  },
+  "afterEsc": {
+   "sheet": {
+    "role": "complementary",
+    "label": "Molekül",
+    "top": 326,
+    "visH": 518
+   },
+   "grab": "Panel yüksekliği: özet",
+   "wrapScroll": 305
+  }
+ },
+ "logs": []
+}
