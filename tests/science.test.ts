@@ -465,7 +465,7 @@ describe('A.7 #11 unknown elements', () => {
     for (const sym of ['Fe', 'Se', 'D', 'T']) {
       const e = grab(() => parseXYZ(`1\nx\n${sym} 0 0 0\n`))
       expect(e, sym).toBeInstanceOf(ChemIOError)
-      expect(e!.code, sym).toBe('unsupportedElement')
+      expect(e!.code, sym).toBe(sym === 'D' || sym === 'T' ? 'unsupportedIsotope' : 'unsupportedElement')
       expect(String(e!.params.symbol), sym).toBe(sym)
     }
   })

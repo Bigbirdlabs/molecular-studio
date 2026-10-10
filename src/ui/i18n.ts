@@ -889,7 +889,7 @@ export function fmtNum(lang: Language, n: number, digits: number): string {
     f = new Intl.NumberFormat(lang === 'tr' ? 'tr-TR' : 'en-US', { minimumFractionDigits: digits, maximumFractionDigits: digits })
     nfCache.set(key, f)
   }
-  return f.format(n).replace('-', '−')
+  return f.format(n) // ASCII hyphen-minus (SPEC section 399: glyph atlas has no U+2212)
 }
 
 export type NumFmt = (n: number, digits: number) => string

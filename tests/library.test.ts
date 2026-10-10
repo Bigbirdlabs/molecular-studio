@@ -1,7 +1,7 @@
 import { describe, expect, it } from 'vitest'
 import { LIBRARY, CATEGORY_EN, getEntry } from '../src/chem/library'
 import {
-  angleDeg, atomById, bondLength, centroid, cloneMolecule, connectedComponents, dihedralDeg, dist, formula, idealBondLength,
+  angleDeg, atomById, bondLength, centroid, cloneMolecule, connectedComponents, conventionalFormula, dihedralDeg, dist, formula, idealBondLength,
   molarMass, valenceState,
 } from '../src/chem/molecule'
 
@@ -63,7 +63,8 @@ describe('library: catalogue', () => {
 
   it('states the computed Hill formula in both descriptions', () => {
     for (const e of LIBRARY) {
-      const f = formula(e.molecule, true)
+      // SPEC A2.1: descriptions use the conventional formula (NH₃), which equals Hill unless a lookup entry exists
+      const f = conventionalFormula(e.molecule, true)
       expect(e.description, e.id).toContain(f)
       expect(e.descriptionEn, e.id).toContain(f)
     }
