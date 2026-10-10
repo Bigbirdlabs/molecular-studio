@@ -1,0 +1,196 @@
+style Uzay true spacefill Uzay Dolgulu
+style Çubuk true stick Çubuk
+style Tel true wireframe Tel Kafes
+style Top true ballstick Top-Çubuk
+settings text Ayarlar
+Dil
+Türkçe
+English
+Hareket
+Sistemi izle
+Azalt
+Tam
+
+Azaltıldığında paneller, kamera ve atom animasyonları anında tamamlanır.
+
+Otomatik hidrojen
+Düzenlerken hidrojenleri değerliğe göre otomatik ekler veya çıkarır.
+Klavye kısayolları
+Kısayolları göster
+Hakkında ve bilimsel notlar
+
+Molecular Studio, tarayıcıda çalışan bir 3B molekül görüntüleme ve düzenleme aracıdır. Tüm veriler bu cihazda tutulur.
+
+Hesaplanan değerler
+
+Molekül formülü (Hill sırası), molar kütle (IUPAC standart atom ağırlıkları), monoizotopik kütle, atom ve bağ sayıları, koordinatlardan ölçülen bağ uzunlukları, açılar ve dihedral açılar, halka sayısı, doymamışlık derecesi, hidrojen bağı verici/alıcı sayımı ve üç hesaplanabilir Lipinski kuralı.
+
+Yaklaşık değerler
+
+Gasteiger kısmi yükleri, hibritleşme ve VSEPR geometri adı (sterik sayıdan tahmin) ve geometri optimizasyonu yaklaşıktır. Optimizasyon basit bir kuvvet alanı kullanır; kuantum kimyasal bir hesaplama değildir ve enerjisi yalnızca göstergeseldir.
+
+Hesaplanmayanlar
+
+Kuantum kimyasal nicelikler, logP, erime veya kaynama noktası gibi özellikler hesaplanmaz ve gösterilmez.
+shortcuts dialog? true
+library text Molekül kütüphanesi
+Molekül ara…
+Tümü
+Hidrokarbonlar
+Temel Moleküller
+Özel Geometriler
+Aromatik Bileşikler
+Alkol, Eter ve Karbonil
+Biyomoleküller
+İlaçlar ve Alkaloitler
+46 molekül
+Metan
+CH4
+CH₄ — Doğal gazın ana bileşenidir; dört C–H bağı düzgün bir dörtyüzlünün köşelerine yönelir ve H–C–H açısı 109,5°'dir.
+Hidrokarbonlar
+·
+5 atom
+Su
+H2O
+H₂O — Bükülmüş bir moleküldür (H–O–H açısı gaz fazında yaklaşık 104,5°); hidrojen bağları nedeniyle kaynama noktası 100 °C'dir, kütlesi benzer H₂S ise −60 °C'de kaynar.
+Temel Moleküller
+·
+3 atom
+Amonyak
+H3N
+H₃N — Üçgen piramit geometrisindedir: azot üzerinde bir ortaklanmamış elektron çifti vardır ve H–N–H açısı yaklaşık 107°'dir. Haber–Bosch süreciyle N₂ ve H₂'den endüstriyel ölçekte üretilir.
+Temel Moleküller
+·
+4 atom
+Karbondioksit
+CO2
+CO₂ — Doğrusal bir
+file menu Şimdi kaydet
+Ctrl+S
+Dosya aç (MOL, SDF, XYZ)
+PubChem’de ara
+MOL olarak indir
+XYZ olarak indir
+PNG ekran görüntüsü
+cursor del default
+delete H1 {"tool":"erase","style":"ballstick","atoms":5,"bonds":4,"sel":[],"selBond":null,"past":1,"future":0,"save":"saved","measure":[],"insp":true,"symbols":"CHHHH"} Molekül
+Metan
+Molekül formülü (Hill)
+CH4
+Genel
+Molar kütle
+16.043 g/mol
+Monoizotopik kütle
+16.031 g/mol
+Atom sayısı
+5
+Ağ
+delete C {"tool":"erase","style":"ballstick","atoms":0,"bonds":0,"sel":[],"selBond":null,"past":2,"future":0,"save":"saved","measure":[],"insp":true,"symbols":""}
+after 2 undo {"tool":"erase","style":"ballstick","atoms":5,"bonds":4,"sel":[],"selBond":null,"past":0,"future":2,"save":"unsaved","measure":[],"insp":true,"symbols":"CHHHH"}
+delete nothing toast Kaydedildi · az önce | Silinecek bir seçim yok.
+ethane {"tool":"atom","style":"ballstick","atoms":8,"bonds":7,"sel":[],"selBond":null,"past":1,"future":0,"save":"saved","measure":[],"insp":true,"symbols":"CHHCHHHH"} Molekül
+Metan
+Molekül formülü (Hill)
+C2H6
+Genel
+Molar kütle
+30.070 g/mol
+Monoizo
+carbon ids [1,4]
+grey blobs [{"x":624,"y":556,"n":7083,"w":278,"h":270},{"x":515,"y":315,"n":4760,"w":244,"h":144},{"x":762,"y":669,"n":219,"w":60,"h":66},{"x":456,"y":799,"n":211,"w":100,"h":66}]
+bond pending hint Top-Çubuk · 8 atom · 7 bağ · C #1 Bağ Ekle: İkinci atoma tıklayın · Kamera: yörünge · 8.05 Å · kamera sıfırlandı
+after bond C-C click {"tool":"bond","style":"ballstick","atoms":8,"bonds":7,"sel":[],"selBond":null,"past":2,"future":0,"save":"saved","measure":[],"insp":true,"symbols":"CHHCHHHH"} Molekül
+Metan
+Molekül formülü (Hill)
+C2H6
+Genel
+Molar kütle
+30.070 g/mol
+Monoizotopik kütle
+30.047 g
+new mol {"tool":"bond","style":"ballstick","atoms":0,"bonds":0,"sel":[],"selBond":null,"past":3,"future":0,"save":"saved","measure":[],"insp":true,"symbols":""}
+empty inspector Molekül
+Tuval boş
+
+Atom Ekle aracını seçip tuvale dokunarak bir atom yerleştirin ya da kütüphaneden bir molekül açın.
+
+Atom Ekle aracını seç
+Kütüphaneyi aç viewport text Başlamak için Atom Ekle aracını seçin veya kütüphaneden bir molekül açın
+
+Bağ derecesi
+Tekli
+Çift
+Üçlü
+EN lang en
+EN text Molecular Studio
+Saved · just now
+Library
+File
+View
+Bond order
+Single
+Double
+Triple
+Molecule
+Methane
+Molecular formula (Hill)
+C2H6
+General
+Molar mass
+30.070 g/mol
+Monoisotopic mass
+30.047 g/mol
+Atoms
+8
+Heavy atoms
+2
+Bonds
+7
+Size
+3.04 Å
+Structure
+Single bonds
+7
+Rings
+0
+Aromatic rings
+0
+Degree of unsaturation
+0
+Rotatable bonds
+0
+Hydrogen bonding
+H-bond donors
+0
+H-bond acceptors
+0
+
+Counting rule: donors = N/O atoms bearing H; acceptors = all N and O atoms.
+
+Elemental composition
+C
+2 · 79.9%
+H
+6 · 20.1%
+Functional groups
+
+No recognised functional groups
+
+Lipinski rules
+Satisfies all three rules
+Valence issues
+
+No valence issues
+
+Ball & Stick
+·
+8 atoms
+·
+7 bonds
+·
+No selection
+Add Bond: Click two atoms in turn to bond them
+·
+Camera: orbit · 10.83 Å · camera reset
+Settings
+console []

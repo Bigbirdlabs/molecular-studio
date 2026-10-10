@@ -1,0 +1,115 @@
+ethane bonds C-H:1.090 C-H:1.090 C-C:1.520 C-H:1.090 C-H:1.090 C-H:1.090 C-H:1.090
+armed 1 Top-Çubuk · 8 atom · 7 bağ · C #4 Bağ Ekle: İkinci atoma tıklayın · Kamera: yörünge · 8.05 Å · kamera sıfırlandı
+after C..C {"tool":"bond","style":"ballstick","atoms":8,"bonds":7,"sel":[],"selBond":null,"past":2,"future":0,"save":"saved","measure":[],"insp":true,"symbols":"CHHCHHHH"} C-H:1.090 C-H:1.090 C-C:1.520 C-H:1.090 C-H:1.090 C-H:1.090 C-H:1.090
+INSP Molekül
+Metan
+Molekül formülü (Hill)
+C2H6
+Genel
+Molar kütle
+30.070 g/mol
+Monoizotopik kütle
+30.047 g/mol
+Atom sayısı
+8
+A
+after 2nd cycle {"tool":"bond","style":"ballstick","atoms":8,"bonds":7,"sel":[],"selBond":null,"past":3,"future":0,"save":"saved","measure":[],"insp":true,"symbols":"CHHCHHHH"} C-H:1.090 C-H:1.090 C-C:1.520 C-H:1.090 C-H:1.090 C-H:1.090 C-H:1.090
+logs []
+RM reducedMotion state true data attr true
+shot after 266 ms
+logs []
+tablet aside Molekül
+Metan
+Molekül formülü (Hill)
+CH4
+Genel
+Molar kütle
+16.043 g/mol
+Monoizotopik kütle
+16.031 g/mol
+Atom sayısı
+5
+Ağır atom sayısı
+1
+Bağ sayısı
+4
+Boyut
+1.78 Å
+Yapı
+Tekli bağ
+4
+Halka
+0
+Aromatik hal
+tablet aside rect [664,360] scrollW 1024
+tablet tap {"tool":"select","style":"ballstick","atoms":5,"bonds":4,"sel":[1],"selBond":null,"past":0,"future":0,"save":"saved","measure":[],"insp":true,"symbols":"CHHHH"}
+tablet pinch cam {"distance":5.08,"mode":"orbit"} -> {"distance":2.72,"mode":"orbit"}
+logs []
+mobile tap C {"tool":"select","style":"ballstick","atoms":5,"bonds":4,"sel":[1],"selBond":null,"past":0,"future":0,"save":"saved","measure":[],"insp":true,"symbols":"CHHHH"}
+sheet text null:Element
+Atom numarası
+6
+Atom kütlesi
+12.011 g/mol
+Elektronegatiflik (Pauling)
+2.55
+Kovalent yarıçap
+0.76 Å
+Konum (Å)
+x
+0.000
+y
+0.000
+z
+0.000 || null:Bağlanma
+Değerlik
+4/4
+Tamam
+Hibritleşme
+sp³
+Geometri (VSEPR tahmini)
+Dörtyüzlü
+Sterik sayı
+4
+Ortaklanmamış çift
+0
+Gasteiger kısmi yükü (yaklaşık)
+−0.078
+Biçimsel yük
+0
+Komşular
+H
+#2
+H
+#3
+H
+#4
+H
+#5 || null:Elementi değiştir
+scrollW 390
+sheet rect [712,760,"Molekül\nKarbon #1\n·\n5 atom\n·\n4 bağ\nC\nKarbon (C)\n#1 · Ametal\nElement\nAtom numarası\n6\nAtom kütlesi\n12.011 g/mol\nElektronegatiflik (Pauling)\n2.55\nKovalent yarıçap\n0.76 Å\nKonum (Å)\nx\n0.000\ny\n0.000\nz\n0.000\nBağlanma\nDeğerlik\n4/4\nTamam\nHibritleşme\nsp³\nGeometri (VSEPR tahmini)\nDörtyüzlü\nSterik sayı\n4\nOrtakl"]
+sheet after drag [84,760]
+more menu Kütüphane
+Şimdi kaydet
+Ctrl+S
+Dosya aç (MOL, SDF, XYZ)
+PubChem’de ara
+MOL olarak indir
+XYZ olarak indir
+PNG ekran görüntüsü
+Gösterim biçimi
+Top-Çubuk
+Uzay Dolgulu
+Çubuk
+Tel Kafes
+Görünüm seçenekleri
+Hidrojenleri göster
+Etiketler
+Kısmi yükler (yaklaşık)
+Otomatik döndür
+Kamerayı sıfırla
+F
+Ayarlar
+mobile atom tool {"tool":"atom","style":"ballstick","atoms":5,"bonds":4,"sel":[1],"selBond":null,"past":0,"future":0,"save":"saved","measure":[],"insp":false,"symbols":"CHHHH"} scrollW 390
+after 1-finger drag atom tool {"tool":"atom","style":"ballstick","atoms":5,"bonds":4,"sel":[1],"selBond":null,"past":0,"future":0,"save":"saved","measure":[],"insp":false,"symbols":"CHHHH"}
+logs []

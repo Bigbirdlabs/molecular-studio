@@ -1,0 +1,15 @@
+node_modules/
+dist/
+*.log
+.DS_Store
+.vite/
+coverage/
+
+# Gauntlet working data (kept local; specs and critique reports are committed)
+gauntlet/scratch/
+gauntlet/snapshot-*/
+gauntlet/logs/
+gauntlet/ab/
+gauntlet/**/*.png
+gauntlet/**/*.jpg
+gauntlet/**/*.webm

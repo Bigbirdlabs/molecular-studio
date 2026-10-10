@@ -1,0 +1,98 @@
+== d 1440x900 {"inner":[1440,900],"scrollW":1440,"scrollH":900,"lang":"tr","layout":"desktop","canvas":[48,44,1072,830],"canvasFrac":"0.687","offscreen":[]}
+buttons [{"l":"Geri al","pressed":null,"dis":"true","x":955,"y":6,"w":32,"h":32},{"l":"Yinele","pressed":null,"dis":"true","x":987,"y":6,"w":32,"h":32},{"l":"Kütüphane","pressed":null,"dis":null,"x":1036,"y":6,"w":101,"h":32},{"l":"Dosya","pressed":null,"dis":null,"x":1142,"y":6,"w":91,"h":32},{"l":"Görünüm","pressed":null,"dis":null,"x":1237,"y":6,"w":110,"h":32},{"l":"Ayarlar","pressed":null,"dis":null,"x":1364,"y":6,"w":32,"h":32},{"l":"Molekül bilgisini kapat","pressed":"true","dis":null,"x":1400,"y":6,"w":32,"h":32},{"l":"Seç","pressed":"true","dis":null,"x":8,"y":52,"w":32,"h":32},{"l":"Döndür","pressed":"false","dis":null,"x":8,"y":88,"w":32,"h":32},{"l":"Kaydır","pressed":"false","dis":null,"x":8,"y":124,"w":32,"h":32},{"l":"Yakınlaştır","pressed":"false","dis":null,"x":8,"y":160,"w":32,"h":32},{"l":"Atom Ekle","pressed":"false","dis":null,"x":8,"y":196,"w":32,"h":32},{"l":"Bağ Ekle","pressed":"false","dis":null,"x":8,"y":232,"w":32,"h":32},{"l":"Sil","pressed":"false","dis":null,"x":8,"y":268,"w":32,"h":32},{"l":"Ölç","pressed":"false","dis":null,"x":8,"y":304,"w":32,"h":32},{"l":"Geometriyi optimize et","pressed":null,"dis":null,"x":8,"y":353,"w":32,"h":32},{"l":"Hidrojen ekle","pressed":null,"dis":null,"x":8,"y":389,"w":32,"h":32},{"l":"Hidrojenleri kaldır","pressed":null,"dis":null,"x":8,"y":425,"w":32,"h":32},{"l":"Yeni molekül","pressed":null,"dis":null,"x":8,"y":461,"w":32,"h":32},{"l":"Kamerayı sıfırla","pressed":null,"dis":null,"x":8,"y":497,"w":32,"h":32},{"l":"Yakınlaş","pressed":null,"dis":null,"x":8,"y":533,"w":32,"h":32},{"l":"Uzaklaş","pressed":null,"dis":null,"x":8,"y":569,"w":32,"h":32},{"l":"Paneli daralt","pressed":null,"dis":null,"x":1404,"y":48,"w":32,"h":32},{"l":"Genel","pressed":null,"dis":null,"x":1121,"y":181,"w":319,"h":32},{"l":"Yapı","pressed":null,"dis":null,"x":1121,"y":371,"w":319,"h":32},{"l":"Hidrojen bağı","pressed":null,"dis":null,"x":1121,"y":537,"w":319,"h":32},{"l":"Element bileşimi","pressed":null,"dis":null,"x":1121,"y":671,"w":319,"h":32},{"l":"Fonksiyonel gruplar","pressed":null,"dis":null,"x":1121,"y":758,"w":319,"h":32},{"l":"Lipinski kuralları\nÜç kuralı da sağlıyor","pressed":null,"dis":null,"x":1121,"y":821,"w":319,"h":32},{"l":"Değerlik sorunları","pressed":null,"dis":null,"x":1121,"y":854,"w":319,"h":32}]
+text Molecular Studio
+Otomatik kayıt açık
+Kütüphane
+Dosya
+Görünüm
+Molekül
+Metan
+Molekül formülü (Hill)
+CH4
+Genel
+Molar kütle
+16.043 g/mol
+Monoizotopik kütle
+16.031 g/mol
+Atom sayısı
+5
+Ağır atom sayısı
+1
+Bağ sayısı
+4
+Boyut
+1.78 Å
+Yapı
+Tekli bağ
+4
+Halka
+0
+Aromatik halka
+0
+Doymamışlık derecesi
+0
+Dönebilen bağ
+0
+Hidrojen bağı
+H bağı vericisi
+0
+H bağı alıcısı
+0
+
+Sayım kuralı: verici = H taşıyan N/O atomu; alıcı = tüm N ve O atomları.
+
+Element bileşimi
+C
+1 · 74.9%
+H
+4 · 25.1%
+Fonksiyonel gruplar
+
+Tanınan fonksiyonel grup yok
+
+Lipinski kuralları
+Üç kuralı da sağlıyor
+Değerlik sorunları
+
+Değerlik sorunu yok
+
+Top-Çubuk
+·
+5 atom
+·
+4 bağ
+·
+Seçim yok
+Seç: Atom veya bağa tıklayarak seçin; atomu sürükleyerek taşıyın
+·
+Kamera: yörünge · 5.08 Å · özel görünüm
+white blobs [{"x":312,"y":687,"n":4607,"w":240,"h":190},{"x":740,"y":275,"n":3688,"w":170,"h":112},{"x":840,"y":608,"n":2073,"w":154,"h":122},{"x":453,"y":183,"n":1759,"w":132,"h":78},{"x":496,"y":282,"n":1458,"w":98,"h":104},{"x":638,"y":375,"n":203,"w":42,"h":56},{"x":547,"y":425,"n":114,"w":22,"h":22},{"x":1203,"y":735,"n":44,"w":42,"h":2}]
+grey blobs [{"x":554,"y":459,"n":12073,"w":320,"h":256},{"x":741,"y":364,"n":879,"w":190,"h":116},{"x":756,"y":593,"n":517,"w":90,"h":104},{"x":292,"y":784,"n":484,"w":156,"h":102}]
+console []
+== t 1024x768 {"inner":[1024,768],"scrollW":1024,"scrollH":768,"lang":"tr","layout":"tablet","canvas":[60,52,964,690],"canvasFrac":"0.846","offscreen":["Uzaklaş"]}
+buttons [{"l":"Geri al","pressed":null,"dis":"true","x":662,"y":4,"w":44,"h":44},{"l":"Yinele","pressed":null,"dis":"true","x":706,"y":4,"w":44,"h":44},{"l":"Kütüphane","pressed":null,"dis":null,"x":767,"y":4,"w":44,"h":44},{"l":"Dosya","pressed":null,"dis":null,"x":815,"y":4,"w":44,"h":44},{"l":"Görünüm","pressed":null,"dis":null,"x":863,"y":4,"w":44,"h":44},{"l":"Ayarlar","pressed":null,"dis":null,"x":924,"y":4,"w":44,"h":44},{"l":"Molekül bilgisi","pressed":"false","dis":null,"x":972,"y":4,"w":44,"h":44},{"l":"Seç","pressed":"true","dis":null,"x":8,"y":60,"w":44,"h":44},{"l":"Döndür","pressed":"false","dis":null,"x":8,"y":108,"w":44,"h":44},{"l":"Kaydır","pressed":"false","dis":null,"x":8,"y":156,"w":44,"h":44},{"l":"Yakınlaştır","pressed":"false","dis":null,"x":8,"y":204,"w":44,"h":44},{"l":"Atom Ekle","pressed":"false","dis":null,"x":8,"y":252,"w":44,"h":44},{"l":"Bağ Ekle","pressed":"false","dis":null,"x":8,"y":300,"w":44,"h":44},{"l":"Sil","pressed":"false","dis":null,"x":8,"y":348,"w":44,"h":44},{"l":"Ölç","pressed":"false","dis":null,"x":8,"y":396,"w":44,"h":44},{"l":"Geometriyi optimize et","pressed":null,"dis":null,"x":8,"y":456,"w":44,"h":44},{"l":"Hidrojen ekle","pressed":null,"dis":null,"x":8,"y":504,"w":44,"h":44},{"l":"Hidrojenleri kaldır","pressed":null,"dis":null,"x":8,"y":552,"w":44,"h":44},{"l":"Yeni molekül","pressed":null,"dis":null,"x":8,"y":600,"w":44,"h":44},{"l":"Kamerayı sıfırla","pressed":null,"dis":null,"x":8,"y":648,"w":44,"h":44},{"l":"Yakınlaş","pressed":null,"dis":null,"x":8,"y":696,"w":44,"h":44},{"l":"Uzaklaş","pressed":null,"dis":null,"x":8,"y":744,"w":44,"h":44}]
+text Otomatik kayıt açık
+Top-Çubuk
+·
+5 atom
+·
+4 bağ
+·
+Seçim yok
+Seç: Atom veya bağa tıklayarak seçin; atomu sürükleyerek taşıyın
+white blobs [{"x":316,"y":587,"n":3180,"w":200,"h":156},{"x":671,"y":244,"n":2555,"w":142,"h":94},{"x":755,"y":521,"n":1433,"w":126,"h":100},{"x":433,"y":168,"n":1216,"w":108,"h":64},{"x":469,"y":249,"n":1003,"w":80,"h":86},{"x":587,"y":327,"n":141,"w":32,"h":44},{"x":511,"y":369,"n":78,"w":18,"h":18}]
+grey blobs [{"x":530,"y":391,"n":9161,"w":350,"h":242},{"x":685,"y":509,"n":350,"w":74,"h":84},{"x":300,"y":667,"n":339,"w":128,"h":82},{"x":755,"y":580,"n":281,"w":116,"h":74}]
+console []
+== m 390x844 {"inner":[390,844],"scrollW":390,"scrollH":844,"lang":"tr","layout":"mobile","canvas":[0,53,390,706],"canvasFrac":"0.836","offscreen":[]}
+buttons [{"l":"Geri al","pressed":null,"dis":"true","x":202,"y":4,"w":44,"h":44},{"l":"Yinele","pressed":null,"dis":"true","x":246,"y":4,"w":44,"h":44},{"l":"Molekül bilgisi","pressed":"false","dis":null,"x":294,"y":4,"w":44,"h":44},{"l":"Diğer seçenekler","pressed":null,"dis":null,"x":342,"y":4,"w":44,"h":44},{"l":"Seç","pressed":"true","dis":null,"x":8,"y":794,"w":44,"h":44},{"l":"Döndür","pressed":"false","dis":null,"x":54,"y":794,"w":44,"h":44},{"l":"Kaydır","pressed":"false","dis":null,"x":100,"y":794,"w":44,"h":44},{"l":"Yakınlaştır","pressed":"false","dis":null,"x":146,"y":794,"w":44,"h":44},{"l":"Atom Ekle","pressed":"false","dis":null,"x":192,"y":794,"w":44,"h":44},{"l":"Bağ Ekle","pressed":"false","dis":null,"x":238,"y":794,"w":44,"h":44},{"l":"Sil","pressed":"false","dis":null,"x":284,"y":794,"w":44,"h":44},{"l":"Ölç","pressed":"false","dis":null,"x":330,"y":794,"w":44,"h":44},{"l":"Eylemler","pressed":null,"dis":null,"x":340,"y":794,"w":44,"h":44}]
+text Otomatik kayıt açık
+Seç
+·
+5 atom
+·
+4 bağ
+·
+Seçim yok
+white blobs [{"x":146,"y":1016,"n":3635,"w":216,"h":164},{"x":519,"y":660,"n":2593,"w":144,"h":94},{"x":633,"y":953,"n":1864,"w":152,"h":116},{"x":265,"y":548,"n":1729,"w":124,"h":78},{"x":307,"y":644,"n":1357,"w":92,"h":102},{"x":436,"y":740,"n":135,"w":32,"h":42},{"x":356,"y":781,"n":91,"w":20,"h":18}]
+grey blobs [{"x":372,"y":804,"n":10789,"w":364,"h":246},{"x":122,"y":1105,"n":425,"w":142,"h":88},{"x":635,"y":1023,"n":379,"w":130,"h":86},{"x":267,"y":951,"n":339,"w":100,"h":114}]
+console []

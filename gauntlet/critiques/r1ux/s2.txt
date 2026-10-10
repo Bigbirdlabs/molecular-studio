@@ -1,0 +1,289 @@
+S0 {"tool":"select","style":"ballstick","atoms":5,"bonds":4,"sel":[],"selBond":null,"past":0,"future":0,"save":"saved","measure":[],"insp":true,"symbols":"CHHHH"} Top-Çubuk
+·
+5 atom
+·
+4 bağ
+·
+Seçim yok
+Seç: Atom veya bağa tıklayarak seçin; atomu sürükleyerek taşıyın
+·
+Kamera: yörünge · 5.08 Å · özel görünüm
+hover tooltip text 
+canvas cursor pointer / parent default
+S1 select C {"tool":"select","style":"ballstick","atoms":5,"bonds":4,"sel":[1],"selBond":null,"past":0,"future":0,"save":"saved","measure":[],"insp":true,"symbols":"CHHHH"}
+INSP C:
+Molekül
+C
+Karbon (C)
+#1 · Ametal
+Element
+Atom numarası
+6
+Atom kütlesi
+12.011 g/mol
+Elektronegatiflik (Pauling)
+2.55
+Kovalent yarıçap
+0.76 Å
+Konum (Å)
+x
+0.000
+y
+0.000
+z
+0.000
+Bağlanma
+Değerlik
+4/4
+Tamam
+Hibritleşme
+sp³
+Geometri (VSEPR tahmini)
+Dörtyüzlü
+Sterik sayı
+4
+Ortaklanmamış çift
+0
+Gasteiger kısmi yükü (yaklaşık)
+−0.078
+Biçimsel yük
+0
+Komşular
+H
+#2
+H
+#3
+H
+#4
+H
+#5
+Elementi değiştir
+Atomu sil
+status Top-Çubuk
+·
+5 atom
+·
+4 bağ
+·
+C #1
+Seç: Atom veya bağa tıklayarak seçin; atomu sürükleyerek taşıyın
+·
+Kamera: yörünge · 5.08 Å · özel görünüm
+S2 select H {"tool":"select","style":"ballstick","atoms":5,"bonds":4,"sel":[4],"selBond":null,"past":0,"future":0,"save":"saved","measure":[],"insp":true,"symbols":"CHHHH"}
+INSP H:
+Molekül
+H
+Hidrojen (H)
+#4 · Ametal
+Element
+Atom numarası
+1
+Atom kütlesi
+1.008 g/mol
+Elektronegatiflik (Pauling)
+2.20
+Kovalent yarıçap
+0.31 Å
+Konum (Å)
+x
+−0.629
+y
+0.629
+z
+−0.629
+Bağlanma
+Değerlik
+1/1
+Tamam
+Hibritleşme
+s
+Geometri (VSEPR tahmini)
+Uç atom
+Sterik sayı
+1
+Ortaklanmamış çift
+0
+Gasteiger kısmi yükü (yaklaşık)
+0.019
+Biçimsel yük
+0
+Komşular
+C
+#1
+Elementi değiştir
+Atomu sil
+S3 select bond {"tool":"select","style":"ballstick","atoms":5,"bonds":4,"sel":[],"selBond":9,"past":0,"future":0,"save":"saved","measure":[],"insp":true,"symbols":"CHHHH"}
+INSP bond:
+Molekül
+C-H
+Tekli bağ (σ)
+Bağ türü
+Bağlanan atomlar
+C
+#1
+H
+#5
+Uzunluk
+1.090 Å (ideal 1.070, +0.020)
+ΔEN
+0.35
+Kutupluluk
+Apolar
+σ bağı
+1
+π bağı
+0
+Halkada
+Hayır
+Aromatik
+Hayır
+Bağ derecesi
+Tekli
+Çift
+Üçlü
+Bağı sil
+S4 empty {"tool":"select","style":"ballstick","atoms":5,"bonds":4,"sel":[],"selBond":null,"past":0,"future":0,"save":"saved","measure":[],"insp":true,"symbols":"CHHHH"}
+S5 drag H3 select tool {"tool":"select","style":"ballstick","atoms":5,"bonds":4,"sel":[],"selBond":null,"past":1,"future":0,"save":"unsaved","measure":[],"insp":true,"symbols":"CHHHH"} cam same? true
+after ctrl+z {"tool":"select","style":"ballstick","atoms":5,"bonds":4,"sel":[],"selBond":null,"past":0,"future":1,"save":"unsaved","measure":[],"insp":true,"symbols":"CHHHH"}
+tool rotate cursor grab
+S6 rotate drag from C {"tool":"rotate","style":"ballstick","atoms":5,"bonds":4,"sel":[],"selBond":null,"past":0,"future":1,"save":"saved","measure":[],"insp":true,"symbols":"CHHHH"} cam {"distance":5.08,"mode":"orbit"} -> {"distance":5.08,"mode":"orbit"}
+S7 pan cam {"distance":5.08,"mode":"pan"} -> {"distance":5.08,"mode":"pan"} cursor move
+S8 zoom-drag up cam {"distance":5.08,"mode":"zoom"} -> {"distance":2.07,"mode":"zoom"} cursor zoom-in
+S8b wheel {"distance":3.92,"mode":"zoom"}
+S9 reset {"distance":5.08,"mode":"zoom"} Top-Çubuk
+·
+5 atom
+·
+4 bağ
+·
+Seçim yok
+Yakınlaştır: Yukarı veya aşağı sürükleyerek yakınlaştırın
+·
+Kamera: yakınlaştırma · 5.08 Å · kamera sıfırlandı
+tool after m measure
+S10 measure {"tool":"measure","style":"ballstick","atoms":5,"bonds":4,"sel":[],"selBond":null,"past":0,"future":1,"save":"saved","measure":[4,1,2],"insp":true,"symbols":"CHHHH"} Top-Çubuk
+·
+5 atom
+·
+4 bağ
+·
+Seçim yok
+Ölç: Mesafe için 2, açı için 3, dihedral için 4 atom seçin
+·
+Kamera: yörünge · 5.08 Å · özel görünüm
+INSP measure:
+Molekül
+Ölçüm
+
+Atomlara sırayla tıklayın: 2 atom mesafe, 3 atom bağ açısı, 4 atom dihedral açı verir. Dördüncü seçimden sonraki tıklama ölçümü baştan başlatır.
+
+Seçilen atomlar
+1
+H
+#4
+2
+C
+#1
+3
+H
+#2
+Bağ açısı
+109.47°
+tepe: C #1
+Ölçümü temizle
+S10b dihedral [4,1,2,3]
+INSP dih:
+Molekül
+Ölçüm
+
+Atomlara sırayla tıklayın: 2 atom mesafe, 3 atom bağ açısı, 4 atom dihedral açı verir. Dördüncü seçimden sonraki tıklama ölçümü baştan başlatır.
+
+Seçilen atomlar
+1
+H
+#4
+2
+C
+#1
+3
+H
+#2
+4
+H
+#3
+Dihedral açı
+−120.00°
+Ölçümü temizle
+after esc {"tool":"select","style":"ballstick","atoms":5,"bonds":4,"sel":[],"selBond":null,"past":0,"future":1,"save":"saved","measure":[],"insp":true,"symbols":"CHHHH"}
+S11 atom tool {"t":"atom","e":"O"}
+S12 30px drag empty atom tool 5 0 -> 5 0
+S13 O on H {"tool":"atom","style":"ballstick","atoms":6,"bonds":5,"sel":[],"selBond":null,"past":1,"future":0,"save":"saved","measure":[],"insp":true,"symbols":"CHHOHH"}
+top save: Kaydedildi · az önce
+INSP:
+Molekül
+Metan
+Molekül formülü (Hill)
+CH4O
+Genel
+Molar kütle
+32.042 g/mol
+Monoizotopik kütle
+32.026 g/mol
+Atom sayısı
+6
+Ağır atom sayısı
+2
+Bağ sayısı
+5
+Boyut
+2.85 Å
+Yapı
+Tekli bağ
+5
+Halka
+0
+Aromatik halka
+0
+Doymamışlık derecesi
+0
+Dönebilen bağ
+0
+Hidrojen bağı
+H bağı vericisi
+1
+H bağı alıcısı
+1
+
+Sayım kuralı: verici = H taşıyan N/O atomu; alıcı = tüm N ve O atomları.
+
+Element bileşimi
+C
+1 · 37.5%
+H
+
+save after 2.5s: Kaydedildi · az önce
+S14 undo button {"tool":"atom","style":"ballstick","atoms":5,"bonds":4,"sel":[],"selBond":null,"past":0,"future":1,"save":"unsaved","measure":[],"insp":true,"symbols":"CHHHH"} Molekül
+Metan
+Molekül formülü (Hill)
+CH4
+Genel
+Molar kütle
+16.043 g/mol
+Monoizotopik kütle
+16.031 g/mol
+Atom sayısı
+5
+Ağ
+S15 redo button {"tool":"atom","style":"ballstick","atoms":6,"bonds":5,"sel":[],"selBond":null,"past":1,"future":0,"save":"unsaved","measure":[],"insp":true,"symbols":"CHHOHH"}
+S16 click empty in atom tool {"tool":"atom","style":"ballstick","atoms":11,"bonds":9,"sel":[12],"selBond":null,"past":2,"future":0,"save":"saved","measure":[],"insp":true,"symbols":"CHHOHHCHHHH"}
+bond hint Top-Çubuk
+·
+6 atom
+·
+5 bağ
+·
+Seçim yok
+Bağ Ekle: İki atoma sırayla tıklayarak bağ kurun
+·
+Kamera: yörünge · 5.08 Å · kamera sıfırlandı
+logs so far []
